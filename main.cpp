@@ -1,5 +1,4 @@
 #include <iostream>
-#include <cstdlib>
 #include <ctime>
 
 // IMPORTANTE: El include de GLAD debe estar siempre ANTES de el de GLFW
