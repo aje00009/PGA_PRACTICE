@@ -6,11 +6,11 @@ set(CMAKE_CXX_STANDARD 20)
 #GLAD
 file( GLOB MY_FILES *.cpp )
 file( GLOB GLAD_FILES GLAD/src/*.c )
+file( GLOB IMGUI_FILES IMGUI/src/*.cpp )
 
 add_executable( ${PROJECT_NAME} ${MY_FILES}
                                 ${GLAD_FILES}
-        Renderer.cpp
-        Renderer.h)
+                ${IMGUI_FILES})
 
 
 # First, tell CMake to find the package.
@@ -22,7 +22,7 @@ find_package(glfw3)
 find_package(opengl_system)
 
 # Then, link your executable or library with the corresponding package targets:
-target_include_directories( ${PROJECT_NAME} PUBLIC GLAD/include )
+target_include_directories( ${PROJECT_NAME} PUBLIC GLAD/include IMGUI/include)
 
 target_link_libraries( ${PROJECT_NAME} glfw
                             opengl::opengl)

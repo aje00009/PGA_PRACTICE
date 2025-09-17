@@ -4,8 +4,9 @@
 // IMPORTANTE: El include de GLAD debe estar siempre ANTES de el de GLFW
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
-#include <random>
-#include <vector>
+#include <imgui.h>
+#include <imgui_impl_glfw.h>
+#include <imgui_impl_opengl3.h>
 
 #include "Renderer.h"
 
@@ -73,22 +74,48 @@ int main(){
         // No tiene por qué ejecutarse en cada paso por el ciclo de eventos.
         glEnable ( GL_DEPTH_TEST );
 
-        //Registering all callbacks to respond main events
-        glfwSetWindowRefreshCallback(window, PAG::Renderer::window_refresh_callback);
-        glfwSetFramebufferSizeCallback(window, PAG::Renderer::framebuffer_size_callback);
-        glfwSetKeyCallback(window, PAG::Renderer::key_callback);
-        glfwSetMouseButtonCallback(window, PAG::Renderer::mouse_button_callback);
-        glfwSetScrollCallback(window, PAG::Renderer::scroll_callback);
+    //Registering all callbacks to respond main events
+    glfwSetWindowRefreshCallback(window, PAG::Renderer::window_refresh_callback);
+    glfwSetFramebufferSizeCallback(window, PAG::Renderer::framebuffer_size_callback);
+    glfwSetKeyCallback(window, PAG::Renderer::key_callback);
+    glfwSetMouseButtonCallback(window, PAG::Renderer::mouse_button_callback);
+    glfwSetScrollCallback(window, PAG::Renderer::scroll_callback);
 
-        while (!glfwWindowShouldClose(window)) {
-            //Obtains and organises the remaining events, such as key press,
-            //mouse press, etc. Always and the end of each iteration and after
-            //the function glfwSwapBuffers(window)
-            glfwPollEvents();
+    IMGUI_CHECKVERSION();
+    ImGui::CreateContext();
+    ImGuiIO &io = ImGui::GetIO();
+    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
+
+    ImGui_ImplGlfw_InitForOpenGL(window, true);
+    ImGui_ImplOpenGL3_Init();
+
+    while (!glfwWindowShouldClose(window)) {
+        //Obtains and organises the remaining events, such as key press,
+        //mouse press, etc. Always and the end of each iteration and after
+        //the function glfwSwapBuffers(window)
+        glfwPollEvents();
+
+        ImGui_ImplOpenGL3_NewFrame();
+        ImGui_ImplGlfw_NewFrame();
+        ImGui::NewFrame();
+
+        //Dibujar
+        ImGui::SetNextWindowPos(ImVec2(10, 10), ImGuiCond_Once);
+        if (ImGui::Begin("Mensajes")) {
+            ImGui::Text("Hello World");
         }
-        // - Una vez terminado el ciclo de eventos, liberar recursos, etc.
-        std::cout << "Finishing application pag prueba" << std::endl;
-        glfwDestroyWindow ( window ); // - Cerramos y destruimos la ventana de la aplicación.
-        window = nullptr;
-        glfwTerminate (); // - Liberamos los recursos que ocupaba GLFW.
+        ImGui::End();
+
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+        ImGui::Render();
+        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
+        glfwSwapBuffers(window);
+    }
+    // - Una vez terminado el ciclo de eventos, liberar recursos, etc.
+    std::cout << "Finishing application pag prueba" << std::endl;
+    glfwDestroyWindow ( window ); // - Cerramos y destruimos la ventana de la aplicación.
+    window = nullptr;
+    glfwTerminate (); // - Liberamos los recursos que ocupaba GLFW.
 }
