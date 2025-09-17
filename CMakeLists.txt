@@ -8,7 +8,9 @@ file( GLOB MY_FILES *.cpp )
 file( GLOB GLAD_FILES GLAD/src/*.c )
 
 add_executable( ${PROJECT_NAME} ${MY_FILES}
-                                ${GLAD_FILES} )
+                                ${GLAD_FILES}
+        Renderer.cpp
+        Renderer.h)
 
 
 # First, tell CMake to find the package.

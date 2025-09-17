@@ -1,4 +1,4 @@
-# PRÁCTICAS PGA
+# PRÁCTICAS PAG
 
 
 [Enlace a GitHub](https://github.com/aje00009/PGA_PRACTICE)
