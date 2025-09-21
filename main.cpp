@@ -4,11 +4,9 @@
 // IMPORTANTE: El include de GLAD debe estar siempre ANTES de el de GLFW
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
-#include <imgui.h>
-#include <imgui_impl_glfw.h>
-#include <imgui_impl_opengl3.h>
 
 #include "Renderer.h"
+#include "Logger.h"
 
 int main(){
     srand(time(NULL));
@@ -100,11 +98,13 @@ int main(){
         ImGui::NewFrame();
 
         //Dibujar
-        ImGui::SetNextWindowPos(ImVec2(10, 10), ImGuiCond_Once);
+        /*ImGui::SetNextWindowPos(ImVec2(10, 10), ImGuiCond_Once);
         if (ImGui::Begin("Mensajes")) {
             ImGui::Text("Hello World");
         }
-        ImGui::End();
+        ImGui::End();*/
+
+        Logger::getInstance()->draw();
 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 

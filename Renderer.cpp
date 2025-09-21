@@ -4,6 +4,8 @@
 
 #include "Renderer.h"
 
+#include "Logger.h"
+
 PAG::Renderer* PAG::Renderer::instance = nullptr;
 
 PAG::Renderer::Renderer() = default;
@@ -22,7 +24,7 @@ void PAG::Renderer::refrescar() {
 //Esta función callback será llamada cuando GLFW produzca algún error
 void PAG::Renderer::error_callback(int error, const char* description) {
     std::string aux(description);
-    std::cout << "Error de GLFW número " << error << ": " << aux << std::endl;
+    Logger::getInstance()->addMessage("Error de GLFW número " + std::to_string(error) + ": " + aux);
 }
 
 //Esta función será llamada cada vez que el área de dibujo de OpenGL
@@ -36,7 +38,7 @@ void PAG::Renderer::window_refresh_callback(GLFWwindow* window) {
     // este callback
     glfwSwapBuffers(window);
 
-    std::cout << "Refresh callback called" << std::endl;
+    Logger::getInstance()->addMessage("Refresh callback called");
 }
 
 // - Esta función callback será llamada cada vez que se cambie el tamaño
@@ -52,21 +54,21 @@ void PAG::Renderer::key_callback(GLFWwindow* window, int key, int scancode, int 
     if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
         glfwSetWindowShouldClose(window, GLFW_TRUE);
 
-    std::cout << "Key callback called" << std::endl;
+    Logger::getInstance()->addMessage("Key callback called");
 }
 
 //Esta función callback será llamada caca vez que sea pulse algun botón
 //del ratón sobre el área de dibujo OpenGL
 void PAG::Renderer::mouse_button_callback(GLFWwindow* window, int button, int action, int mods) {
     if (action == GLFW_PRESS)
-        std::cout << "Button pressed: " << button << std::endl;
+        Logger::getInstance()->addMessage("Button pressed: " + std::to_string(button));
     else if (action == GLFW_RELEASE)
-        std::cout << "Button released: " << button << std::endl;
+        Logger::getInstance()->addMessage("Button released: " + std::to_string(button));
 }
 
 //Esta función callback será llamada cada vez que se mueva la rueda
 //del ratón sobre el área de dibujo OpenGL
 void PAG::Renderer::scroll_callback(GLFWwindow* window, double xoffset, double yoffset) {
-    std::cout << "Scrolled " << xoffset << " units horizontally and "
-    << yoffset << " units vertically" << std::endl;
+    Logger::getInstance()->addMessage("Scrolled " + std::to_string(xoffset) + " units horizontally and "
+    + std::to_string(yoffset) + " units vertically");
 }
