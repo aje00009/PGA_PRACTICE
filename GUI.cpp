@@ -70,3 +70,9 @@ void PAG::GUI::drawColorSelectorWindow() {
                      s_backgroundColor[3]);
 
 }
+
+void PAG::GUI::destroyImGuiObjets() {
+    ImGui_ImplOpenGL3_Shutdown();
+    ImGui_ImplGlfw_Shutdown();
+    ImGui::DestroyContext();
+}

@@ -107,7 +107,9 @@ int main(){
         glfwSwapBuffers(window);
     }
     // - Una vez terminado el ciclo de eventos, liberar recursos, etc.
-    std::cout << "Finishing application pag prueba" << std::endl;
+    PAG::Logger::getInstance()->addMessage("Ending PAG aplication...");
+
+    PAG::GUI::destroyImGuiObjets();
     glfwDestroyWindow ( window ); // - Cerramos y destruimos la ventana de la aplicación.
     window = nullptr;
     glfwTerminate (); // - Liberamos los recursos que ocupaba GLFW.
