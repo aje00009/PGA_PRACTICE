@@ -4,46 +4,33 @@
 
 #include "Logger.h"
 
-Logger* Logger::instance = nullptr;
+PAG::Logger* PAG::Logger::instance = nullptr;
+
+PAG::Logger::Logger() = default;
 
 template<typename T>
-Logger& Logger::operator<<(const T& smth) {
+PAG::Logger& PAG::Logger::operator<<(const T& smth) {
     messages << smth;
     return *this;
 }
 
-Logger* Logger::getInstance() {
+PAG::Logger* PAG::Logger::getInstance() {
     if (!instance)
         instance = new Logger();
     return instance;
 }
 
 
-void Logger::clear() {
+void PAG::Logger::clear() {
     messages.str("");
     messages.clear();
 }
 
-
-void Logger::addMessage(const std::string& message) {
-    messages << message << "\n";
+std::string PAG::Logger::getMessages() const {
+    return this->messages.str();
 }
 
-void Logger::draw() {
-    if (ImGui::Begin("log")) {
-        if (ImGui::Button("Limpiar")) {
-            clear();
-        }
 
-        ImGui::Separator();
-
-        // Mostramos el contenido actual del log
-        std::string content = messages.str();
-        ImGui::BeginChild("LogScrollRegion", ImVec2(0, 0), false, ImGuiWindowFlags_HorizontalScrollbar);
-        ImGui::TextUnformatted(content.c_str());
-
-        ImGui::EndChild();
-    }
-
-    ImGui::End();
+void PAG::Logger::addMessage(const std::string& message) {
+    messages << message << "\n";
 }

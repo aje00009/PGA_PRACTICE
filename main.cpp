@@ -5,6 +5,7 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
+#include "GUI.h"
 #include "Renderer.h"
 #include "Logger.h"
 
@@ -14,7 +15,7 @@ int main(){
     std::cout << "Starting Application PAG - Prueba 01" << std::endl;
 
     //GLFW Errors callback before executing any GLFW functions
-    glfwSetErrorCallback((GLFWerrorfun) PAG::Renderer::getInstance()->error_callback);
+    glfwSetErrorCallback((GLFWerrorfun) PAG::Renderer::error_callback);
     // - Inicializa GLFW. Es un proceso que sólo debe realizarse una vez en la aplicación
     if ( glfwInit () != GLFW_TRUE )
     {
@@ -79,13 +80,8 @@ int main(){
     glfwSetMouseButtonCallback(window, PAG::Renderer::mouse_button_callback);
     glfwSetScrollCallback(window, PAG::Renderer::scroll_callback);
 
-    IMGUI_CHECKVERSION();
-    ImGui::CreateContext();
-    ImGuiIO &io = ImGui::GetIO();
-    io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
-
-    ImGui_ImplGlfw_InitForOpenGL(window, true);
-    ImGui_ImplOpenGL3_Init();
+    //Initialize imgui
+    PAG::GUI::initialize(window);
 
     while (!glfwWindowShouldClose(window)) {
         //Obtains and organises the remaining events, such as key press,
@@ -93,24 +89,21 @@ int main(){
         //the function glfwSwapBuffers(window)
         glfwPollEvents();
 
-        ImGui_ImplOpenGL3_NewFrame();
-        ImGui_ImplGlfw_NewFrame();
-        ImGui::NewFrame();
+        //Initialize imgui controls
+        PAG::GUI::initializeNewFrame();
 
-        //Dibujar
-        /*ImGui::SetNextWindowPos(ImVec2(10, 10), ImGuiCond_Once);
-        if (ImGui::Begin("Mensajes")) {
-            ImGui::Text("Hello World");
-        }
-        ImGui::End();*/
+        //Draw logger window
+        PAG::GUI::drawLoggerWindow(PAG::Logger::getInstance()->getMessages());
 
-        Logger::getInstance()->draw();
+        //Draw selection of background color window
+        PAG::GUI::drawColorSelectorWindow();
 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        ImGui::Render();
-        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+        //Render imgui controls
+        PAG::GUI::renderNewFrame();
 
+        //Refresh window
         glfwSwapBuffers(window);
     }
     // - Una vez terminado el ciclo de eventos, liberar recursos, etc.
