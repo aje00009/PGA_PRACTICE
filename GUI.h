@@ -24,7 +24,7 @@ namespace PAG {
             static void renderNewFrame();
             static void drawLoggerWindow(const std::string& messages);
             static void drawColorSelectorWindow();
-            static void destroyImGuiObjets();
+            static void destroyImGuiObjects();
     };
 }
 

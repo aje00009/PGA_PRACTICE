@@ -71,7 +71,7 @@ void PAG::GUI::drawColorSelectorWindow() {
 
 }
 
-void PAG::GUI::destroyImGuiObjets() {
+void PAG::GUI::destroyImGuiObjects() {
     ImGui_ImplOpenGL3_Shutdown();
     ImGui_ImplGlfw_Shutdown();
     ImGui::DestroyContext();

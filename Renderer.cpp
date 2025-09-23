@@ -18,10 +18,6 @@ PAG::Renderer *PAG::Renderer::getInstance() {
     return instance;
 }
 
-void PAG::Renderer::refrescar() {
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-}
-
 //Esta función callback será llamada cuando GLFW produzca algún error
 void PAG::Renderer::error_callback(int error, const char* description) {
     std::string aux(description);

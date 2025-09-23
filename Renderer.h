@@ -17,7 +17,6 @@ namespace PAG {
         public:
             virtual ~Renderer() = default;
             static PAG::Renderer* getInstance();
-            void refrescar();
             static void error_callback(int error, const char* description);
             static void window_refresh_callback(GLFWwindow* window);
             static void framebuffer_size_callback(GLFWwindow* window, int width, int height);

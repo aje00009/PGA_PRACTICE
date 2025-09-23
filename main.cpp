@@ -109,7 +109,7 @@ int main(){
     // - Una vez terminado el ciclo de eventos, liberar recursos, etc.
     PAG::Logger::getInstance()->addMessage("Ending PAG aplication...");
 
-    PAG::GUI::destroyImGuiObjets();
+    PAG::GUI::destroyImGuiObjects();
     glfwDestroyWindow ( window ); // - Cerramos y destruimos la ventana de la aplicación.
     window = nullptr;
     glfwTerminate (); // - Liberamos los recursos que ocupaba GLFW.
