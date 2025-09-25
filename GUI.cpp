@@ -10,7 +10,18 @@ PAG::GUI* PAG::GUI::instance = nullptr;
 float PAG::GUI::s_backgroundColor[4] = { 0.6f, 0.6f, 0.6f, 1.0f }; // Gris medio por defecto
 
 
+void PAG::GUI::warnListeners() {
+    float *colorData = s_backgroundColor;
+    for (Listener* listener: _listeners) {
+        listener->wakeUp(WindowType::BackGround, colorData);
+    }
+}
+
 PAG::GUI::GUI() = default;
+
+void PAG::GUI::addListener(Listener *listener) {
+    _listeners.push_back(listener);
+}
 
 void PAG::GUI::initialize(GLFWwindow *window) {
     IMGUI_CHECKVERSION();
@@ -61,14 +72,9 @@ void PAG::GUI::drawColorSelectorWindow() {
     ImGui::Begin("BackGround Color");
 
     ImGui::ColorPicker4("BackGround Color", s_backgroundColor);
+    warnListeners();
 
     ImGui::End();
-
-    glClearColor(s_backgroundColor[0],
-                     s_backgroundColor[1],
-                     s_backgroundColor[2],
-                     s_backgroundColor[3]);
-
 }
 
 void PAG::GUI::destroyImGuiObjects() {

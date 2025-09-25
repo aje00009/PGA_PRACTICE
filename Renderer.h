@@ -8,10 +8,14 @@
 #include <iostream>
 #include <GLFW/glfw3.h>
 
+#include "Listener.h"
+
 namespace PAG {
-    class Renderer {
+    class Renderer: public Listener {
         private:
             static Renderer* instance;
+
+            float *_bgColor;
 
             GLuint idVS = 0; //ID vertex shader
             GLuint idFS = 0; //ID fragment shader
@@ -23,16 +27,16 @@ namespace PAG {
             Renderer();
         public:
             virtual ~Renderer();
-            static PAG::Renderer* getInstance();
+            static Renderer* getInstance();
+
+            virtual void wakeUp(WindowType t, ...) override;
 
             static void error_callback(int error, const char* description);
-            static void window_refresh_callback(GLFWwindow* window);
-            static void framebuffer_size_callback(GLFWwindow* window, int width, int height);
-            static void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods);
-            static void mouse_button_callback(GLFWwindow* window, int button, int action, int mods);
-            static void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
+            static void framebuffer_size_callback(int width, int height);
+            static void scroll_callback(double xoffset, double yoffset);
 
             void refresh() const;
+            void getInfoGL() const;
             static void initializeOpenGL();
             void createShaderProgram();
             void createModel();

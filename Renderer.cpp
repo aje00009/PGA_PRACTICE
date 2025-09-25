@@ -3,6 +3,9 @@
 //
 #include "glad/glad.h"
 #include "Renderer.h"
+
+#include <cstdarg>
+
 #include "imgui.h"
 #include "Logger.h"
 
@@ -32,76 +35,52 @@ PAG::Renderer *PAG::Renderer::getInstance() {
     return instance;
 }
 
-//Esta función callback será llamada cuando GLFW produzca algún error
+void PAG::Renderer::wakeUp(WindowType t, ...) {
+    switch (t) {
+        case WindowType::BackGround: {
+            std::va_list args;
+            va_start(args, t);
+
+            _bgColor = (va_arg(args,float*));
+
+            va_end(args);
+            break;
+        }
+    }
+}
+
 void PAG::Renderer::error_callback(int error, const char* description) {
     std::string aux(description);
-    Logger::getInstance()->addMessage("Error de GLFW número " + std::to_string(error) + ": " + aux);
 }
 
-//Esta función será llamada cada vez que el área de dibujo de OpenGL
-//deba ser redibujada
-void PAG::Renderer::window_refresh_callback(GLFWwindow* window) {
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-    // - GLFW usa un doble buffer para que no haya parpadeo. Esta orden
-    // intercambia el buffer back (que se ha estado dibujando) por el
-    // que se mostraba hasta ahora front. Debe ser la última orden de
-    // este callback
-    glfwSwapBuffers(window);
-
-    Logger::getInstance()->addMessage("Refresh callback called");
-}
-
-// - Esta función callback será llamada cada vez que se cambie el tamaño
-// del área de dibujo OpenGL.
-void PAG::Renderer::framebuffer_size_callback(GLFWwindow* window, int width, int height) {
+void PAG::Renderer::framebuffer_size_callback(int width, int height) {
     glViewport(0, 0, width, height);
-    Logger::getInstance()->addMessage("Resize callback called");
 }
 
-// - Esta función callback será llamada cada vez que se cambie el tamaño
-// del área de dibujo OpenGL.
-void PAG::Renderer::key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
-    if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
-        glfwSetWindowShouldClose(window, GLFW_TRUE);
-        ImGuiIO& io = ImGui::GetIO();
-        io.AddKeyEvent(static_cast<ImGuiKey>(key),true);
-    }
 
-    Logger::getInstance()->addMessage("Key callback called");
-}
-
-//Esta función callback será llamada caca vez que sea pulse algun botón
-//del ratón sobre el área de dibujo OpenGL
-void PAG::Renderer::mouse_button_callback(GLFWwindow* window, int button, int action, int mods) {
-    if (action == GLFW_PRESS) {
-        Logger::getInstance()->addMessage("Button pressed: " + std::to_string(button));
-        ImGuiIO& io = ImGui::GetIO();
-        io.AddMouseButtonEvent(button,true);
-    }
-    else if (action == GLFW_RELEASE) {
-        Logger::getInstance()->addMessage("Button released: " + std::to_string(button));
-        ImGuiIO& io = ImGui::GetIO();
-        io.AddMouseButtonEvent(button,false);
-    }
-}
-
-//Esta función callback será llamada cada vez que se mueva la rueda
-//del ratón sobre el área de dibujo OpenGL
-void PAG::Renderer::scroll_callback(GLFWwindow* window, double xoffset, double yoffset) {
-    Logger::getInstance()->addMessage("Scrolled " + std::to_string(xoffset) + " units horizontally and "
-    + std::to_string(yoffset) + " units vertically");
+void PAG::Renderer::scroll_callback(double xoffset, double yoffset) {
     ImGuiIO& io = ImGui::GetIO();
     io.AddMouseWheelEvent(xoffset,yoffset);
 }
 
 void PAG::Renderer::refresh() const {
+    glClearColor(_bgColor[0], _bgColor[1], _bgColor[2], _bgColor[3]);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glPolygonMode ( GL_FRONT_AND_BACK, GL_FILL );
     glUseProgram(idSP);
     glBindVertexArray(idVAO);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,idIBO);
     glDrawElements(GL_TRIANGLES,3,GL_UNSIGNED_INT,NULL);
+}
+
+void PAG::Renderer::getInfoGL() const {
+    // - Interrogamos a OpenGL para que nos informe de las propiedades del contexto
+    // 3D construido.
+    std::stringstream ss;
+    ss << glGetString ( GL_RENDERER ) << "\n" << glGetString ( GL_VENDOR ) << "\n" << glGetString ( GL_VERSION )
+    << "\n" << glGetString ( GL_SHADING_LANGUAGE_VERSION ) << "\n";
+
+    PAG::Logger::getInstance()->addMessage(ss.str());
 }
 
 void PAG::Renderer::initializeOpenGL() {
@@ -189,7 +168,7 @@ void PAG::Renderer::createShaderProgram() {
 
     GLint linkStatus = 0;
     glGetProgramiv(idSP, GL_LINK_STATUS, &linkStatus);
-    if ()
+    //if ()
 }
 
 void PAG::Renderer::createModel() {

@@ -8,6 +8,9 @@
 #include <imgui.h>
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
+#include <vector>
+
+#include "Listener.h"
 #include "Logger.h"
 
 namespace PAG {
@@ -16,14 +19,19 @@ namespace PAG {
             static GUI* instance;
             static float s_backgroundColor[4]; // RGBA
 
+            std::vector<Listener*> _listeners;
+            void warnListeners();
+
             GUI();
         public:
+            void addListener(Listener* listener);
+
             static void initialize(GLFWwindow *window);
             static GUI* getInstance();
             static void initializeNewFrame();
             static void renderNewFrame();
             static void drawLoggerWindow(const std::string& messages);
-            static void drawColorSelectorWindow();
+            void drawColorSelectorWindow();
             static void destroyImGuiObjects();
     };
 }

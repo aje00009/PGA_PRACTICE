@@ -9,17 +9,66 @@
 #include "Renderer.h"
 #include "Logger.h"
 
+//Esta función callback será llamada cuando GLFW produzca algún error
+void error_callback(int error, const char* description) {
+    PAG::Renderer::error_callback(error,description);
+}
+
+//Esta función será llamada cada vez que el área de dibujo de OpenGL
+//deba ser redibujada
+void window_refresh_callback(GLFWwindow* window) {
+    PAG::Renderer::getInstance()->refresh();
+}
+
+// - Esta función callback será llamada cada vez que se cambie el tamaño
+// del área de dibujo OpenGL.
+void framebuffer_size_callback(GLFWwindow* window, int width, int height) {
+    PAG::Renderer::framebuffer_size_callback(width, height);
+}
+
+// - Esta función callback será llamada cada vez que se cambie el tamaño
+// del área de dibujo OpenGL.
+void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
+    if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
+        glfwSetWindowShouldClose(window, GLFW_TRUE);
+    }
+}
+
+//Esta función callback será llamada caca vez que sea pulse algun botón
+//del ratón sobre el área de dibujo OpenGL
+void mouse_button_callback(GLFWwindow* window, int button, int action, int mods) {
+    if (action == GLFW_PRESS) {
+        ImGuiIO& io = ImGui::GetIO();
+        io.AddMouseButtonEvent(button,true);
+    }
+    else if (action == GLFW_RELEASE) {
+        ImGuiIO& io = ImGui::GetIO();
+        io.AddMouseButtonEvent(button,false);
+    }
+}
+
+//Esta función callback será llamada cada vez que se mueva la rueda
+//del ratón sobre el área de dibujo OpenGL
+void scroll_callback(GLFWwindow* window, double xoffset, double yoffset) {
+    PAG::Renderer::scroll_callback(xoffset,yoffset);
+}
+
+void addListeners() {
+    PAG::GUI::getInstance()->addListener(PAG::Renderer::getInstance());
+}
+
 int main(){
     srand(time(NULL));
 
-    std::cout << "Starting Application PAG - Prueba 01" << std::endl;
+    PAG::Logger::getInstance()->addMessage("Starting Application PAG - Prueba 01");
 
+    addListeners();
     //GLFW Errors callback before executing any GLFW functions
-    glfwSetErrorCallback((GLFWerrorfun) PAG::Renderer::error_callback);
+    glfwSetErrorCallback(error_callback);
     // - Inicializa GLFW. Es un proceso que sólo debe realizarse una vez en la aplicación
     if ( glfwInit () != GLFW_TRUE )
     {
-        std::cout << "Failed to initialize GLFW" << std::endl;
+         PAG::Logger::getInstance()->addMessage("Failed to initialize GLFW");
         return -1;
     }
 
@@ -43,7 +92,7 @@ int main(){
     // - Comprobamos si la creación de la ventana ha tenido éxito.
     if ( window == nullptr )
     {
-        std::cout << "Failed to open GLFW window" << std::endl;
+        PAG::Logger::getInstance()->addMessage("Failed to open GLFW window");
         glfwTerminate (); // - Liberamos los recursos que ocupaba GLFW.
         return -2;
     }
@@ -54,35 +103,29 @@ int main(){
     // - Ahora inicializamos GLAD.
     if ( !gladLoadGLLoader ( (GLADloadproc) glfwGetProcAddress ) )
     {
-        std::cout << "GLAD initialization failed" << std::endl;
+         PAG::Logger::getInstance()->addMessage("GLAD initialization failed");
         glfwDestroyWindow ( window ); // - Liberamos los recursos que ocupaba GLFW.
         window = nullptr;
         glfwTerminate ();
         return -3;
     }
 
-    // - Interrogamos a OpenGL para que nos informe de las propiedades del contexto
-    // 3D construido.ç
-    std::stringstream ss;
-   ss << glGetString ( GL_RENDERER ) << "\n" << glGetString ( GL_VENDOR ) << "\n" << glGetString ( GL_VERSION )
-    << "\n" << glGetString ( GL_SHADING_LANGUAGE_VERSION ) << "\n";
-
-    PAG::Logger::getInstance()->addMessage(ss.str());
+    PAG::Renderer::getInstance()->getInfoGL();
 
     //Registering all callbacks to respond main events
-    glfwSetWindowRefreshCallback(window, PAG::Renderer::window_refresh_callback);
-    glfwSetFramebufferSizeCallback(window, PAG::Renderer::framebuffer_size_callback);
-    glfwSetKeyCallback(window, PAG::Renderer::key_callback);
-    glfwSetMouseButtonCallback(window, PAG::Renderer::mouse_button_callback);
-    glfwSetScrollCallback(window, PAG::Renderer::scroll_callback);
+    glfwSetWindowRefreshCallback(window, window_refresh_callback);
+    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+    glfwSetKeyCallback(window, key_callback);
+    glfwSetMouseButtonCallback(window, mouse_button_callback);
+    glfwSetScrollCallback(window, scroll_callback);
 
     //Initialize imgui
     PAG::GUI::initialize(window);
 
     PAG::Renderer::initializeOpenGL();
 
-    PAG::Renderer::getInstance()->createShaderProgram();
-    PAG::Renderer::getInstance()->createModel();
+    //PAG::Renderer::getInstance()->createShaderProgram();
+    //PAG::Renderer::getInstance()->createModel();
 
     while (!glfwWindowShouldClose(window)) {
         //Obtains and organises the remaining events, such as key press,
@@ -97,7 +140,7 @@ int main(){
         PAG::GUI::drawLoggerWindow(PAG::Logger::getInstance()->getMessages());
 
         //Draw selection of background color window
-        PAG::GUI::drawColorSelectorWindow();
+        PAG::GUI::getInstance()->drawColorSelectorWindow();
 
         PAG::Renderer::getInstance()->refresh();
 
