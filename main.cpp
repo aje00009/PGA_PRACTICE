@@ -62,16 +62,12 @@ int main(){
     }
 
     // - Interrogamos a OpenGL para que nos informe de las propiedades del contexto
-    // 3D construido.
-    std::cout << glGetString ( GL_RENDERER ) << std::endl
-        << glGetString ( GL_VENDOR ) << std::endl << glGetString ( GL_VERSION ) << std::endl
-        << glGetString ( GL_SHADING_LANGUAGE_VERSION ) << std::endl;
-        // - Establecemos un gris medio como color con el que se borrará el frame buffer.
-        // No tiene por qué ejecutarse en cada paso por el ciclo de eventos.
-        glClearColor ( 0.6, 0.6, 0.6, 1.0 );
-        // - Le decimos a OpenGL que tenga en cuenta la profundidad a la hora de dibujar.
-        // No tiene por qué ejecutarse en cada paso por el ciclo de eventos.
-        glEnable ( GL_DEPTH_TEST );
+    // 3D construido.ç
+    std::stringstream ss;
+   ss << glGetString ( GL_RENDERER ) << "\n" << glGetString ( GL_VENDOR ) << "\n" << glGetString ( GL_VERSION )
+    << "\n" << glGetString ( GL_SHADING_LANGUAGE_VERSION ) << "\n";
+
+    PAG::Logger::getInstance()->addMessage(ss.str());
 
     //Registering all callbacks to respond main events
     glfwSetWindowRefreshCallback(window, PAG::Renderer::window_refresh_callback);
@@ -82,6 +78,11 @@ int main(){
 
     //Initialize imgui
     PAG::GUI::initialize(window);
+
+    PAG::Renderer::initializeOpenGL();
+
+    PAG::Renderer::getInstance()->createShaderProgram();
+    PAG::Renderer::getInstance()->createModel();
 
     while (!glfwWindowShouldClose(window)) {
         //Obtains and organises the remaining events, such as key press,
@@ -98,7 +99,7 @@ int main(){
         //Draw selection of background color window
         PAG::GUI::drawColorSelectorWindow();
 
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        PAG::Renderer::getInstance()->refresh();
 
         //Render imgui controls
         PAG::GUI::renderNewFrame();
