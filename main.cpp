@@ -5,10 +5,14 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
-#include "GUI.h"
+#include "BgWindow.h"
+#include "imgui.h"
+#include "ManagerGUI.h"
 #include "Renderer.h"
 #include "Logger.h"
+#include "LoggerWindow.h"
 
+struct ImGuiIO;
 //Esta función callback será llamada cuando GLFW produzca algún error
 void error_callback(int error, const char* description) {
     PAG::Renderer::error_callback(error,description);
@@ -53,8 +57,13 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset) {
     PAG::Renderer::scroll_callback(xoffset,yoffset);
 }
 
-void addListeners() {
-    PAG::GUI::getInstance()->addListener(PAG::Renderer::getInstance());
+void initializeGUI() {
+    //Add GUI windows/controls
+    PAG::ManagerGUI::getInstance()->addWindow(PAG::BgWindow::getInstance());
+    PAG::ManagerGUI::getInstance()->addWindow(PAG::LoggerWindow::getInstance());
+
+    //Add listeners GUI
+    PAG::BgWindow::getInstance()->addListener(PAG::Renderer::getInstance());
 }
 
 int main() {
@@ -62,7 +71,7 @@ int main() {
 
     PAG::Logger::getInstance()->addMessage("Starting Application PAG - Prueba 01");
 
-    addListeners();
+    initializeGUI();
     //GLFW Errors callback before executing any GLFW functions
     glfwSetErrorCallback(error_callback);
     // - Inicializa GLFW. Es un proceso que sólo debe realizarse una vez en la aplicación
@@ -120,7 +129,7 @@ int main() {
     glfwSetScrollCallback(window, scroll_callback);
 
     //Initialize imgui
-    PAG::GUI::initialize(window);
+    PAG::ManagerGUI::initialize(window);
 
     //Initialize OpenGL
     PAG::Renderer::getInstance()->initializeOpenGL();
@@ -140,18 +149,16 @@ int main() {
         glfwPollEvents();
 
         //Initialize imgui controls
-        PAG::GUI::initializeNewFrame();
+        PAG::ManagerGUI::initializeNewFrame();
 
-        //Draw logger window
-        PAG::GUI::drawLoggerWindow(PAG::Logger::getInstance()->getMessages());
+        //Draw GUI objects
+        PAG::ManagerGUI::getInstance()->drawAllWindows();
 
-        //Draw selection of background color window
-        PAG::GUI::getInstance()->drawColorSelectorWindow();
-
+        //Refresh visualization window
         PAG::Renderer::getInstance()->refresh();
 
         //Render imgui controls
-        PAG::GUI::renderNewFrame();
+        PAG::ManagerGUI::renderNewFrame();
 
         //Refresh window
         glfwSwapBuffers(window);
@@ -159,7 +166,7 @@ int main() {
     // - Una vez terminado el ciclo de eventos, liberar recursos, etc.
     PAG::Logger::getInstance()->addMessage("Ending PAG aplication...");
 
-    PAG::GUI::destroyImGuiObjects();
+    PAG::ManagerGUI::destroyImGuiObjects();
     glfwDestroyWindow ( window ); // - Cerramos y destruimos la ventana de la aplicación.
     window = nullptr;
     glfwTerminate (); // - Liberamos los recursos que ocupaba GLFW.

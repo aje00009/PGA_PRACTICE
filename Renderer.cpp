@@ -6,7 +6,7 @@
 
 #include <cstdarg>
 
-#include "GUI.h"
+#include "ManagerGUI.h"
 #include "imgui.h"
 #include "Logger.h"
 
@@ -34,6 +34,10 @@ PAG::Renderer *PAG::Renderer::getInstance() {
     if (!instance) {
         instance = new Renderer();
         instance->_bgColor = new float[4];
+        instance->_bgColor[0] = 0.6;
+        instance->_bgColor[1] = 0.6;
+        instance->_bgColor[2] = 0.6;
+        instance->_bgColor[3] = 1.0;
     }
     return instance;
 }
