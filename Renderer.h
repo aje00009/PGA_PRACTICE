@@ -37,7 +37,7 @@ namespace PAG {
 
             void refresh() const;
             void getInfoGL() const;
-            static void initializeOpenGL();
+            void initializeOpenGL() const;
             void createShaderProgram();
             void createModel();
     };

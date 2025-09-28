@@ -6,6 +6,7 @@
 
 #include <cstdarg>
 
+#include "GUI.h"
 #include "imgui.h"
 #include "Logger.h"
 
@@ -30,8 +31,10 @@ PAG::Renderer::~Renderer() {
 
 
 PAG::Renderer *PAG::Renderer::getInstance() {
-    if (!instance)
+    if (!instance) {
         instance = new Renderer();
+        instance->_bgColor = new float[4];
+    }
     return instance;
 }
 
@@ -83,8 +86,8 @@ void PAG::Renderer::getInfoGL() const {
     PAG::Logger::getInstance()->addMessage(ss.str());
 }
 
-void PAG::Renderer::initializeOpenGL() {
-    glClearColor ( 0.6, 0.6, 0.6, 1.0 );
+void PAG::Renderer::initializeOpenGL() const {
+    glClearColor ( _bgColor[0], instance->_bgColor[1], instance->_bgColor[3], instance->_bgColor[4] );
     glEnable ( GL_DEPTH_TEST );
     glEnable( GL_MULTISAMPLE );
 }
@@ -92,9 +95,9 @@ void PAG::Renderer::initializeOpenGL() {
 void PAG::Renderer::createShaderProgram() {
     std::string vertexShader =
         "#version 410\n"
-    "layout (location = 0) in vec3 position;"
+    "layout (location = 0) in vec3 position;\n"
     "void main()\n"
-    "{ glPosition = vec4(position,1);\n"
+    "{ gl_Position = vec4(position,1);\n"
     "}\n";
 
     std::string fragmentShader =
@@ -168,7 +171,20 @@ void PAG::Renderer::createShaderProgram() {
 
     GLint linkStatus = 0;
     glGetProgramiv(idSP, GL_LINK_STATUS, &linkStatus);
-    //if ()
+    if (linkStatus == GL_FALSE) {
+        GLint lengthMssg = 0;
+        std::string msg = "";
+        glGetProgramiv(idSP, GL_INFO_LOG_LENGTH, &lengthMssg);
+        if (lengthMssg > 0) {
+            GLchar* msgC = new GLchar[lengthMssg];
+            GLint writtenData = 0;
+            glGetProgramInfoLog(idSP,lengthMssg,&writtenData,msgC);
+            delete[] msgC;
+            msgC = nullptr;
+
+            throw std::runtime_error(msg);
+        }
+    }
 }
 
 void PAG::Renderer::createModel() {

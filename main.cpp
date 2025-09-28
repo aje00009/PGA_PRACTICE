@@ -57,7 +57,7 @@ void addListeners() {
     PAG::GUI::getInstance()->addListener(PAG::Renderer::getInstance());
 }
 
-int main(){
+int main() {
     srand(time(NULL));
 
     PAG::Logger::getInstance()->addMessage("Starting Application PAG - Prueba 01");
@@ -68,7 +68,7 @@ int main(){
     // - Inicializa GLFW. Es un proceso que sólo debe realizarse una vez en la aplicación
     if ( glfwInit () != GLFW_TRUE )
     {
-         PAG::Logger::getInstance()->addMessage("Failed to initialize GLFW");
+        PAG::Logger::getInstance()->addMessage("Failed to initialize GLFW");
         return -1;
     }
 
@@ -103,7 +103,7 @@ int main(){
     // - Ahora inicializamos GLAD.
     if ( !gladLoadGLLoader ( (GLADloadproc) glfwGetProcAddress ) )
     {
-         PAG::Logger::getInstance()->addMessage("GLAD initialization failed");
+        PAG::Logger::getInstance()->addMessage("GLAD initialization failed");
         glfwDestroyWindow ( window ); // - Liberamos los recursos que ocupaba GLFW.
         window = nullptr;
         glfwTerminate ();
@@ -122,10 +122,16 @@ int main(){
     //Initialize imgui
     PAG::GUI::initialize(window);
 
-    PAG::Renderer::initializeOpenGL();
+    //Initialize OpenGL
+    PAG::Renderer::getInstance()->initializeOpenGL();
 
-    //PAG::Renderer::getInstance()->createShaderProgram();
-    //PAG::Renderer::getInstance()->createModel();
+    //Shader
+    try {
+        PAG::Renderer::getInstance()->createShaderProgram();
+        PAG::Renderer::getInstance()->createModel();
+    }catch (std::runtime_error& e) {
+        PAG::Logger::getInstance()->addMessage(e.what());
+    }
 
     while (!glfwWindowShouldClose(window)) {
         //Obtains and organises the remaining events, such as key press,

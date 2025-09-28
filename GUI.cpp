@@ -7,7 +7,7 @@
 #include "imgui_impl_opengl3_loader.h"
 
 PAG::GUI* PAG::GUI::instance = nullptr;
-float PAG::GUI::s_backgroundColor[4] = { 0.6f, 0.6f, 0.6f, 1.0f }; // Gris medio por defecto
+float PAG::GUI::s_backgroundColor[4] = { 0.6f, 0.6f, 0.6f, 1.0f };
 
 
 void PAG::GUI::warnListeners() {
