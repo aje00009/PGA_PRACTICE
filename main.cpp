@@ -136,7 +136,7 @@ int main() {
 
     //Shader
     try {
-        PAG::Renderer::getInstance()->createShaderProgram();
+        PAG::Renderer::getInstance()->createShaderProgram("pag03");
         PAG::Renderer::getInstance()->createModel();
     }catch (std::runtime_error& e) {
         PAG::Logger::getInstance()->addMessage(e.what());

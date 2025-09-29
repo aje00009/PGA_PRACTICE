@@ -5,6 +5,7 @@
 #include "Renderer.h"
 
 #include <cstdarg>
+#include <fstream>
 
 #include "ManagerGUI.h"
 #include "imgui.h"
@@ -96,27 +97,33 @@ void PAG::Renderer::initializeOpenGL() const {
     glEnable( GL_MULTISAMPLE );
 }
 
-void PAG::Renderer::createShaderProgram() {
-    std::string vertexShader =
-        "#version 410\n"
-    "layout (location = 0) in vec3 position;\n"
-    "void main()\n"
-    "{ gl_Position = vec4(position,1);\n"
-    "}\n";
+void PAG::Renderer::createShaderProgram(std::string nameShader) {
+    std::string pathShaders = "resources/shaders/";
 
-    std::string fragmentShader =
-        "#version 410\n"
-    "out vec4 outputColor;\n"
-    "void main()\n"
-    "{ outputColor = vec4 (1.0,0.4,0.2,1.0);\n"
-    "}\n";
+    std::ifstream vertexShaderFile;
+
+    std::string pathVtxShader;
+    pathVtxShader.append(pathShaders);
+    pathVtxShader.append(nameShader);
+    pathVtxShader.append("-vs.glsl");
+
+    vertexShaderFile.open(pathVtxShader);
+    if (!vertexShaderFile.is_open()) {
+        throw std::runtime_error("Error opening vertex shader file");
+    }
+
+    std::stringstream shaderCode;
+    shaderCode << vertexShaderFile.rdbuf();
+    std::string vertexShaderCode = shaderCode.str();
+
+    vertexShaderFile.close();
 
     //Creating vertex shader
     idVS = glCreateShader(GL_VERTEX_SHADER);
     if (idVS == 0)
         throw std::runtime_error("Error creating vertex shader");
 
-    const GLchar* vsSourceCode = vertexShader.c_str();
+    const GLchar* vsSourceCode = vertexShaderCode.c_str();
     glShaderSource(idVS, 1, &vsSourceCode, NULL);
     glCompileShader(idVS);
 
@@ -139,9 +146,31 @@ void PAG::Renderer::createShaderProgram() {
         }
     }
 
+    std::ifstream fragmShaderFile;
+
+    std::string pathFragShader;
+    pathFragShader.append(pathShaders);
+    pathFragShader.append(nameShader);
+    pathFragShader.append("-fs.glsl");
+
+    fragmShaderFile.open(pathFragShader);
+    if (!fragmShaderFile.is_open()) {
+        throw std::runtime_error("Error opening fragment shader file");
+    }
+
+    std::stringstream fragShaderCodeSS;
+    fragShaderCodeSS << fragmShaderFile.rdbuf();
+    std::string fragmShaderCode = fragShaderCodeSS.str();
+
+    fragmShaderFile.close();
+
     idFS = glCreateShader(GL_FRAGMENT_SHADER);
     if (idFS == 0)
         throw std::runtime_error("Error creating fragment shader");
+
+    const GLchar* fsSourceCode = fragmShaderCode.c_str();
+    glShaderSource(idFS, 1, &fsSourceCode, NULL);
+    glCompileShader(idFS);
 
     //Check compilation erros on fragment shader
     glGetShaderiv(idFS, GL_COMPILE_STATUS, &compResult);
@@ -160,10 +189,6 @@ void PAG::Renderer::createShaderProgram() {
             throw std::runtime_error(msg);
         }
     }
-
-    const GLchar* fsSourceCode = fragmentShader.c_str();
-    glShaderSource(idFS, 1, &fsSourceCode, NULL);
-    glCompileShader(idFS);
 
     idSP = glCreateProgram();
     if ( idSP == 0)
