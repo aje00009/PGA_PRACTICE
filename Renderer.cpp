@@ -11,10 +11,17 @@
 #include "imgui.h"
 #include "Logger.h"
 
+//Definition of the only instance of the class
 PAG::Renderer* PAG::Renderer::instance = nullptr;
 
+/**
+ * @brief Default constructor
+ */
 PAG::Renderer::Renderer() = default;
 
+/**
+ * @brief Method that deletes all info about shaders
+ */
 PAG::Renderer::~Renderer() {
     if (idVS != 0)
         glDeleteShader (idVS);
@@ -24,6 +31,8 @@ PAG::Renderer::~Renderer() {
         glDeleteProgram (idSP);
     if (idVBOVertex != 0)
         glDeleteBuffers (1, &idVBOVertex);
+    if (idVBOColors != 0)
+        glDeleteBuffers(1, &idVBOColors);
     if (idIBOVertex != 0)
         glDeleteBuffers (1, &idIBOVertex);
     if (idVAO != 0)

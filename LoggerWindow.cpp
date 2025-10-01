@@ -3,14 +3,22 @@
 #include "Logger.h"
 #include <imgui.h>
 
+//Definition of the instance
 PAG::LoggerWindow* PAG::LoggerWindow::instance = nullptr;
 
+/**
+ * @brief Gets the only instance of this class and create it if it is the first time the function is called
+ * @return The instance of this class itself
+ */
 PAG::LoggerWindow * PAG::LoggerWindow::getInstance() {
     if (instance == nullptr)
         instance = new PAG::LoggerWindow();
     return instance;
 }
 
+/**
+ * @brief Method that renders the logger window in the GUI
+ */
 void PAG::LoggerWindow::render() {
     if (ImGui::Begin("Logger")) {
         if (ImGui::Button("Limpiar")) {

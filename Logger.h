@@ -7,6 +7,9 @@
 
 #include <sstream>
 
+/**
+ * @brief Class that stores the messages for logger window (errors, info...)
+ */
 namespace PAG {
     class Logger {
     private:

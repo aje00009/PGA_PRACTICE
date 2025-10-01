@@ -10,6 +10,9 @@
 
 #include "Listener.h"
 
+/**
+ * @brief Class that will render objects in the application
+ */
 namespace PAG {
     class Renderer: public Listener {
         private:
