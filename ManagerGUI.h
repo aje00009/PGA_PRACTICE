@@ -11,6 +11,9 @@
 
 #include "GUIelement.h"
 
+/**
+ * @class ManagerGUI Class that manages general aspects of the GUI (initialization, windows management, destruction of objects...)
+ */
 namespace PAG {
     class ManagerGUI {
     private:
@@ -22,7 +25,6 @@ namespace PAG {
     public:
         static ManagerGUI* getInstance();
 
-        //Initialization/destruction of GUI
         static void initialize(GLFWwindow* window);
         static void initializeNewFrame();
         static void renderNewFrame();

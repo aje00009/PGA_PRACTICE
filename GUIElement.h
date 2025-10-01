@@ -8,7 +8,9 @@
 #include <vector>
 #include "Listener.h"
 
-// Abstract class for every element of the user interface (controls, background, etc.)
+/**
+ * @class GUIElement Interface that represents every element of the GUI (controls, log, camera control...)
+ */
 namespace PAG {
     class GUIElement {
     protected:

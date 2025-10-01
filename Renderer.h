@@ -10,6 +10,9 @@
 
 #include "Listener.h"
 
+/**
+ * @class Renderer Class that will render objects in the application
+ */
 namespace PAG {
     class Renderer: public Listener {
         private:
@@ -37,7 +40,7 @@ namespace PAG {
             static void scroll_callback(double xoffset, double yoffset);
 
             void refresh() const;
-            void getInfoGL() const;
+            static void getInfoGL() ;
             void initializeOpenGL() const;
             void createShaderProgram(std::string nameShader);
             void createModel();

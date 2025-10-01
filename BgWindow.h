@@ -7,6 +7,9 @@
 
 #include "GUIElement.h"
 
+/**
+ * @class BgWindow Class that implements the interface of a GUI element which specifies itself as the background color control
+ */
 namespace PAG {
     class BgWindow: public GUIElement {
         private:

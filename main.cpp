@@ -119,7 +119,7 @@ int main() {
         return -3;
     }
 
-    PAG::Renderer::getInstance()->getInfoGL();
+    PAG::Renderer::getInfoGL();
 
     //Registering all callbacks to respond main events
     glfwSetWindowRefreshCallback(window, window_refresh_callback);

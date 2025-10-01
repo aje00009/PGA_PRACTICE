@@ -7,6 +7,9 @@
 
 #include "GUIElement.h"
 
+/**
+ * @class LoggerWindow Class that represents the logger window in the UI
+ */
 namespace PAG {
     class LoggerWindow : public GUIElement {
     private:

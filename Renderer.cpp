@@ -11,10 +11,17 @@
 #include "imgui.h"
 #include "Logger.h"
 
+//Definition of the only instance of the class
 PAG::Renderer* PAG::Renderer::instance = nullptr;
 
+/**
+ * @brief Default constructor
+ */
 PAG::Renderer::Renderer() = default;
 
+/**
+ * @brief Method that deletes all info about shaders
+ */
 PAG::Renderer::~Renderer() {
     if (idVS != 0)
         glDeleteShader (idVS);
@@ -24,13 +31,18 @@ PAG::Renderer::~Renderer() {
         glDeleteProgram (idSP);
     if (idVBOVertex != 0)
         glDeleteBuffers (1, &idVBOVertex);
+    if (idVBOColors != 0)
+        glDeleteBuffers(1, &idVBOColors);
     if (idIBOVertex != 0)
         glDeleteBuffers (1, &idIBOVertex);
     if (idVAO != 0)
         glDeleteVertexArrays (1, &idVAO);
 }
 
-
+/**
+ * @brief Method that returns the only instance of this class (and creates it the first time is called)
+ * @return The instance of this class
+ */
 PAG::Renderer *PAG::Renderer::getInstance() {
     if (!instance) {
         instance = new Renderer();
@@ -43,6 +55,11 @@ PAG::Renderer *PAG::Renderer::getInstance() {
     return instance;
 }
 
+/**
+ * @brief Method that wakes up a listener of an event and changes something about the scene
+ * @param t Type of window that is waking up the listener
+ * @param ... Other possible necessary parameters
+ */
 void PAG::Renderer::wakeUp(WindowType t, ...) {
     switch (t) {
         case WindowType::BackGround: {
@@ -57,20 +74,37 @@ void PAG::Renderer::wakeUp(WindowType t, ...) {
     }
 }
 
+/**
+ * @brief Method that implements the way to handle an error callback
+ * @param error Code of the error that has occurred
+ * @param description Description of the error that has occurred
+ */
 void PAG::Renderer::error_callback(int error, const char* description) {
     std::string aux(description);
 }
 
+/**
+ * @brief Method that implements the way to handle a frame size change callback
+ * @param width Width of the visualization window
+ * @param height Height of the visualization window
+ */
 void PAG::Renderer::framebuffer_size_callback(int width, int height) {
     glViewport(0, 0, width, height);
 }
 
-
+/**
+ * @brief Method that implements the way to handle a scroll callback
+ * @param xoffset X axis movement
+ * @param yoffset Y axis movement
+ */
 void PAG::Renderer::scroll_callback(double xoffset, double yoffset) {
     ImGuiIO& io = ImGui::GetIO();
     io.AddMouseWheelEvent(xoffset,yoffset);
 }
 
+/**
+ * @brief Method that refreshes the visualization window
+ */
 void PAG::Renderer::refresh() const {
     glClearColor(_bgColor[0], _bgColor[1], _bgColor[2], _bgColor[3]);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
@@ -81,7 +115,10 @@ void PAG::Renderer::refresh() const {
     glDrawElements(GL_TRIANGLES,3,GL_UNSIGNED_INT,NULL);
 }
 
-void PAG::Renderer::getInfoGL() const {
+/**
+ * @brief Method that adds a message to the log indicating info aobut OpenGL
+ */
+void PAG::Renderer::getInfoGL() {
     // - Interrogamos a OpenGL para que nos informe de las propiedades del contexto
     // 3D construido.
     std::stringstream ss;
@@ -91,12 +128,19 @@ void PAG::Renderer::getInfoGL() const {
     PAG::Logger::getInstance()->addMessage(ss.str());
 }
 
+/**
+ * @brief Method that initialises OpenGL parameteres
+ */
 void PAG::Renderer::initializeOpenGL() const {
     glClearColor ( _bgColor[0], instance->_bgColor[1], instance->_bgColor[3], instance->_bgColor[4] );
     glEnable ( GL_DEPTH_TEST );
     glEnable( GL_MULTISAMPLE );
 }
 
+/**
+ * @brief Method that creates a shader program, a vertex and fragment shader in order to render objects later
+ * @param nameShader Name of the file (-vs/-fg .glsl) we want to compile as shaders
+ */
 void PAG::Renderer::createShaderProgram(std::string nameShader) {
     std::string pathShaders = "resources/shaders/";
 
@@ -216,6 +260,9 @@ void PAG::Renderer::createShaderProgram(std::string nameShader) {
     }
 }
 
+/**
+ * @brief Method that defines a model (VAO) and all it's attributes (VBO,IBO) in order to render it
+ */
 void PAG::Renderer::createModel() {
     /* VBO no entrelazado
     GLfloat vertices[] = {
