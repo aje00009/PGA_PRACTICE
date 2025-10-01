@@ -21,8 +21,9 @@ namespace PAG {
             GLuint idFS = 0; //ID fragment shader
             GLuint idSP = 0; //ID shader program
             GLuint idVAO = 0; //ID vertex array object
-            GLuint idVBO = 0; //ID vertex buffer object
-            GLuint idIBO = 0; //ID index buffer object
+            GLuint idVBOVertex = 0; //ID vertex buffer object for vertices
+            GLuint idVBOColors = 0; //ID vertex buffer object for color
+            GLuint idIBOVertex = 0; //ID index buffer object vertices
 
             Renderer();
         public:

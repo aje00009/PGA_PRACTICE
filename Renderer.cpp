@@ -22,10 +22,10 @@ PAG::Renderer::~Renderer() {
         glDeleteShader (idFS);
     if (idSP != 0)
         glDeleteProgram (idSP);
-    if (idVBO != 0)
-        glDeleteBuffers (1, &idVBO);
-    if (idIBO != 0)
-        glDeleteBuffers (1, &idIBO);
+    if (idVBOVertex != 0)
+        glDeleteBuffers (1, &idVBOVertex);
+    if (idIBOVertex != 0)
+        glDeleteBuffers (1, &idIBOVertex);
     if (idVAO != 0)
         glDeleteVertexArrays (1, &idVAO);
 }
@@ -77,7 +77,7 @@ void PAG::Renderer::refresh() const {
     glPolygonMode ( GL_FRONT_AND_BACK, GL_FILL );
     glUseProgram(idSP);
     glBindVertexArray(idVAO);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,idIBO);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,idIBOVertex);
     glDrawElements(GL_TRIANGLES,3,GL_UNSIGNED_INT,NULL);
 }
 
@@ -217,25 +217,69 @@ void PAG::Renderer::createShaderProgram(std::string nameShader) {
 }
 
 void PAG::Renderer::createModel() {
+    /* VBO no entrelazado
     GLfloat vertices[] = {
         -.5, -.5, 0,
         .5, -.5, 0,
         0, .5, 0,
     };
 
+    GLfloat colors[] = {
+        1,1,0,
+        0,1,0,
+        0,0,1
+    };*/
+
+    //VBO entrelazado
+    GLfloat vertices_color[] = {
+        -.5,-.5,0, 1,1,0,
+        .5,-.5,0, 0,1,0,
+        0,.5,0, 0,0,1
+    };
+
     GLuint indices[] = {0,1,2};
 
+    //VAO
     glGenVertexArrays(1, &idVAO);
     glBindVertexArray(idVAO);
 
-    glGenBuffers(1, &idVBO);
-    glBindBuffer(GL_ARRAY_BUFFER, idVBO);
-    glBufferData(GL_ARRAY_BUFFER,9*sizeof(GLfloat),vertices,GL_STATIC_DRAW);
-
-    glVertexAttribPointer(0,3,GL_FLOAT,GL_FALSE,3*sizeof(GLfloat),NULL);
+    /* VBO no entrelazado
+    // --- VBO vertices ---
+    glGenBuffers(1, &idVBOVertex);
+    glBindBuffer(GL_ARRAY_BUFFER, idVBOVertex);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), NULL);
     glEnableVertexAttribArray(0);
 
-    glGenBuffers(1,&idIBO);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,idIBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER,3*sizeof(GLfloat),indices,GL_STATIC_DRAW);
+    // --- VBO de colors ---
+    glGenBuffers(1, &idVBOColors);
+    glBindBuffer(GL_ARRAY_BUFFER, idVBOColors);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(colors), colors, GL_STATIC_DRAW);
+
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), NULL);
+    glEnableVertexAttribArray(1);
+
+    // --- IBO (topological connection between vertices) ---
+    glGenBuffers(1,&idIBOVertex);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,idIBOVertex);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);*/
+
+    //VBO entrelazado
+    glGenBuffers(1, &idVBOVertex);
+    glBindBuffer(GL_ARRAY_BUFFER, idVBOVertex);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices_color), vertices_color, GL_STATIC_DRAW);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), NULL);
+    glEnableVertexAttribArray(0);
+
+    glGenBuffers(1, &idVBOColors);
+    glBindBuffer(GL_ARRAY_BUFFER, idVBOColors);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices_color), vertices_color, GL_STATIC_DRAW);
+
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (void *)(3 * sizeof(GLfloat)));
+    glEnableVertexAttribArray(1);
+
+    // --- IBO (topological connection between vertices) ---
+    glGenBuffers(1,&idIBOVertex);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,idIBOVertex);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 }
