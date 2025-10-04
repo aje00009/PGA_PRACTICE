@@ -5,17 +5,18 @@
 #ifndef PGA_PRACTICA_LISTENER_H
 #define PGA_PRACTICA_LISTENER_H
 
-//Enum class for every type of window GUI draws
-enum class WindowType {
-    BackGround,
-    Controls,
-    Messages
-};
-
 /**
  * @class Listener Interface whose classes which implement such interface wakes all users (objects) that have suscribed to an event
  */
 namespace PAG {
+    //Enum class for every type of window GUI draws
+    enum class WindowType {
+        BackGround,
+        Controls,
+        Messages,
+        ShaderLoad
+    };
+
     class Listener {
     public:
         Listener() = default;

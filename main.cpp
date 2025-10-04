@@ -11,6 +11,7 @@
 #include "Renderer.h"
 #include "Logger.h"
 #include "LoggerWindow.h"
+#include "ShaderLoaderWindow.h"
 
 struct ImGuiIO;
 //Esta función callback será llamada cuando GLFW produzca algún error
@@ -61,6 +62,7 @@ void initializeGUI() {
     //Add GUI windows/controls
     PAG::ManagerGUI::getInstance()->addWindow(PAG::BgWindow::getInstance());
     PAG::ManagerGUI::getInstance()->addWindow(PAG::LoggerWindow::getInstance());
+    PAG::ManagerGUI::getInstance()->addWindow(PAG::ShaderLoaderWindow::getInstance());
 
     //Add listeners GUI
     PAG::BgWindow::getInstance()->addListener(PAG::Renderer::getInstance());

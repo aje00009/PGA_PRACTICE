@@ -19,6 +19,7 @@ namespace PAG {
             static Renderer* instance;
 
             float *_bgColor;
+            char *_nameShader;
 
             GLuint idVS = 0; //ID vertex shader
             GLuint idFS = 0; //ID fragment shader

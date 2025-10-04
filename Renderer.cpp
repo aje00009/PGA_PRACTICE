@@ -71,6 +71,16 @@ void PAG::Renderer::wakeUp(WindowType t, ...) {
             va_end(args);
             break;
         }
+
+        case WindowType::ShaderLoad: {
+            std::va_list args;
+            va_start(args, t);
+
+            _nameShader = (va_arg(args,char*));
+
+            va_end(args);
+            break;
+        }
     }
 }
 
@@ -109,6 +119,7 @@ void PAG::Renderer::refresh() const {
     glClearColor(_bgColor[0], _bgColor[1], _bgColor[2], _bgColor[3]);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glPolygonMode ( GL_FRONT_AND_BACK, GL_FILL );
+
     glUseProgram(idSP);
     glBindVertexArray(idVAO);
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,idIBOVertex);
@@ -252,6 +263,7 @@ void PAG::Renderer::createShaderProgram(std::string nameShader) {
             GLchar* msgC = new GLchar[lengthMssg];
             GLint writtenData = 0;
             glGetProgramInfoLog(idSP,lengthMssg,&writtenData,msgC);
+            msg.assign ( msgC );
             delete[] msgC;
             msgC = nullptr;
 
