@@ -6,6 +6,8 @@
 #define PGA_PRACTICA_RENDERER_H
 
 #include <iostream>
+#include <memory>
+#include <vector>
 #include <GLFW/glfw3.h>
 
 #include "Listener.h"
@@ -14,20 +16,20 @@
  * @class Renderer Class that will render objects in the application
  */
 namespace PAG {
+    class ShaderProgram;
+
     class Renderer: public Listener {
         private:
             static Renderer* instance;
 
             float *_bgColor;
-            char *_nameShader;
 
-            GLuint idVS = 0; //ID vertex shader
-            GLuint idFS = 0; //ID fragment shader
-            GLuint idSP = 0; //ID shader program
-            GLuint idVAO = 0; //ID vertex array object
-            GLuint idVBOVertex = 0; //ID vertex buffer object for vertices
-            GLuint idVBOColors = 0; //ID vertex buffer object for color
-            GLuint idIBOVertex = 0; //ID index buffer object vertices
+            // Usamos un vector de pares (nombre, puntero al programa)
+            std::vector<std::pair<std::string, std::unique_ptr<ShaderProgram>>> _shaderPrograms;
+
+            ShaderProgram* _activeShaderProgram = nullptr;
+
+            GLuint idVBOVertex = 0, idVBOColors = 0, idIBOVertex = 0, idVAO = 0;
 
             Renderer();
         public:

@@ -23,20 +23,10 @@ PAG::Renderer::Renderer() = default;
  * @brief Method that deletes all info about shaders
  */
 PAG::Renderer::~Renderer() {
-    if (idVS != 0)
-        glDeleteShader (idVS);
-    if (idFS != 0)
-        glDeleteShader (idFS);
-    if (idSP != 0)
-        glDeleteProgram (idSP);
-    if (idVBOVertex != 0)
-        glDeleteBuffers (1, &idVBOVertex);
-    if (idVBOColors != 0)
-        glDeleteBuffers(1, &idVBOColors);
-    if (idIBOVertex != 0)
-        glDeleteBuffers (1, &idIBOVertex);
-    if (idVAO != 0)
-        glDeleteVertexArrays (1, &idVAO);
+    if (idVBOVertex != 0) glDeleteBuffers(1, &idVBOVertex);
+    if (idVBOColors != 0) glDeleteBuffers(1, &idVBOColors);
+    if (idIBOVertex != 0) glDeleteBuffers(1, &idIBOVertex);
+    if (idVAO != 0) glDeleteVertexArrays(1, &idVAO);
 }
 
 /**
