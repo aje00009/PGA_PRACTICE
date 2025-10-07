@@ -66,6 +66,7 @@ void initializeGUI() {
 
     //Add listeners GUI
     PAG::BgWindow::getInstance()->addListener(PAG::Renderer::getInstance());
+    PAG::ShaderLoaderWindow::getInstance()->addListener(PAG::Renderer::getInstance());
 }
 
 int main() {
@@ -138,7 +139,6 @@ int main() {
 
     //Shader
     try {
-        PAG::Renderer::getInstance()->createShaderProgram("pag03");
         PAG::Renderer::getInstance()->createModel();
     }catch (std::runtime_error& e) {
         PAG::Logger::getInstance()->addMessage(e.what());

@@ -4,15 +4,14 @@
 
 #ifndef PGA_PRACTICA_SHADERLOADWINDOW_H
 #define PGA_PRACTICA_SHADERLOADWINDOW_H
-#include <string>
 
 #include "GUIelement.h"
 
 namespace PAG {
     class ShaderLoaderWindow: public GUIElement {
     private:
-        char nameShader[128];
-        static PAG::ShaderLoaderWindow* instance;
+        char nameShader[128]{};
+        static ShaderLoaderWindow* instance;
 
     public:
         ShaderLoaderWindow() = default;

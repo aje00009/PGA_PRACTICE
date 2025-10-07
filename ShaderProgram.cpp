@@ -9,8 +9,6 @@ PAG::ShaderProgram::ShaderProgram(const std::string& vertexShaderPath, const std
         throw std::runtime_error("Error creating shader program.");
     }
 
-    // Los objetos VertexShader y FragmentShader se crean y se destruyen en este ámbito,
-    // limpiando sus recursos automáticamente gracias a RAII.
     VertexShader vs(vertexShaderPath);
     FragmentShader fs(fragmentShaderPath);
 
@@ -33,7 +31,6 @@ PAG::ShaderProgram::ShaderProgram(const std::string& vertexShaderPath, const std
         }
     }
 
-    // Los shaders ya no son necesarios una vez enlazados
     glDetachShader(_programId, vs.getId());
     glDetachShader(_programId, fs.getId());
 }

@@ -10,6 +10,7 @@
 #include "ManagerGUI.h"
 #include "imgui.h"
 #include "Logger.h"
+#include "ShaderProgram.h"
 
 //Definition of the only instance of the class
 PAG::Renderer* PAG::Renderer::instance = nullptr;
@@ -66,10 +67,42 @@ void PAG::Renderer::wakeUp(WindowType t, ...) {
             std::va_list args;
             va_start(args, t);
 
-            _nameShader = (va_arg(args,char*));
+            std::string _nameShader = (va_arg(args,char*));
 
             va_end(args);
-            break;
+
+            auto it = _shaderPrograms.begin();
+            while (it != _shaderPrograms.end()) {
+                if (it->first == _nameShader) {
+                    break;
+                }
+               ++it;
+            }
+            try {
+                if (it != _shaderPrograms.end()) {
+                    Logger::getInstance()->addMessage("Shader program found, loading...");
+                    _activeShaderProgram = it->second.get();
+                }else {
+                    Logger::getInstance()->addMessage("Shader program not found, creating and loading...");
+
+                    std::string path = "resources/shaders/";
+                    path.append(_nameShader);
+
+                    std::string vertexPath = path;
+                    std::string fragmentPath = path;
+
+                    vertexPath.append("-vs.glsl");
+                    fragmentPath.append("-fs.glsl");
+
+                    _shaderPrograms.emplace_back(_nameShader,std::make_unique<ShaderProgram>(vertexPath,fragmentPath));
+
+                    _activeShaderProgram = _shaderPrograms.back().second.get();
+                }
+            }catch (const std::runtime_error& e) {
+                Logger::getInstance()->addMessage(e.what());
+                _activeShaderProgram = nullptr;
+            }
+             break;
         }
     }
 }
@@ -110,10 +143,12 @@ void PAG::Renderer::refresh() const {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glPolygonMode ( GL_FRONT_AND_BACK, GL_FILL );
 
-    glUseProgram(idSP);
-    glBindVertexArray(idVAO);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,idIBOVertex);
-    glDrawElements(GL_TRIANGLES,3,GL_UNSIGNED_INT,NULL);
+    if (_activeShaderProgram) {
+        _activeShaderProgram->use();
+        glBindVertexArray(idVAO);
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,idIBOVertex);
+        glDrawElements(GL_TRIANGLES,3,GL_UNSIGNED_INT,NULL);
+    }
 }
 
 /**
@@ -136,130 +171,6 @@ void PAG::Renderer::initializeOpenGL() const {
     glClearColor ( _bgColor[0], instance->_bgColor[1], instance->_bgColor[3], instance->_bgColor[4] );
     glEnable ( GL_DEPTH_TEST );
     glEnable( GL_MULTISAMPLE );
-}
-
-/**
- * @brief Method that creates a shader program, a vertex and fragment shader in order to render objects later
- * @param nameShader Name of the file (-vs/-fg .glsl) we want to compile as shaders
- */
-void PAG::Renderer::createShaderProgram(std::string nameShader) {
-    std::string pathShaders = "resources/shaders/";
-
-    std::ifstream vertexShaderFile;
-
-    std::string pathVtxShader;
-    pathVtxShader.append(pathShaders);
-    pathVtxShader.append(nameShader);
-    pathVtxShader.append("-vs.glsl");
-
-    vertexShaderFile.open(pathVtxShader);
-    if (!vertexShaderFile.is_open()) {
-        throw std::runtime_error("Error opening vertex shader file");
-    }
-
-    std::stringstream shaderCode;
-    shaderCode << vertexShaderFile.rdbuf();
-    std::string vertexShaderCode = shaderCode.str();
-
-    vertexShaderFile.close();
-
-    //Creating vertex shader
-    idVS = glCreateShader(GL_VERTEX_SHADER);
-    if (idVS == 0)
-        throw std::runtime_error("Error creating vertex shader");
-
-    const GLchar* vsSourceCode = vertexShaderCode.c_str();
-    glShaderSource(idVS, 1, &vsSourceCode, NULL);
-    glCompileShader(idVS);
-
-    //Check possible compilation errors on vertex shader
-    GLint compResult;
-    glGetShaderiv(idVS, GL_COMPILE_STATUS, &compResult);
-    if (compResult == GL_FALSE) {
-        GLint lengthMssg = 0;
-        std::string msg = "";
-        glGetShaderiv (idVS, GL_INFO_LOG_LENGTH, &lengthMssg);
-        if (lengthMssg > 0) {
-            GLchar* msgC = new GLchar[lengthMssg];
-            GLint writtenData = 0;
-            glGetShaderInfoLog ( idVS, lengthMssg, &writtenData, msgC );
-            msg.assign ( msgC );
-            delete[] msgC;
-            msgC = nullptr;
-
-            throw std::runtime_error(msg);
-        }
-    }
-
-    std::ifstream fragmShaderFile;
-
-    std::string pathFragShader;
-    pathFragShader.append(pathShaders);
-    pathFragShader.append(nameShader);
-    pathFragShader.append("-fs.glsl");
-
-    fragmShaderFile.open(pathFragShader);
-    if (!fragmShaderFile.is_open()) {
-        throw std::runtime_error("Error opening fragment shader file");
-    }
-
-    std::stringstream fragShaderCodeSS;
-    fragShaderCodeSS << fragmShaderFile.rdbuf();
-    std::string fragmShaderCode = fragShaderCodeSS.str();
-
-    fragmShaderFile.close();
-
-    idFS = glCreateShader(GL_FRAGMENT_SHADER);
-    if (idFS == 0)
-        throw std::runtime_error("Error creating fragment shader");
-
-    const GLchar* fsSourceCode = fragmShaderCode.c_str();
-    glShaderSource(idFS, 1, &fsSourceCode, NULL);
-    glCompileShader(idFS);
-
-    //Check compilation erros on fragment shader
-    glGetShaderiv(idFS, GL_COMPILE_STATUS, &compResult);
-    if (compResult == GL_FALSE) {
-        GLint lengthMssg = 0;
-        std::string msg = "";
-        glGetShaderiv (idFS, GL_INFO_LOG_LENGTH, &lengthMssg);
-        if (lengthMssg > 0) {
-            GLchar* msgC = new GLchar[lengthMssg];
-            GLint writtenData = 0;
-            glGetShaderInfoLog ( idFS, lengthMssg, &writtenData, msgC );
-            msg.assign ( msgC );
-            delete[] msgC;
-            msgC = nullptr;
-
-            throw std::runtime_error(msg);
-        }
-    }
-
-    idSP = glCreateProgram();
-    if ( idSP == 0)
-        throw std::runtime_error("Error creating shader program");
-
-    glAttachShader(idSP, idVS);
-    glAttachShader(idSP, idFS);
-    glLinkProgram(idSP);
-
-    GLint linkStatus = 0;
-    glGetProgramiv(idSP, GL_LINK_STATUS, &linkStatus);
-    if (linkStatus == GL_FALSE) {
-        GLint lengthMssg = 0;
-        std::string msg = "";
-        glGetProgramiv(idSP, GL_INFO_LOG_LENGTH, &lengthMssg);
-        if (lengthMssg > 0) {
-            GLchar* msgC = new GLchar[lengthMssg];
-            GLint writtenData = 0;
-            glGetProgramInfoLog(idSP,lengthMssg,&writtenData,msgC);
-            msg.assign ( msgC );
-            delete[] msgC;
-            msgC = nullptr;
-
-            throw std::runtime_error(msg);
-        }
-    }
 }
 
 /**

@@ -8,7 +8,7 @@
 
 PAG::ShaderLoaderWindow* PAG::ShaderLoaderWindow::instance = nullptr;
 
-PAG::ShaderLoaderWindow * PAG::ShaderLoaderWindow::getInstance() {
+PAG::ShaderLoaderWindow* PAG::ShaderLoaderWindow::getInstance() {
     if (! instance)
         instance = new ShaderLoaderWindow();
     return instance;
