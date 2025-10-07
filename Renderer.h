@@ -24,7 +24,7 @@ namespace PAG {
 
             float *_bgColor;
 
-            // Usamos un vector de pares (nombre, puntero al programa)
+            // Pair vector -> string identifying name of shader / pointer to ShaderProgram object
             std::vector<std::pair<std::string, std::unique_ptr<ShaderProgram>>> _shaderPrograms;
 
             ShaderProgram* _activeShaderProgram = nullptr;
@@ -45,7 +45,6 @@ namespace PAG {
             void refresh() const;
             static void getInfoGL() ;
             void initializeOpenGL() const;
-            void createShaderProgram(std::string nameShader);
             void createModel();
     };
 }
