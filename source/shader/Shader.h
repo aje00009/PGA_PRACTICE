@@ -8,6 +8,9 @@
 #include "glad/glad.h"
 #include <string>
 
+/**
+ * @class Shader Class that generalises both vertex/fragment shader functionality
+ */
 namespace PAG {
     class Shader {
     protected:

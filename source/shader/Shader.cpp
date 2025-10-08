@@ -3,6 +3,12 @@
 #include <sstream>
 #include <stdexcept>
 
+/**
+ * @brief Parameterized constructor of the class Shader
+ * @param filePath Relative path of the shader (vertex or fragment)
+ * @param type Type of shader (vertex/fragment)
+ * @post The constructor will create vertex/fragment shaders and compile them
+ */
 PAG::Shader::Shader(const std::string& filePath, GLenum type) : _type(type) {
     std::ifstream shaderFile(filePath);
     if (!shaderFile.is_open()) {
@@ -14,12 +20,19 @@ PAG::Shader::Shader(const std::string& filePath, GLenum type) : _type(type) {
     compile(shaderStream.str());
 }
 
+/**
+ * @brief Destructor of the class Shader
+ */
 PAG::Shader::~Shader() {
     if (_id != 0) {
         glDeleteShader(_id);
     }
 }
 
+/**
+ * @brief Method that compiles a shader
+ * @param source Source code of the shader (.glsl)
+ */
 void PAG::Shader::compile(const std::string& source) {
     _id = glCreateShader(_type); //Creating it depending on which type (vertex/fragment) the shader is
 
@@ -46,6 +59,10 @@ void PAG::Shader::compile(const std::string& source) {
     }
 }
 
+/**
+ * @brief Method that returns the id of a shader
+ * @return The id of a shader
+ */
 GLuint PAG::Shader::getId() const {
     return _id;
 }

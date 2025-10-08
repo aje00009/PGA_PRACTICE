@@ -6,6 +6,10 @@
 #define PGA_PRACTICA_FRAGMENTSHADER_H
 
 #include "Shader.h"
+
+/**
+ * @class FragmentShader Class that implements Shader class and manages the creating and compilation of the fragment shader
+ */
 namespace PAG {
     class FragmentShader : public Shader {
     public:

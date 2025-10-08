@@ -7,10 +7,10 @@
 #include <cstdarg>
 #include <fstream>
 
-#include "ManagerGUI.h"
+#include "../gui/ManagerGUI.h"
 #include "imgui.h"
-#include "Logger.h"
-#include "ShaderProgram.h"
+#include "../utils/Logger.h"
+#include "../shader/ShaderProgram.h"
 
 //Definition of the only instance of the class
 PAG::Renderer* PAG::Renderer::instance = nullptr;
@@ -21,7 +21,7 @@ PAG::Renderer* PAG::Renderer::instance = nullptr;
 PAG::Renderer::Renderer() = default;
 
 /**
- * @brief Method that deletes all info about shaders
+ * @brief Method that deletes all info about buffers of the model
  */
 PAG::Renderer::~Renderer() {
     if (idVBOVertex != 0) glDeleteBuffers(1, &idVBOVertex);
@@ -152,7 +152,7 @@ void PAG::Renderer::refresh() const {
 }
 
 /**
- * @brief Method that adds a message to the log indicating info aobut OpenGL
+ * @brief Method that adds a message to the log indicating info about OpenGL
  */
 void PAG::Renderer::getInfoGL() {
     // - Interrogamos a OpenGL para que nos informe de las propiedades del contexto

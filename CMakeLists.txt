@@ -4,7 +4,7 @@ project(PGA_PRACTICA)
 set(CMAKE_CXX_STANDARD 20)
 
 #GLAD
-file( GLOB MY_FILES *.cpp )
+file( GLOB_RECURSE MY_FILES source/*.cpp )
 file( GLOB GLAD_FILES GLAD/src/*.c )
 file( GLOB IMGUI_FILES IMGUI/src/*.cpp )
 

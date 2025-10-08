@@ -9,7 +9,7 @@
 #include <vector>
 #include <GLFW/glfw3.h>
 
-#include "GUIelement.h"
+#include "GUIElement.h"
 
 /**
  * @class ManagerGUI Class that manages general aspects of the GUI (initialization, windows management, destruction of objects...)

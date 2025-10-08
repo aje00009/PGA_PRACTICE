@@ -6,6 +6,9 @@
 #define PGA_PRACTICA_VERTEXSHADER_H
 
 #include "Shader.h"
+/**
+ * @class VertexShader Class that implements Shader class and manages the creating and compilation of the vertex shader
+ */
 namespace PAG {
     class VertexShader: public Shader {
         public:

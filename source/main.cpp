@@ -5,13 +5,13 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
-#include "BgWindow.h"
+#include "gui/BgWindow.h"
 #include "imgui.h"
-#include "ManagerGUI.h"
-#include "Renderer.h"
-#include "Logger.h"
-#include "LoggerWindow.h"
-#include "ShaderLoaderWindow.h"
+#include "gui/ManagerGUI.h"
+#include "rendering/Renderer.h"
+#include "utils/Logger.h"
+#include "gui/LoggerWindow.h"
+#include "gui/ShaderLoaderWindow.h"
 
 struct ImGuiIO;
 //Esta función callback será llamada cuando GLFW produzca algún error

@@ -8,6 +8,9 @@
 #include "glad/glad.h"
 #include <string>
 
+/**
+ * @class ShaderProgram Class that implements the logic of creation of the shader program, compilation and linking of shaders
+ */
 namespace PAG {
     class ShaderProgram {
     private:

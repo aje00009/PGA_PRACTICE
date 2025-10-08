@@ -8,9 +8,8 @@
 #include <iostream>
 #include <memory>
 #include <vector>
-#include <GLFW/glfw3.h>
 
-#include "Listener.h"
+#include "../utils/Listener.h"
 
 /**
  * @class Renderer Class that will render objects in the application
@@ -24,7 +23,6 @@ namespace PAG {
 
             float *_bgColor;
 
-            // Pair vector -> string identifying name of shader / pointer to ShaderProgram object
             std::vector<std::pair<std::string, std::unique_ptr<ShaderProgram>>> _shaderPrograms;
 
             ShaderProgram* _activeShaderProgram = nullptr;
@@ -36,7 +34,7 @@ namespace PAG {
             virtual ~Renderer();
             static Renderer* getInstance();
 
-            virtual void wakeUp(WindowType t, ...) override;
+            void wakeUp(WindowType t, ...) override;
 
             static void error_callback(int error, const char* description);
             static void framebuffer_size_callback(int width, int height);
