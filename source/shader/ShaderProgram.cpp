@@ -15,11 +15,11 @@ PAG::ShaderProgram::ShaderProgram(const std::string& vertexShaderPath, const std
         throw std::runtime_error("Error creating shader program.");
     }
 
-    VertexShader vs(vertexShaderPath);
-    FragmentShader fs(fragmentShaderPath);
+    vs = new VertexShader(vertexShaderPath);
+    fs = new FragmentShader(fragmentShaderPath);
 
-    glAttachShader(_programId, vs.getId());
-    glAttachShader(_programId, fs.getId());
+    glAttachShader(_programId, vs->getId());
+    glAttachShader(_programId, fs->getId());
     glLinkProgram(_programId);
 
     // Check for linking errors
@@ -36,9 +36,6 @@ PAG::ShaderProgram::ShaderProgram(const std::string& vertexShaderPath, const std
             throw std::runtime_error("Shader program linking failed:\n" + infoLog);
         }
     }
-
-    glDetachShader(_programId, vs.getId());
-    glDetachShader(_programId, fs.getId());
 }
 
 /**
@@ -48,6 +45,10 @@ PAG::ShaderProgram::~ShaderProgram() {
     if (_programId != 0) {
         glDeleteProgram(_programId);
     }
+    if (vs->getId() != 0)
+        glDeleteShader(vs->getId());
+    if (fs->getId() != 0)
+        glDeleteShader(fs->getId());
 }
 
 /**

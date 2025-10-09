@@ -8,12 +8,17 @@
 #include "glad/glad.h"
 #include <string>
 
+#include "FragmentShader.h"
+#include "VertexShader.h"
+
 /**
  * @class ShaderProgram Class that implements the logic of creation of the shader program, compilation and linking of shaders
  */
 namespace PAG {
     class ShaderProgram {
     private:
+        VertexShader *vs = nullptr;
+        FragmentShader *fs = nullptr;
         GLuint _programId = 0;
 
     public:
