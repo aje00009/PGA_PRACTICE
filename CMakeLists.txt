@@ -19,13 +19,16 @@ add_executable( ${PROJECT_NAME} ${MY_FILES}
 #GLFW
 find_package(glfw3)
 
+find_package(glm)
+
 find_package(opengl_system)
 
 # Then, link your executable or library with the corresponding package targets:
 target_include_directories( ${PROJECT_NAME} PUBLIC GLAD/include IMGUI/include)
 
 target_link_libraries( ${PROJECT_NAME} glfw
-                            opengl::opengl)
+                            opengl::opengl
+                            glm::glm)
 
 
 

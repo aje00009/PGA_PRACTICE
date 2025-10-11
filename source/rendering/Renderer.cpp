@@ -28,13 +28,24 @@ PAG::Renderer::~Renderer() {
     if (idVBOColors != 0) glDeleteBuffers(1, &idVBOColors);
     if (idIBOVertex != 0) glDeleteBuffers(1, &idIBOVertex);
     if (idVAO != 0) glDeleteVertexArrays(1, &idVAO);
+    if (!instance) {
+        delete instance;
+        instance = nullptr;
+    }
 }
 
 /**
- * @brief Method that returns the only instance of this class (and creates it the first time is called)
+ * @brief Method that returns the only instance of this class
  * @return The instance of this class
  */
 PAG::Renderer *PAG::Renderer::getInstance() {
+    if (!instance)
+        throw std::runtime_error("PAG::Renderer::getInstance() called with null instance");
+    return instance;
+}
+
+void PAG::Renderer::initialize(float aspectRatio) {
+    //Initializing back ground color
     if (!instance) {
         instance = new Renderer();
         instance->_bgColor = new float[4];
@@ -42,8 +53,10 @@ PAG::Renderer *PAG::Renderer::getInstance() {
         instance->_bgColor[1] = 0.6;
         instance->_bgColor[2] = 0.6;
         instance->_bgColor[3] = 1.0;
+
+        //Initializing main camera
+        instance->_activeCamera = new Camera(aspectRatio);
     }
-    return instance;
 }
 
 /**

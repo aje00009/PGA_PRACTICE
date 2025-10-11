@@ -9,6 +9,7 @@
 #include <memory>
 #include <vector>
 
+#include "../camera/Camera.h"
 #include "../utils/Listener.h"
 
 /**
@@ -27,12 +28,15 @@ namespace PAG {
 
             ShaderProgram* _activeShaderProgram = nullptr;
 
+            Camera* _activeCamera = nullptr;
+
             GLuint idVBOVertex = 0, idVBOColors = 0, idIBOVertex = 0, idVAO = 0;
 
             Renderer();
         public:
             virtual ~Renderer();
             static Renderer* getInstance();
+            static void initialize(float aspectRatio);
 
             void wakeUp(WindowType t, ...) override;
 
