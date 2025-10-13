@@ -69,6 +69,7 @@ void initializeGUI() {
     //Add listeners GUI
     PAG::BgWindow::getInstance()->addListener(PAG::Renderer::getInstance());
     PAG::ShaderLoaderWindow::getInstance()->addListener(PAG::Renderer::getInstance());
+    PAG::CameraWindow::getInstance()->addListener(PAG::Renderer::getInstance());
 }
 
 int main() {

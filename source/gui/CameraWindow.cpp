@@ -9,7 +9,7 @@
 PAG::CameraWindow* PAG::CameraWindow::instance = nullptr;
 
 void PAG::CameraWindow::warnListeners() const {
-    for (auto listener : listeners) {
+    for (auto listener : _listeners) {
         listener->wakeUp(WindowType::Camera, _movement);
     }
 }

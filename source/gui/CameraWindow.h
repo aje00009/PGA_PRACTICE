@@ -32,7 +32,6 @@ namespace PAG {
     class CameraWindow: public GUIElement {
     private:
         static CameraWindow* instance;
-        std::vector<Listener*> listeners;
 
         int move = 0;
         CameraMovement _movement;

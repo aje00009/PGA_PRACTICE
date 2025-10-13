@@ -31,25 +31,21 @@ void PAG::Camera::orbit(float offX, float offY) {
     float yaw = -offX;
     float pitch = -offY;
 
-    // --- Protección contra el Gimbal Lock ---
+    //Only allow semicircle movement
     glm::vec3 dir = glm::normalize(_position - _lookAt);
     float currentPitch = glm::degrees(asin(dir.y));
     float maxPitch = 89.0f;
-    if (currentPitch + pitch > maxPitch) { // Si el nuevo pitch se pasa del límite superior
-        pitch = maxPitch - currentPitch;   // El pitch será justo lo que falta para llegar al límite
-    } else if (currentPitch + pitch < -maxPitch) { // Si se pasa del límite inferior
-        pitch = -maxPitch - currentPitch; // El pitch será justo lo que falta para llegar al límite
+    if (currentPitch + pitch > maxPitch) {
+        pitch = maxPitch - currentPitch;
+    } else if (currentPitch + pitch < -maxPitch) {
+        pitch = -maxPitch - currentPitch;
     }
-    // --- Fin de la protección ---
 
-    // 1. Rotación horizontal (igual que en pan)
     glm::mat4 rotation = glm::rotate(glm::mat4(1.0f), glm::radians(yaw), _up);
 
-    // 2. Rotación vertical (igual que en tilt)
     glm::vec3 right = glm::normalize(glm::cross(_lookAt - _position, _up));
     rotation = glm::rotate(rotation, glm::radians(pitch), right);
 
-    // 3. Aplicar la rotación SÓLO a la posición
     _position = glm::vec3(rotation * glm::vec4(_position - _lookAt, 1.0f)) + _lookAt;
 }
 

@@ -2,6 +2,7 @@
 #include "VertexShader.h"
 #include "FragmentShader.h"
 #include <stdexcept>
+#include <glm/gtc/type_ptr.hpp>
 
 /**
  * @brief Default constructor of ShaderProgram
@@ -56,6 +57,13 @@ PAG::ShaderProgram::~ShaderProgram() {
  */
 void PAG::ShaderProgram::use() const {
     glUseProgram(_programId);
+}
+
+void PAG::ShaderProgram::setUniformMat4(const std::string &uniformName, const glm::mat4 &matrix) {
+    GLint position = glGetUniformLocation(_programId, uniformName.c_str());
+
+    if ( position != -1 )
+        glUniformMatrix4fv(position, 1, GL_FALSE, glm::value_ptr(matrix));
 }
 
 /**

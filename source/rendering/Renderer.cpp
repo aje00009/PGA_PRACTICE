@@ -214,7 +214,18 @@ void PAG::Renderer::refresh() const {
     glPolygonMode ( GL_FRONT_AND_BACK, GL_FILL );
 
     if (_activeShaderProgram) {
+        //Activation on shader program
         _activeShaderProgram->use();
+
+        //Let shader program know the uniforms
+        glm::mat4 model = glm::mat4(1.0);
+        glm::mat4 view = _activeCamera->getViewMatrix();
+        glm::mat4 projection = _activeCamera->getProjectionMatrix();
+
+        glm::mat4 mvp = projection * view * model;
+
+        _activeShaderProgram->setUniformMat4("MVP",mvp);
+
         glBindVertexArray(idVAO);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,idIBOVertex);
         glDrawElements(GL_TRIANGLES,3,GL_UNSIGNED_INT,NULL);

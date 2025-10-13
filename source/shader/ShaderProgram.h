@@ -7,6 +7,7 @@
 
 #include "glad/glad.h"
 #include <string>
+#include <glm/fwd.hpp>
 
 #include "FragmentShader.h"
 #include "VertexShader.h"
@@ -26,6 +27,7 @@ namespace PAG {
         ~ShaderProgram(); // Usamos RAII
 
         void use() const;
+        void setUniformMat4(const std::string& uniformName, const glm::mat4& matrix);
         GLuint getId() const;
     };
 }
