@@ -201,8 +201,13 @@ void PAG::Renderer::framebuffer_size_callback(int width, int height) {
  * @param yoffset Y axis movement
  */
 void PAG::Renderer::scroll_callback(double xoffset, double yoffset) {
-    ImGuiIO& io = ImGui::GetIO();
-    io.AddMouseWheelEvent(xoffset,yoffset);
+    instance->_activeCamera->zoom(yoffset);
+}
+
+void PAG::Renderer::cursor_pos_callback(double deltaX, double deltaY) {
+    if (instance->_activeCamera) {
+        instance->_activeCamera->orbit(deltaX * 0.2, deltaY * 0.2);
+    }
 }
 
 /**

@@ -43,10 +43,12 @@ namespace PAG {
             static void error_callback(int error, const char* description);
             static void framebuffer_size_callback(int width, int height);
             static void scroll_callback(double xoffset, double yoffset);
+            static void cursor_pos_callback(double deltaX, double deltaY);
 
             void refresh() const;
             static void getInfoGL() ;
             void initializeOpenGL() const;
+
             void createModel();
     };
 }

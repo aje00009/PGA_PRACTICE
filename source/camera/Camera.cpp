@@ -16,7 +16,7 @@ PAG::Camera::Camera(float aspectRatio, glm::vec3 position, glm::vec3 lookAt, glm
     _zNear = zNear;
     _zFar = zFar;
     _aspect = aspectRatio;
-    _fov = glm::radians(fov);
+    _fov = fov;
 }
 
 glm::mat4 PAG::Camera::getViewMatrix() const {
@@ -24,7 +24,7 @@ glm::mat4 PAG::Camera::getViewMatrix() const {
 }
 
 glm::mat4 PAG::Camera::getProjectionMatrix() const {
-    return glm::perspective(_fov, _aspect, _zNear, _zFar);
+    return glm::perspective(glm::radians(_fov), _aspect, _zNear, _zFar);
 }
 
 void PAG::Camera::orbit(float offX, float offY) {
@@ -80,6 +80,15 @@ void PAG::Camera::dolly(float offX, float offZ) {
 
 void PAG::Camera::zoom(float off) {
     _fov -= off;
-    _fov = std::max(1.0f, std::min(_fov, 90.0f));
+    if (_fov < 1.0) _fov = 1.0;
+    if (_fov > 90.0) _fov = 90.0;
+}
+
+void PAG::Camera::setAspectRatio(float aspectRatio) {
+    this->_aspect = aspectRatio;
+}
+
+void PAG::Camera::setPosXY(float posX, float posY) {
+    _position = glm::vec3(posX, posY, _position.z);
 }
 

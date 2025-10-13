@@ -14,7 +14,10 @@
 #include "gui/LoggerWindow.h"
 #include "gui/ShaderLoaderWindow.h"
 
-struct ImGuiIO;
+//Global variables
+bool draging = false;
+double lastMouseX = 0.0, lastMouseY = 0.0;
+
 //Esta función callback será llamada cuando GLFW produzca algún error
 void error_callback(int error, const char* description) {
     PAG::Renderer::error_callback(error,description);
@@ -43,19 +46,41 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 //Esta función callback será llamada caca vez que sea pulse algun botón
 //del ratón sobre el área de dibujo OpenGL
 void mouse_button_callback(GLFWwindow* window, int button, int action, int mods) {
-    if (action == GLFW_PRESS) {
-        ImGuiIO& io = ImGui::GetIO();
-        io.AddMouseButtonEvent(button,true);
-    }
-    else if (action == GLFW_RELEASE) {
-        ImGuiIO& io = ImGui::GetIO();
-        io.AddMouseButtonEvent(button,false);
+    ImGuiIO& io = ImGui::GetIO();
+    io.AddMouseButtonEvent(button, action == GLFW_PRESS);
+
+    if (button == GLFW_MOUSE_BUTTON_LEFT) {
+        if (action == GLFW_PRESS) {
+            draging = true;
+            glfwGetCursorPos(window, &lastMouseX, &lastMouseY);
+        } else if (action == GLFW_RELEASE) {
+            draging = false;
+        }
     }
 }
 
-//Esta función callback será llamada cada vez que se mueva la rueda
-//del ratón sobre el área de dibujo OpenGL
+void set_cursor_pos_callback(GLFWwindow* w, double xpos, double ypos){
+    ImGuiIO& io = ImGui::GetIO();
+    io.AddMousePosEvent(xpos, ypos);
+
+    if (io.WantCaptureMouse) return;
+
+    if (draging) {
+        float deltaX = static_cast<float>(xpos - lastMouseX);
+        float deltaY = static_cast<float>(ypos - lastMouseY);
+        lastMouseX = xpos;
+        lastMouseY = ypos;
+
+        PAG::Renderer::cursor_pos_callback(deltaX, deltaY);
+    }
+}
+
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset) {
+    ImGuiIO& io = ImGui::GetIO();
+    io.AddMouseWheelEvent(xoffset, yoffset);
+
+    if (io.WantCaptureMouse) return;
+
     PAG::Renderer::scroll_callback(xoffset,yoffset);
 }
 
@@ -140,6 +165,7 @@ int main() {
     glfwSetKeyCallback(window, key_callback);
     glfwSetMouseButtonCallback(window, mouse_button_callback);
     glfwSetScrollCallback(window, scroll_callback);
+    glfwSetCursorPosCallback(window, set_cursor_pos_callback);
 
     //Initialize imgui
     PAG::ManagerGUI::initialize(window);
