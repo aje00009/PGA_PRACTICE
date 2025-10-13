@@ -12,8 +12,7 @@ namespace PAG {
     //Enum class for every type of window GUI draws
     enum class WindowType {
         BackGround,
-        Controls,
-        Messages,
+        Camera,
         ShaderLoad
     };
 

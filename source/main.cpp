@@ -7,6 +7,7 @@
 
 #include "gui/BgWindow.h"
 #include "imgui.h"
+#include "gui/CameraWindow.h"
 #include "gui/ManagerGUI.h"
 #include "rendering/Renderer.h"
 #include "utils/Logger.h"
@@ -63,6 +64,7 @@ void initializeGUI() {
     PAG::ManagerGUI::getInstance()->addWindow(PAG::BgWindow::getInstance());
     PAG::ManagerGUI::getInstance()->addWindow(PAG::LoggerWindow::getInstance());
     PAG::ManagerGUI::getInstance()->addWindow(PAG::ShaderLoaderWindow::getInstance());
+    PAG::ManagerGUI::getInstance()->addWindow(PAG::CameraWindow::getInstance());
 
     //Add listeners GUI
     PAG::BgWindow::getInstance()->addListener(PAG::Renderer::getInstance());
@@ -74,7 +76,6 @@ int main() {
 
     PAG::Logger::getInstance()->addMessage("Starting Application PAG - Prueba 01");
 
-    initializeGUI();
     //GLFW Errors callback before executing any GLFW functions
     glfwSetErrorCallback(error_callback);
     // - Inicializa GLFW. Es un proceso que sólo debe realizarse una vez en la aplicación
@@ -95,11 +96,19 @@ int main() {
     // - Definimos el puntero para guardar la dirección de la ventana de la aplicación y
     // la creamos
     GLFWwindow *window;
+    float width = 1280;
+    float height = 576;
+
+    //Initialize instance
+    PAG::Renderer::initialize(width/height);
+
+    //Initialize GUI
+    initializeGUI();
 
     // - Tamaño, título de la ventana, en ventana y no en pantalla completa,
     // sin compartir recursos con otras ventanas.
 
-    window = glfwCreateWindow ( 1024, 576, "PAG Introduction", nullptr, nullptr );
+    window = glfwCreateWindow ( width, height, "PAG Introduction", nullptr, nullptr );
 
     // - Comprobamos si la creación de la ventana ha tenido éxito.
     if ( window == nullptr )

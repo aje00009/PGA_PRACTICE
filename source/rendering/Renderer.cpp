@@ -9,6 +9,7 @@
 
 #include "../gui/ManagerGUI.h"
 #include "imgui.h"
+#include "../gui/CameraWindow.h"
 #include "../utils/Logger.h"
 #include "../shader/ShaderProgram.h"
 
@@ -116,6 +117,62 @@ void PAG::Renderer::wakeUp(WindowType t, ...) {
                 _activeShaderProgram = nullptr;
             }
              break;
+        }
+
+        case WindowType::Camera: {
+            std::va_list args;
+            va_start(args, t);
+
+            CameraMovement _mov = (va_arg(args,CameraMovement));
+
+            va_end(args);
+
+            if (!_activeCamera) break;
+
+            const float rotationStep = 5.0;
+            const float movementStep = 0.2;
+
+            switch (_mov) {
+                case CameraMovement::PAN_LEFT:
+                    _activeCamera->pan(-rotationStep);
+                    break;
+                case CameraMovement::PAN_RIGHT:
+                    _activeCamera->pan(rotationStep);
+                    break;
+
+                case CameraMovement::TILT_UP:
+                    _activeCamera->tilt(rotationStep);
+                    break;
+                case CameraMovement::TILT_DOWN:
+                    _activeCamera->tilt(-rotationStep);
+                    break;
+
+                case CameraMovement::DOLLY_FORWARD:
+                    _activeCamera->dolly(0.0f, movementStep);
+                    break;
+                case CameraMovement::DOLLY_BACKWARD:
+                    _activeCamera->dolly(0.0f, -movementStep);
+                    break;
+                case CameraMovement::DOLLY_LEFT:
+                    _activeCamera->dolly(-movementStep, 0.0f);
+                    break;
+                case CameraMovement::DOLLY_RIGHT:
+                    _activeCamera->dolly(movementStep, 0.0f);
+                    break;
+
+                case CameraMovement::ORBIT_LATITUDE_UP:
+                    _activeCamera->orbit(0.0f, rotationStep);
+                    break;
+                case CameraMovement::ORBIT_LATITUDE_DOWN:
+                    _activeCamera->orbit(0.0f, -rotationStep);
+                    break;
+                case CameraMovement::ORBIT_LONGITUDE_LEFT:
+                    _activeCamera->orbit(-rotationStep, 0.0f);
+                    break;
+                case CameraMovement::ORBIT_LONGITUDE_RIGHT:
+                    _activeCamera->orbit(rotationStep, 0.0f);
+                    break;
+            }
         }
     }
 }

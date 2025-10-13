@@ -5,6 +5,8 @@
 #ifndef PGA_PRACTICA_CAMERA_H
 #define PGA_PRACTICA_CAMERA_H
 
+#define GLM_ENABLE_EXPERIMENTAL
+
 #include <glm/glm.hpp>
 
 namespace PAG {
