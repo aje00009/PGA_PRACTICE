@@ -4,6 +4,7 @@
 
 #include "Camera.h"
 
+#include <iostream>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/transform.hpp>
 
@@ -28,25 +29,31 @@ glm::mat4 PAG::Camera::getProjectionMatrix() const {
 }
 
 void PAG::Camera::orbit(float offX, float offY) {
+    // Define horizontal and vertical movement for orbit movement
     float yaw = -offX;
     float pitch = -offY;
 
-    //Only allow semicircle movement
-    glm::vec3 dir = glm::normalize(_position - _lookAt);
-    float currentPitch = glm::degrees(asin(dir.y));
-    float maxPitch = 89.0f;
-    if (currentPitch + pitch > maxPitch) {
-        pitch = maxPitch - currentPitch;
-    } else if (currentPitch + pitch < -maxPitch) {
-        pitch = -maxPitch - currentPitch;
-    }
-
-    glm::mat4 rotation = glm::rotate(glm::mat4(1.0f), glm::radians(yaw), _up);
-
+    // Rotation matrices for orbit movement (latitude and longitude)
+    glm::mat4 yawRotation = glm::rotate(glm::mat4(1.0f), glm::radians(yaw), _up);
     glm::vec3 right = glm::normalize(glm::cross(_lookAt - _position, _up));
-    rotation = glm::rotate(rotation, glm::radians(pitch), right);
+    glm::mat4 pitchRotation = glm::rotate(glm::mat4(1.0f), glm::radians(pitch), right);
 
-    _position = glm::vec3(rotation * glm::vec4(_position - _lookAt, 1.0f)) + _lookAt;
+    // Potential direction calculation
+    glm::vec3 currentDirection = _position - _lookAt;
+    glm::vec3 potentialDirection = glm::vec3(yawRotation * pitchRotation * glm::vec4(currentDirection, 0.0f));
+
+    glm::vec3 dir_normalized = glm::normalize(potentialDirection);
+
+    std::cout << "Angle: " << glm::degrees(asin(dir_normalized.y)) << std::endl;
+    // Calculate the cosine of the angle
+    float cosAngle = glm::dot(dir_normalized, _up);
+
+    const float limit = 0.999;
+
+    // Checking angle limit
+    if (std::abs(cosAngle) < limit) {
+        _position = _lookAt + potentialDirection;
+    }
 }
 
 void PAG::Camera::pan(float angle) {

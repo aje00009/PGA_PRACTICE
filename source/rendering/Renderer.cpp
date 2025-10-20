@@ -141,10 +141,10 @@ void PAG::Renderer::wakeUp(WindowType t, ...) {
                     break;
 
                 case CameraMovement::TILT_UP:
-                    _activeCamera->tilt(rotationStep);
+                    _activeCamera->tilt(-rotationStep);
                     break;
                 case CameraMovement::TILT_DOWN:
-                    _activeCamera->tilt(-rotationStep);
+                    _activeCamera->tilt(rotationStep);
                     break;
 
                 case CameraMovement::DOLLY_FORWARD:
@@ -167,10 +167,10 @@ void PAG::Renderer::wakeUp(WindowType t, ...) {
                     _activeCamera->orbit(0.0f, -rotationStep);
                     break;
                 case CameraMovement::ORBIT_LONGITUDE_LEFT:
-                    _activeCamera->orbit(-rotationStep, 0.0f);
+                    _activeCamera->orbit(rotationStep, 0.0f);
                     break;
                 case CameraMovement::ORBIT_LONGITUDE_RIGHT:
-                    _activeCamera->orbit(rotationStep, 0.0f);
+                    _activeCamera->orbit(-rotationStep, 0.0f);
                     break;
             }
         }
@@ -233,7 +233,7 @@ void PAG::Renderer::refresh() const {
 
         glBindVertexArray(idVAO);
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,idIBOVertex);
-        glDrawElements(GL_TRIANGLES,3,GL_UNSIGNED_INT,NULL);
+        glDrawElements(GL_TRIANGLES,36,GL_UNSIGNED_INT,NULL);
     }
 }
 
@@ -263,69 +263,72 @@ void PAG::Renderer::initializeOpenGL() const {
  * @brief Method that defines a model (VAO) and all it's attributes (VBO,IBO) in order to render it
  */
 void PAG::Renderer::createModel() {
-    /* VBO no entrelazado
-    GLfloat vertices[] = {
-        -.5, -.5, 0,
-        .5, -.5, 0,
-        0, .5, 0,
-    };
-
-    GLfloat colors[] = {
-        1,1,0,
-        0,1,0,
-        0,0,1
-    };*/
-
-    //VBO entrelazado
+    //VBO definition
+    // Format: X, Y, Z, R, G, B
     GLfloat vertices_color[] = {
-        -.5,-.5,0, 1,1,0,
-        .5,-.5,0, 0,1,0,
-        0,.5,0, 0,0,1
+        // Front face
+        -0.5f, -0.5f,  0.5f,   1.0f, 0.0f, 0.0f,
+         0.5f, -0.5f,  0.5f,   1.0f, 0.0f, 0.0f,
+         0.5f,  0.5f,  0.5f,   1.0f, 0.0f, 0.0f,
+        -0.5f,  0.5f,  0.5f,   1.0f, 0.0f, 0.0f,
+
+        // Back face (Verde)
+        -0.5f, -0.5f, -0.5f,   0.0f, 1.0f, 0.0f,
+        -0.5f,  0.5f, -0.5f,   0.0f, 1.0f, 0.0f,
+         0.5f,  0.5f, -0.5f,   0.0f, 1.0f, 0.0f,
+         0.5f, -0.5f, -0.5f,   0.0f, 1.0f, 0.0f,
+
+        // Upper face
+        -0.5f,  0.5f,  0.5f,   0.0f, 0.0f, 1.0f,
+         0.5f,  0.5f,  0.5f,   0.0f, 0.0f, 1.0f,
+         0.5f,  0.5f, -0.5f,   0.0f, 0.0f, 1.0f,
+        -0.5f,  0.5f, -0.5f,   0.0f, 0.0f, 1.0f,
+
+        // Inferior face
+        -0.5f, -0.5f,  0.5f,   1.0f, 1.0f, 0.0f,
+        -0.5f, -0.5f, -0.5f,   1.0f, 1.0f, 0.0f,
+         0.5f, -0.5f, -0.5f,   1.0f, 1.0f, 0.0f,
+         0.5f, -0.5f,  0.5f,   1.0f, 1.0f, 0.0f,
+
+        // Right face
+         0.5f, -0.5f,  0.5f,   0.0f, 1.0f, 1.0f,
+         0.5f, -0.5f, -0.5f,   0.0f, 1.0f, 1.0f,
+         0.5f,  0.5f, -0.5f,   0.0f, 1.0f, 1.0f,
+         0.5f,  0.5f,  0.5f,   0.0f, 1.0f, 1.0f,
+
+        // Left face
+        -0.5f, -0.5f,  0.5f,   1.0f, 0.0f, 1.0f,
+        -0.5f,  0.5f,  0.5f,   1.0f, 0.0f, 1.0f,
+        -0.5f,  0.5f, -0.5f,   1.0f, 0.0f, 1.0f,
+        -0.5f, -0.5f, -0.5f,   1.0f, 0.0f, 1.0f
     };
 
-    GLuint indices[] = {0,1,2};
+    //IBO Definition
+    GLuint indices[] = {
+        0, 1, 2,   2, 3, 0,
+        4, 5, 6,   6, 7, 4,
+        8, 9, 10,  10, 11, 8,
+        12, 13, 14, 14, 15, 12,
+        16, 17, 18, 18, 19, 16,
+        20, 21, 22, 22, 23, 20
+    };
 
-    //VAO
     glGenVertexArrays(1, &idVAO);
     glBindVertexArray(idVAO);
 
-    /* VBO no entrelazado
-    // --- VBO vertices ---
-    glGenBuffers(1, &idVBOVertex);
-    glBindBuffer(GL_ARRAY_BUFFER, idVBOVertex);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), NULL);
-    glEnableVertexAttribArray(0);
-
-    // --- VBO de colors ---
-    glGenBuffers(1, &idVBOColors);
-    glBindBuffer(GL_ARRAY_BUFFER, idVBOColors);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(colors), colors, GL_STATIC_DRAW);
-
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(GLfloat), NULL);
-    glEnableVertexAttribArray(1);
-
-    // --- IBO (topological connection between vertices) ---
-    glGenBuffers(1,&idIBOVertex);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,idIBOVertex);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);*/
-
-    //VBO entrelazado
     glGenBuffers(1, &idVBOVertex);
     glBindBuffer(GL_ARRAY_BUFFER, idVBOVertex);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices_color), vertices_color, GL_STATIC_DRAW);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), NULL);
+
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (void*)0);
     glEnableVertexAttribArray(0);
 
-    glGenBuffers(1, &idVBOColors);
-    glBindBuffer(GL_ARRAY_BUFFER, idVBOColors);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices_color), vertices_color, GL_STATIC_DRAW);
-
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (void *)(3 * sizeof(GLfloat)));
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (void*)(3 * sizeof(GLfloat)));
     glEnableVertexAttribArray(1);
 
-    // --- IBO (topological connection between vertices) ---
-    glGenBuffers(1,&idIBOVertex);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,idIBOVertex);
+    glGenBuffers(1, &idIBOVertex);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, idIBOVertex);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+
+    glBindVertexArray(0);
 }
