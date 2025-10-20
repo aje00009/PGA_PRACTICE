@@ -71,7 +71,9 @@ void set_cursor_pos_callback(GLFWwindow* w, double xpos, double ypos){
         lastMouseX = xpos;
         lastMouseY = ypos;
 
-        PAG::Renderer::cursor_pos_callback(deltaX, deltaY);
+        PAG::CameraMovement move = PAG::CameraWindow::getSelectedMovement();
+
+        PAG::Renderer::cursor_pos_callback(move, deltaX, deltaY);
     }
 }
 

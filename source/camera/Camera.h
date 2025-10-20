@@ -39,6 +39,7 @@ namespace PAG {
         void zoom(float off);
 
         void setAspectRatio(float aspectRatio);
+        void reset();
     };
 }
 

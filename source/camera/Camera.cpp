@@ -89,7 +89,6 @@ void PAG::Camera::pan(float angle) {
 
     glm::mat4 rotation = glm::rotate(glm::mat4(1.0f), glm::radians(mov), _up);
 
-    // Rotamos el punto de mira alrededor de la posición de la cámara
     _lookAt = glm::vec3(rotation * glm::vec4(_lookAt - _position, 1.0f)) + _position;
 }
 
@@ -141,4 +140,13 @@ void PAG::Camera::zoom(float off) {
  */
 void PAG::Camera::setAspectRatio(float aspectRatio) {
     this->_aspect = aspectRatio;
+}
+
+/**
+ * @brief Method that resets the coordinate system of the camera to the default one
+ */
+void PAG::Camera::reset() {
+    _position = {0,0,5};
+    _lookAt = {0,0,0};
+    _up = {0,1,0};
 }

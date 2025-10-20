@@ -172,6 +172,9 @@ void PAG::Renderer::wakeUp(WindowType t, ...) {
                 case CameraMovement::ORBIT_LONGITUDE_RIGHT:
                     _activeCamera->orbit(-rotationStep, 0.0f);
                     break;
+                case CameraMovement::RESET:
+                    _activeCamera->reset();
+                    break;
             }
         }
     }
@@ -204,9 +207,28 @@ void PAG::Renderer::scroll_callback(double xoffset, double yoffset) {
     instance->_activeCamera->zoom(yoffset);
 }
 
-void PAG::Renderer::cursor_pos_callback(double deltaX, double deltaY) {
-    if (instance->_activeCamera) {
-        instance->_activeCamera->orbit(deltaX * 0.2, deltaY * 0.2);
+void PAG::Renderer::cursor_pos_callback(CameraMovement movement, double deltaX, double deltaY) {
+    if (!instance->_activeCamera) {
+        throw std::runtime_error("Instance of camera in Renderer is null");
+    }
+
+    switch (movement) {
+        case CameraMovement::DOLLY: {
+            instance->_activeCamera->dolly(deltaX * 0.01,-(deltaY * 0.01));
+            break;
+        }
+        case CameraMovement::PAN: {
+            instance->_activeCamera->pan(deltaX * 0.2);
+            break;
+        }
+        case CameraMovement::TILT: {
+            instance->_activeCamera->tilt(deltaY * 0.2);
+            break;
+        }
+        case CameraMovement::ORBIT: {
+            instance->_activeCamera->orbit(deltaX * 0.2,deltaY * 0.2);
+            break;
+        }
     }
 }
 

@@ -40,9 +40,17 @@ void PAG::CameraWindow::render() {
 
     ImGui::Separator();
 
+    if (ImGui::Button("Reset")) {
+        _movement = CameraMovement::RESET;
+        warnListeners();
+    }
+
+    ImGui::Separator();
+
     switch (move) {
         // Case 0: PAN
         case 0:
+            _movement = CameraMovement::PAN;
             if (ImGui::Button("Left")) {
                 _movement = CameraMovement::PAN_LEFT;
                 warnListeners();
@@ -57,6 +65,7 @@ void PAG::CameraWindow::render() {
 
         // Case 1: TILT
         case 1:
+            _movement = CameraMovement::TILT;
             if (ImGui::Button("Up")) {
                 _movement = CameraMovement::TILT_UP;
                 warnListeners();
@@ -71,6 +80,7 @@ void PAG::CameraWindow::render() {
 
         // Case 2: DOLLY
         case 2:
+            _movement = CameraMovement::DOLLY;
             if (ImGui::Button("Forward")) {
                 _movement = CameraMovement::DOLLY_FORWARD;
                 warnListeners();
@@ -96,6 +106,7 @@ void PAG::CameraWindow::render() {
 
         // Case 3: ORBIT
         case 3:
+            _movement = CameraMovement::ORBIT;
             ImGui::Text("Latitude:");
             ImGui::SameLine();
             if (ImGui::Button("Up")) {
@@ -125,4 +136,8 @@ void PAG::CameraWindow::render() {
     }
 
     ImGui::End();
+}
+
+PAG::CameraMovement PAG::CameraWindow::getSelectedMovement() {
+    return instance->_movement;
 }

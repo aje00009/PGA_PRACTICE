@@ -13,6 +13,13 @@ namespace PAG {
      * @enum CameraMovement Enum that represents the different movements a camera can perform
      */
     enum class CameraMovement {
+        //When clicking with left mouse button
+        PAN,
+        TILT,
+        DOLLY,
+        ORBIT,
+
+        //Specific for GUI buttons
         PAN_LEFT,
         PAN_RIGHT,
 
@@ -27,7 +34,9 @@ namespace PAG {
         ORBIT_LATITUDE_UP,
         ORBIT_LATITUDE_DOWN,
         ORBIT_LONGITUDE_LEFT,
-        ORBIT_LONGITUDE_RIGHT
+        ORBIT_LONGITUDE_RIGHT,
+
+        RESET
     };
 
     /**
@@ -47,6 +56,8 @@ namespace PAG {
         static CameraWindow* getInstance();
 
         void render() override;
+
+        static CameraMovement getSelectedMovement();
     };
 }
 
