@@ -76,3 +76,26 @@ clases para mejorar la cohesión de mi proyecto. En este caso, he realizado una 
 
 En la imagen de abajo apreciamos el diagrama UML con los cambios comentados. 
 ![Imagen UML Práctica 4](resources/images/uml_prac4.png)
+
+### PRÁCTICA 5
+En esta práctica incluimos la implementación de la camara virtual, de forma que se definan todos sus parámetros correspondientes
+y los movimientos posibles de la misma. Para ello, podemos seleccionar desde la ventana de controles de ImGui el movimiento a utilizar. 
+Después, podremos utilizar los botones que existe en la propia ventana o bien el botón izquierdo del ratón. En caso del zoom, no tendremos que
+seleccionar ningún control, pues este estará siempre disponible si hacemos scroll con el ratón sobre la escena (no funcionará si lo hacemos sobre 
+una de las ventanas de ImGui).
+
+En la parte de la implementación, se han añadido/modificado las siguientes cosas:
+* **Camera**: clase que encapsula todos los datos referentes a la camara virtual (sist. coordenadas, fov, aspecto...) y los movimientos de la misma
+* **CameraWindow**: clase que representa la ventana de la interfaz gráfica para los controles de la camara.
+* **Renderer**: ahora esta clase tendrá un conjunto de camaras (de momento solo una, pero tendrá varias en el futuro), además de escuchar los eventos de la ventana de controles para implementar el patrón observador también con este aspecto de la aplicación
+* ****
+
+Los movimientos son los siguientes:
+* **Pan**: mueve la posición a la que apunta la cámara de forma horizontal
+* **Tilt**: mueve la posición a la que apunta la cámara de forma vertical
+* **Dolly**: mueve la posición de la cámara en el eje X y/o Z
+* **Orbit**: rota la cámara alrededor del punto al que mira
+* **Zoom**: modifica el fov de la cámara para aumentar o disminuir el ángulo de visión de la cámara
+
+Aquí estaría el UML resultante tras los cambios implementados en esta práctica
+![Imagen UML Práctica 5](resources/images/uml_prac5.png)
