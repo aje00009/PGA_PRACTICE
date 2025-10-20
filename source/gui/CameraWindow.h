@@ -9,8 +9,9 @@
 #include "GUIElement.h"
 
 namespace PAG {
-    class Listener;
-
+    /**
+     * @enum CameraMovement Enum that represents the different movements a camera can perform
+     */
     enum class CameraMovement {
         PAN_LEFT,
         PAN_RIGHT,
@@ -29,6 +30,9 @@ namespace PAG {
         ORBIT_LONGITUDE_RIGHT
     };
 
+    /**
+     * @class CameraWindow Class that represents the camera control window in the UI
+     */
     class CameraWindow: public GUIElement {
     private:
         static CameraWindow* instance;

@@ -6,14 +6,22 @@
 
 #include "imgui.h"
 
+//Definition of the instance for CameraWindow
 PAG::CameraWindow* PAG::CameraWindow::instance = nullptr;
 
+/**
+ * @brief Method that warns all listeners for the events of CameraWindow
+ */
 void PAG::CameraWindow::warnListeners() const {
     for (auto listener : _listeners) {
         listener->wakeUp(WindowType::Camera, _movement);
     }
 }
 
+/**
+ * @brief Method that creates (first time is called) and returns the only instance for this class
+ * @return The only instance for this class
+ */
 PAG::CameraWindow * PAG::CameraWindow::getInstance() {
     if (!instance) {
         instance = new CameraWindow();
@@ -21,6 +29,9 @@ PAG::CameraWindow * PAG::CameraWindow::getInstance() {
     return instance;
 }
 
+/**
+ * @brief Method that renders the camera controls window
+ */
 void PAG::CameraWindow::render() {
     ImGui::Begin("Camera control");
 

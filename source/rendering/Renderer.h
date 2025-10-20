@@ -13,7 +13,7 @@
 #include "../utils/Listener.h"
 
 /**
- * @class Renderer Class that will render objects in the application
+ * @class Renderer Class that will render objects in the application, manage different other objects (shaderPrograms, cameras, models...)
  */
 namespace PAG {
     class ShaderProgram;

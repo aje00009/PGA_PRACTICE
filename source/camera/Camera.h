@@ -9,17 +9,20 @@
 
 #include <glm/glm.hpp>
 
+/**
+ * @class Camera This class will encapsulate the parameters of a virtual camera and all of its possible movements in the scene
+ */
 namespace PAG {
     class Camera {
     private:
-        glm::vec3 _position;
-        glm::vec3 _lookAt;
-        glm::vec3 _up;
+        glm::vec3 _position; ///< Position of the camera in the scene
+        glm::vec3 _lookAt; ///< Point where the camera is looking at
+        glm::vec3 _up; ///< Up vector (Y axis)
 
-        float _fov;
-        float _aspect;
-        float _zNear;
-        float _zFar;
+        float _fov; ///< Width of the angle of the camera
+        float _aspect; ///< Width/height ratio
+        float _zNear; ///< Near plane of the volume that the camera covers
+        float _zFar; ///< Far plane of the volume that the camera covers
 
     public:
         Camera(float aspectRatio, glm::vec3 position = {0,0,5}, glm::vec3 lookAt = {0,0,0},
@@ -36,7 +39,6 @@ namespace PAG {
         void zoom(float off);
 
         void setAspectRatio(float aspectRatio);
-        void setPosXY(float posX, float posY);
     };
 }
 
