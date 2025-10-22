@@ -104,7 +104,21 @@ void PAG::Camera::tilt(float angle) {
 
     glm::mat4 rotation = glm::rotate(glm::mat4(1.0f), glm::radians(pitch), right);
 
-    _lookAt = glm::vec3(rotation * glm::vec4(_lookAt - _position, 1.0f)) + _position;
+    glm::vec3 potentialLookAt = glm::vec3(rotation * glm::vec4(_lookAt - _position, 1.0f)) + _position;
+
+    //Prohibiting looking totally up or down
+    glm::vec3 direction = potentialLookAt - _position;
+
+    glm::vec3 normalizedDirection = glm::normalize(direction);
+
+    float cosAngle = glm::dot(normalizedDirection, _up);
+
+    const float limit = 0.999;
+
+    //If both direction and up vector are parallel, the displacement will not be performed
+    if (std::abs(cosAngle) < limit) {
+        _lookAt = potentialLookAt;
+    }
 }
 
 /**
