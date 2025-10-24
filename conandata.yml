@@ -5,3 +5,4 @@ requirements:
   - "glm/1.0.1"
   - "opengl/system"
   - "glfw/3.3.8"
+  - "assimp/5.4.3"

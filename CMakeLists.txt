@@ -23,12 +23,15 @@ find_package(glm)
 
 find_package(opengl_system)
 
+find_package(assimp)
+
 # Then, link your executable or library with the corresponding package targets:
 target_include_directories( ${PROJECT_NAME} PUBLIC GLAD/include IMGUI/include)
 
 target_link_libraries( ${PROJECT_NAME} glfw
                             opengl::opengl
-                            glm::glm)
+                            glm::glm
+                            assimp::assimp)
 
 
 
