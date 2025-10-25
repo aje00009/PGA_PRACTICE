@@ -13,7 +13,8 @@ namespace PAG {
     enum class WindowType {
         BackGround,
         Camera,
-        ShaderLoad
+        ShaderLoad,
+        ModelLoader
     };
 
     class Listener {

@@ -12,6 +12,7 @@
 #include "rendering/Renderer.h"
 #include "utils/Logger.h"
 #include "gui/LoggerWindow.h"
+#include "gui/ModelLoaderWindow.h"
 #include "gui/ShaderLoaderWindow.h"
 
 //Global variables
@@ -92,11 +93,13 @@ void initializeGUI() {
     PAG::ManagerGUI::getInstance()->addWindow(PAG::LoggerWindow::getInstance());
     PAG::ManagerGUI::getInstance()->addWindow(PAG::ShaderLoaderWindow::getInstance());
     PAG::ManagerGUI::getInstance()->addWindow(PAG::CameraWindow::getInstance());
+    PAG::ManagerGUI::getInstance()->addWindow(PAG::ModelLoaderWindow::getInstance());
 
     //Add listeners GUI
     PAG::BgWindow::getInstance()->addListener(PAG::Renderer::getInstance());
     PAG::ShaderLoaderWindow::getInstance()->addListener(PAG::Renderer::getInstance());
     PAG::CameraWindow::getInstance()->addListener(PAG::Renderer::getInstance());
+    PAG::ModelLoaderWindow::getInstance()->addListener(PAG::Renderer::getInstance());
 }
 
 int main() {
