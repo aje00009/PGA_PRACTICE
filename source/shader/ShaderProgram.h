@@ -7,7 +7,7 @@
 
 #include "glad/glad.h"
 #include <string>
-#include <glm/fwd.hpp>
+#include <glm/glm.hpp>
 
 #include "FragmentShader.h"
 #include "VertexShader.h"
