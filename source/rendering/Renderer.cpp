@@ -25,10 +25,12 @@ PAG::Renderer::Renderer() = default;
  * @brief Method that deletes all info about buffers of the model
  */
 PAG::Renderer::~Renderer() {
-    if (idVBOVertex != 0) glDeleteBuffers(1, &idVBOVertex);
-    if (idVBOColors != 0) glDeleteBuffers(1, &idVBOColors);
-    if (idIBOVertex != 0) glDeleteBuffers(1, &idIBOVertex);
-    if (idVAO != 0) glDeleteVertexArrays(1, &idVAO);
+    delete _activeCamera;
+    _activeCamera = nullptr;
+
+    delete[] _bgColor;
+    _bgColor = nullptr;
+
     if (!instance) {
         delete instance;
         instance = nullptr;
@@ -177,6 +179,15 @@ void PAG::Renderer::wakeUp(WindowType t, ...) {
                     break;
             }
         }
+
+        case WindowType::ModelLoader: {
+            std::va_list args;
+            va_start(args, t);
+            const char* filePath = va_arg(args, const char*); // Recibimos la ruta del archivo
+            va_end(args);
+
+
+        }
     }
 }
 
@@ -252,10 +263,6 @@ void PAG::Renderer::refresh() const {
         glm::mat4 mvp = projection * view * model;
 
         _activeShaderProgram->setUniformMat4("MVP",mvp);
-
-        glBindVertexArray(idVAO);
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER,idIBOVertex);
-        glDrawElements(GL_TRIANGLES,36,GL_UNSIGNED_INT,NULL);
     }
 }
 
@@ -279,78 +286,4 @@ void PAG::Renderer::initializeOpenGL() const {
     glClearColor ( _bgColor[0], instance->_bgColor[1], instance->_bgColor[3], instance->_bgColor[4] );
     glEnable ( GL_DEPTH_TEST );
     glEnable( GL_MULTISAMPLE );
-}
-
-/**
- * @brief Method that defines a model (VAO) and all it's attributes (VBO,IBO) in order to render it
- */
-void PAG::Renderer::createModel() {
-    //VBO definition
-    // Format: X, Y, Z, R, G, B
-    GLfloat vertices_color[] = {
-        // Front face
-        -0.5f, -0.5f,  0.5f,   1.0f, 0.0f, 0.0f,
-         0.5f, -0.5f,  0.5f,   1.0f, 0.0f, 0.0f,
-         0.5f,  0.5f,  0.5f,   1.0f, 0.0f, 0.0f,
-        -0.5f,  0.5f,  0.5f,   1.0f, 0.0f, 0.0f,
-
-        // Back face (Verde)
-        -0.5f, -0.5f, -0.5f,   0.0f, 1.0f, 0.0f,
-        -0.5f,  0.5f, -0.5f,   0.0f, 1.0f, 0.0f,
-         0.5f,  0.5f, -0.5f,   0.0f, 1.0f, 0.0f,
-         0.5f, -0.5f, -0.5f,   0.0f, 1.0f, 0.0f,
-
-        // Upper face
-        -0.5f,  0.5f,  0.5f,   0.0f, 0.0f, 1.0f,
-         0.5f,  0.5f,  0.5f,   0.0f, 0.0f, 1.0f,
-         0.5f,  0.5f, -0.5f,   0.0f, 0.0f, 1.0f,
-        -0.5f,  0.5f, -0.5f,   0.0f, 0.0f, 1.0f,
-
-        // Inferior face
-        -0.5f, -0.5f,  0.5f,   1.0f, 1.0f, 0.0f,
-        -0.5f, -0.5f, -0.5f,   1.0f, 1.0f, 0.0f,
-         0.5f, -0.5f, -0.5f,   1.0f, 1.0f, 0.0f,
-         0.5f, -0.5f,  0.5f,   1.0f, 1.0f, 0.0f,
-
-        // Right face
-         0.5f, -0.5f,  0.5f,   0.0f, 1.0f, 1.0f,
-         0.5f, -0.5f, -0.5f,   0.0f, 1.0f, 1.0f,
-         0.5f,  0.5f, -0.5f,   0.0f, 1.0f, 1.0f,
-         0.5f,  0.5f,  0.5f,   0.0f, 1.0f, 1.0f,
-
-        // Left face
-        -0.5f, -0.5f,  0.5f,   1.0f, 0.0f, 1.0f,
-        -0.5f,  0.5f,  0.5f,   1.0f, 0.0f, 1.0f,
-        -0.5f,  0.5f, -0.5f,   1.0f, 0.0f, 1.0f,
-        -0.5f, -0.5f, -0.5f,   1.0f, 0.0f, 1.0f
-    };
-
-    //IBO Definition
-    GLuint indices[] = {
-        0, 1, 2,   2, 3, 0,
-        4, 5, 6,   6, 7, 4,
-        8, 9, 10,  10, 11, 8,
-        12, 13, 14, 14, 15, 12,
-        16, 17, 18, 18, 19, 16,
-        20, 21, 22, 22, 23, 20
-    };
-
-    glGenVertexArrays(1, &idVAO);
-    glBindVertexArray(idVAO);
-
-    glGenBuffers(1, &idVBOVertex);
-    glBindBuffer(GL_ARRAY_BUFFER, idVBOVertex);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices_color), vertices_color, GL_STATIC_DRAW);
-
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (void*)NULL);
-    glEnableVertexAttribArray(0);
-
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(GLfloat), (void*)(3 * sizeof(GLfloat)));
-    glEnableVertexAttribArray(1);
-
-    glGenBuffers(1, &idIBOVertex);
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, idIBOVertex);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-
-    glBindVertexArray(0);
 }

@@ -13,6 +13,7 @@
 #include "../gui/CameraWindow.h"
 #include "../utils/Listener.h"
 #include "../shader/ShaderProgram.h"
+#include "../model/Model.h"
 
 /**
  * @class Renderer Class that will render objects in the application, manage different other objects (shaderPrograms, cameras, models...)
@@ -24,13 +25,16 @@ namespace PAG {
 
             float *_bgColor;
 
+            //Shader programs
             std::vector<std::pair<std::string, std::unique_ptr<ShaderProgram>>> _shaderPrograms;
-
             ShaderProgram* _activeShaderProgram = nullptr;
 
-            Camera* _activeCamera = nullptr;
+            //Models
+            std::vector<std::unique_ptr<Model>> models;
+            Model* _activeModel = nullptr;
 
-            GLuint idVBOVertex = 0, idVBOColors = 0, idIBOVertex = 0, idVAO = 0;
+            //Cameras
+            Camera* _activeCamera = nullptr;
 
             Renderer();
         public:
