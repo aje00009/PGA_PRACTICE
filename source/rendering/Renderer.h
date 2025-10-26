@@ -12,13 +12,12 @@
 #include "../camera/Camera.h"
 #include "../gui/CameraWindow.h"
 #include "../utils/Listener.h"
+#include "../shader/ShaderProgram.h"
 
 /**
  * @class Renderer Class that will render objects in the application, manage different other objects (shaderPrograms, cameras, models...)
  */
 namespace PAG {
-    class ShaderProgram;
-
     class Renderer: public Listener {
         private:
             static Renderer* instance;
