@@ -5,6 +5,7 @@
 #ifndef PGA_PRACTICA_MODELLOADERWINDOW_H
 #define PGA_PRACTICA_MODELLOADERWINDOW_H
 #include "GUIElement.h"
+#include "imgui.h"
 #include "imfilebrowser.h"
 
 namespace PAG {

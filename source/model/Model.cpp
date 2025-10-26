@@ -1,6 +1,7 @@
 #define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/transform.hpp>
 #include "Model.h"
+#include <string>
 
 #include "../utils/Logger.h"
 #include <assimp/Importer.hpp>
