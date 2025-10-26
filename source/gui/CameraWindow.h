@@ -4,7 +4,6 @@
 
 #ifndef PGA_PRACTICA_CAMERAWINDOW_H
 #define PGA_PRACTICA_CAMERAWINDOW_H
-#include <vector>
 
 #include "GUIElement.h"
 

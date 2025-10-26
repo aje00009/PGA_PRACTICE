@@ -1,6 +1,3 @@
-//
-// Created by alber on 17/09/2025.
-//
 #include "glad/glad.h"
 #include "Renderer.h"
 
@@ -283,7 +280,7 @@ void PAG::Renderer::refresh() const {
         shaderProgram->use();
 
         //Let shader program know the uniforms
-        const auto model = glm::mat4(1.0);
+        const auto model = _activeModel->getModelMatrix();
         const glm::mat4 view = _activeCamera->getViewMatrix();
         const glm::mat4 projection = _activeCamera->getProjectionMatrix();
 

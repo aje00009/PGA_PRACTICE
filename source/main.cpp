@@ -1,7 +1,6 @@
 #include <iostream>
 #include <ctime>
 
-// IMPORTANTE: El include de GLAD debe estar siempre ANTES de el de GLFW
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
@@ -178,13 +177,6 @@ int main() {
     //Initialize OpenGL
     PAG::Renderer::getInstance()->initializeOpenGL();
 
-    //Shader
-    try {
-        PAG::Renderer::getInstance()->createModel();
-    }catch (std::runtime_error& e) {
-        PAG::Logger::getInstance()->addMessage(e.what());
-    }
-
     while (!glfwWindowShouldClose(window)) {
         //Obtains and organises the remaining events, such as key press,
         //mouse press, etc. Always and the end of each iteration and after
@@ -198,7 +190,11 @@ int main() {
         PAG::ManagerGUI::getInstance()->drawAllWindows();
 
         //Refresh visualization window
-        PAG::Renderer::getInstance()->refresh();
+        try {
+            PAG::Renderer::getInstance()->refresh();
+        }catch (const std::runtime_error& e) {
+            PAG::Logger::getInstance()->addMessage(e.what());
+        }
 
         //Render imgui controls
         PAG::ManagerGUI::renderNewFrame();

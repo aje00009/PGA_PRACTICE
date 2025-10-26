@@ -1,8 +1,11 @@
+#define GLM_ENABLE_EXPERIMENTAL
 #include <glm/gtx/transform.hpp>
-<<<<<<< HEAD
 #include "Model.h"
 
 #include "../utils/Logger.h"
+#include <assimp/Importer.hpp>
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
 
 PAG::Model::Model(ShaderProgram *shaderProgram, const std::string &modelPath): _shaderProgram(shaderProgram), _modelMatrix(glm::mat4(1.0f)) {
     Assimp::Importer importer;

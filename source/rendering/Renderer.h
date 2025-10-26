@@ -5,7 +5,6 @@
 #ifndef PGA_PRACTICA_RENDERER_H
 #define PGA_PRACTICA_RENDERER_H
 
-#include <iostream>
 #include <memory>
 #include <vector>
 

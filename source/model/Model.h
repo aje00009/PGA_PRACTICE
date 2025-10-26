@@ -9,9 +9,10 @@
 #include <vector>
 
 #include "../shader/ShaderProgram.h"
-#include <assimp/Importer.hpp>
-#include <assimp/scene.h>
-#include <assimp/postprocess.h>
+
+struct aiNode;
+struct aiScene;
+struct aiMesh;
 
 namespace PAG {
     struct Vertex {
