@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 #include "Model.h"
 
 #include "../utils/Logger.h"
