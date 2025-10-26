@@ -36,6 +36,8 @@ namespace PAG {
         std::vector<Texture> _textures;
         std::vector<GLuint> _indices;
 
+        glm::mat4 _modelMatrix; ///< Model matrix for each model (rotation, escalation, translation)
+
         ShaderProgram* _shaderProgram = nullptr;
 
         void processNode(aiNode* node, const aiScene* scene);
@@ -46,12 +48,20 @@ namespace PAG {
 
     public:
         Model(ShaderProgram* shaderProgram, const std::string& modelPath);
-
         virtual ~Model();
+
 
         void draw() const;
 
+        void setModelMatrix(const glm::mat4& modelMatrix);
+        glm::mat4 getModelMatrix() const;
         ShaderProgram* getShaderProgram() const;
+
+        //Transformations for models
+        void resetModelMatrix();
+        void translate(const glm::vec3& translation);
+        void scale(const glm::vec3& scale);
+        void rotate(const glm::vec3& rotation, float angleRadians);
     };
 }
 

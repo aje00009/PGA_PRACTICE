@@ -1,9 +1,10 @@
+#include <glm/gtx/transform.hpp>
 <<<<<<< HEAD
 #include "Model.h"
 
 #include "../utils/Logger.h"
 
-PAG::Model::Model(ShaderProgram *shaderProgram, const std::string &modelPath): _shaderProgram(shaderProgram) {
+PAG::Model::Model(ShaderProgram *shaderProgram, const std::string &modelPath): _shaderProgram(shaderProgram), _modelMatrix(glm::mat4(1.0f)) {
     Assimp::Importer importer;
 
     const aiScene* scene = importer.ReadFile(modelPath, aiProcess_Triangulate | aiProcess_JoinIdenticalVertices);
@@ -122,4 +123,31 @@ void PAG::Model::draw() const {
 
 PAG::ShaderProgram * PAG::Model::getShaderProgram() const {
     return this->_shaderProgram;
+}
+
+void PAG::Model::setModelMatrix(const glm::mat4& matrix) {
+    _modelMatrix = matrix;
+}
+
+glm::mat4 PAG::Model::getModelMatrix() const {
+    return _modelMatrix;
+}
+
+void PAG::Model::resetModelMatrix() {
+    _modelMatrix = glm::mat4(1.0f);
+}
+
+// Aplica una traslación A LA MATRIZ ACTUAL
+void PAG::Model::translate(const glm::vec3& v) {
+    _modelMatrix = glm::translate(_modelMatrix, v);
+}
+
+// Aplica una rotación A LA MATRIZ ACTUAL
+void PAG::Model::rotate(const glm::vec3& axis, float angleRadians) {
+    _modelMatrix = glm::rotate(_modelMatrix, angleRadians, axis);
+}
+
+// Aplica un escalado A LA MATRIZ ACTUAL
+void PAG::Model::scale(const glm::vec3& s) {
+    _modelMatrix = glm::scale(_modelMatrix, s);
 }
