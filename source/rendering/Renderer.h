@@ -7,6 +7,7 @@
 
 #include <memory>
 #include <vector>
+#include <string>
 
 #include "../camera/Camera.h"
 #include "../gui/CameraWindow.h"

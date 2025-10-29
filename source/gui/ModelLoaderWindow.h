@@ -1,12 +1,8 @@
-//
-// Created by alber on 25/10/2025.
-//
-
 #ifndef PGA_PRACTICA_MODELLOADERWINDOW_H
 #define PGA_PRACTICA_MODELLOADERWINDOW_H
+#include <string>
+
 #include "GUIElement.h"
-#include "imgui.h"
-#include "imfilebrowser.h"
 
 namespace PAG {
     class ModelLoaderWindow: public GUIElement {

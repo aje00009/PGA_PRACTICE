@@ -1,18 +1,13 @@
-//
-// Created by alber on 25/10/2025.
-//
-
 #ifndef PGA_PRACTICA_MODEL_H
 #define PGA_PRACTICA_MODEL_H
 
-#include <glm/glm.hpp>
 #include <vector>
+#include <string>
+#include <glad/glad.h>
+#include <assimp/Importer.hpp>
+#include <assimp/scene.h>
 
 #include "../shader/ShaderProgram.h"
-
-struct aiNode;
-struct aiScene;
-struct aiMesh;
 
 namespace PAG {
     struct Vertex {
@@ -48,7 +43,7 @@ namespace PAG {
         void setupBuffers();
 
     public:
-        Model(ShaderProgram* shaderProgram, const std::string& modelPath);
+        Model(ShaderProgram* shaderProgram, const char* modelPath);
         virtual ~Model();
 
 

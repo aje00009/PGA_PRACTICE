@@ -1,10 +1,6 @@
-//
-// Created by alber on 02/10/2025.
-//
+#include "imgui.h"
 
 #include "ShaderLoaderWindow.h"
-
-#include "imgui.h"
 
 //Definition of the only instance of this class
 PAG::ShaderLoaderWindow* PAG::ShaderLoaderWindow::instance = nullptr;
