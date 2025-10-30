@@ -1,20 +1,18 @@
 #define GLM_ENABLE_EXPERIMENTAL
+#include <stdexcept>
 #include <glm/gtx/transform.hpp>
-#include "Model.h"
-#include <string>
-
-#include "../utils/Logger.h"
-#include <assimp/Importer.hpp>
-#include <assimp/scene.h>
 #include <assimp/postprocess.h>
 
-PAG::Model::Model(ShaderProgram *shaderProgram, const std::string &modelPath): _shaderProgram(shaderProgram), _modelMatrix(glm::mat4(1.0f)) {
+#include "Model.h"
+
+
+PAG::Model::Model(ShaderProgram *shaderProgram, const char* modelPath): _modelMatrix(glm::mat4(1.0f)), _shaderProgram(shaderProgram) {
     Assimp::Importer importer;
 
     const aiScene* scene = importer.ReadFile(modelPath, aiProcess_Triangulate | aiProcess_JoinIdenticalVertices);
 
     if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) {
-        throw std::runtime_error("Assimp error while loading model: " + std::string(importer.GetErrorString()));
+        throw std::runtime_error(importer.GetErrorString());
     }
 
     processNode(scene->mRootNode, scene);

@@ -1,14 +1,8 @@
-//
-// Created by alber on 06/10/2025.
-//
-
 #ifndef PGA_PRACTICA_SHADERPROGRAM_H
 #define PGA_PRACTICA_SHADERPROGRAM_H
 
-#include "glad/glad.h"
-#include <string>
 #include <glm/glm.hpp>
-
+//
 #include "FragmentShader.h"
 #include "VertexShader.h"
 

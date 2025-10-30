@@ -3,6 +3,8 @@
 //
 
 #include "ModelLoaderWindow.h"
+#include "imgui.h"
+#include "imfilebrowser.h"
 #include "../utils/Logger.h"
 
 PAG::ModelLoaderWindow* PAG::ModelLoaderWindow::instance = nullptr;

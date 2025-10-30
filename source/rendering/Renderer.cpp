@@ -1,14 +1,7 @@
-#include "glad/glad.h"
-#include "Renderer.h"
-
 #include <cstdarg>
-#include <fstream>
 
-#include "../gui/ManagerGUI.h"
-#include "imgui.h"
-#include "../gui/CameraWindow.h"
+#include "Renderer.h"
 #include "../utils/Logger.h"
-#include "../shader/ShaderProgram.h"
 
 //Definition of the only instance of the class
 PAG::Renderer* PAG::Renderer::instance = nullptr;
@@ -191,16 +184,14 @@ void PAG::Renderer::wakeUp(WindowType t, ...) {
             }
 
             try {
-                std::string pathStr(filePath);
-
-                auto newModel = std::make_unique<Model>(_activeShaderProgram,pathStr);
+                auto newModel = std::make_unique<Model>(_activeShaderProgram,filePath);
 
                 _models.push_back(std::move(newModel));
 
 
                 _activeModel = _models.back().get();
 
-                Logger::getInstance()->addMessage("Model " + pathStr + " loaded successfully");
+                Logger::getInstance()->addMessage("Model loaded successfully");
             }catch (const std::runtime_error& e) {
                 _activeModel = nullptr;
                 throw e;

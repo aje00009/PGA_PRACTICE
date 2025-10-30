@@ -4,9 +4,8 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
-#include "gui/BgWindow.h"
 #include "imgui.h"
-#include "gui/CameraWindow.h"
+#include "gui/BgWindow.h"
 #include "gui/ManagerGUI.h"
 #include "rendering/Renderer.h"
 #include "utils/Logger.h"

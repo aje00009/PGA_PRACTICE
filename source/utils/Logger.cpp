@@ -1,7 +1,3 @@
-//
-// Created by alber on 17/09/2025.
-//
-
 #include "Logger.h"
 
 //Definition of the instance
