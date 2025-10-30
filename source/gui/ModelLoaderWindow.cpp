@@ -1,7 +1,3 @@
-//
-// Created by alber on 25/10/2025.
-//
-
 #include "ModelLoaderWindow.h"
 #include "../utils/Logger.h"
 
@@ -37,7 +33,10 @@ void PAG::ModelLoaderWindow::render() {
 
     if (fileDialog.HasSelected()) {
         model = fileDialog.GetSelected().string();
-        Logger::getInstance()->addMessage("Model selected: " + model);
+
+        const std::filesystem::path path(model);
+
+        Logger::getInstance()->addMessage("Model selected: " + path.filename().string());
         warnListeners();
         fileDialog.ClearSelected();
     }

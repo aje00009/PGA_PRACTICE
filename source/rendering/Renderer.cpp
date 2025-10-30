@@ -186,7 +186,7 @@ void PAG::Renderer::wakeUp(WindowType t, ...) {
             va_end(args);
 
             if (!_activeShaderProgram) {
-                throw std::runtime_error("No active shader program, please select one");
+                Logger::getInstance()->addMessage("Error: No active shader program, please select one");
                 break;
             }
 
@@ -309,7 +309,7 @@ void PAG::Renderer::getInfoGL() {
  * @brief Method that initialises OpenGL parameteres
  */
 void PAG::Renderer::initializeOpenGL() const {
-    glClearColor ( _bgColor[0], instance->_bgColor[1], instance->_bgColor[3], instance->_bgColor[4] );
+    glClearColor ( _bgColor[0], instance->_bgColor[1], instance->_bgColor[2], instance->_bgColor[3] );
     glEnable ( GL_DEPTH_TEST );
     glEnable( GL_MULTISAMPLE );
 }

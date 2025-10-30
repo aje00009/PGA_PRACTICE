@@ -48,6 +48,7 @@ void PAG::Model::processMesh(aiMesh *mesh, const aiScene *scene) {
             vertex.Color = { 1.0f, 1.0f, 1.0f };
         }
 
+
         // Normals
         if (mesh->HasNormals()) {
             vertex.Normal = { mesh->mNormals[i].x, mesh->mNormals[i].y, mesh->mNormals[i].z };
@@ -121,7 +122,7 @@ PAG::Model::~Model() {
 
 void PAG::Model::draw() const {
     glBindVertexArray(_idVAO);
-    glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(_vertices.size()), GL_UNSIGNED_INT, nullptr);
+    glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(_indices.size()), GL_UNSIGNED_INT, nullptr);
     glBindVertexArray(0);
 }
 

@@ -1,17 +1,11 @@
-//
-// Created by alber on 17/09/2025.
-//
-
 #ifndef PGA_PRACTICA_RENDERER_H
 #define PGA_PRACTICA_RENDERER_H
 
 #include <memory>
-#include <vector>
 
 #include "../camera/Camera.h"
 #include "../gui/CameraWindow.h"
 #include "../utils/Listener.h"
-#include "../shader/ShaderProgram.h"
 #include "../model/Model.h"
 
 /**
