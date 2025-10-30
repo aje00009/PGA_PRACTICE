@@ -56,13 +56,13 @@ void PAG::Model::processMesh(aiMesh *mesh, const aiScene *scene) {
             vertex.Normal = { 0.0f, 1.0f, 0.0f };
         }
 
-        // Texture coordinates
-        if (mesh->HasTextureCoords(0)) {
-            vertex.TextCoord = { mesh->mTextureCoords[0][i].x, mesh->mTextureCoords[0][i].y };
-        } else {
-            // Si no hay texturas, ponemos una por defecto
-            vertex.TextCoord = { 0.0f, 0.0f };
-        }
+        // // Texture coordinates
+        // if (mesh->HasTextureCoords(0)) {
+        //     vertex.TextCoord = { mesh->mTextureCoords[0][i].x, mesh->mTextureCoords[0][i].y };
+        // } else {
+        //     // Si no hay texturas, ponemos una por defecto
+        //     vertex.TextCoord = { 0.0f, 0.0f };
+        // }
 
         _vertices.push_back(vertex);
     }
