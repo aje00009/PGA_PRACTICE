@@ -1,0 +1,1113 @@
+{
+	"artifacts" : 
+	[
+		{
+			"path" : "PGA_PRACTICA.exe"
+		},
+		{
+			"path" : "PGA_PRACTICA.pdb"
+		}
+	],
+	"backtrace" : 1,
+	"backtraceGraph" : 
+	{
+		"commands" : 
+		[
+			"add_executable",
+			"target_link_libraries",
+			"set_property",
+			"include",
+			"find_package",
+			"find_dependency",
+			"target_include_directories"
+		],
+		"files" : 
+		[
+			"CMakeLists.txt",
+			"cmake-build-debug/conan/build/Debug/generators/glfw3-Target-debug.cmake",
+			"cmake-build-debug/conan/build/Debug/generators/glfw3Targets.cmake",
+			"cmake-build-debug/conan/build/Debug/generators/glfw3-config.cmake",
+			"conan_provider.cmake",
+			"cmake-build-debug/conan/build/Debug/generators/opengl_system-Target-debug.cmake",
+			"cmake-build-debug/conan/build/Debug/generators/opengl_systemTargets.cmake",
+			"cmake-build-debug/conan/build/Debug/generators/opengl_system-config.cmake",
+			"C:/Users/alber/AppData/Local/Programs/CLion/bin/cmake/win/x64/share/cmake-4.0/Modules/CMakeFindDependencyMacro.cmake",
+			"cmake-build-debug/conan/build/Debug/generators/assimp-Target-debug.cmake",
+			"cmake-build-debug/conan/build/Debug/generators/assimpTargets.cmake",
+			"cmake-build-debug/conan/build/Debug/generators/assimp-config.cmake",
+			"cmake-build-debug/conan/build/Debug/generators/minizip-Target-debug.cmake",
+			"cmake-build-debug/conan/build/Debug/generators/minizipTargets.cmake",
+			"cmake-build-debug/conan/build/Debug/generators/minizip-config.cmake",
+			"cmake-build-debug/conan/build/Debug/generators/BZip2-Target-debug.cmake",
+			"cmake-build-debug/conan/build/Debug/generators/BZip2Targets.cmake",
+			"cmake-build-debug/conan/build/Debug/generators/BZip2Config.cmake",
+			"cmake-build-debug/conan/build/Debug/generators/pugixml-Target-debug.cmake",
+			"cmake-build-debug/conan/build/Debug/generators/pugixmlTargets.cmake",
+			"cmake-build-debug/conan/build/Debug/generators/pugixml-config.cmake",
+			"cmake-build-debug/conan/build/Debug/generators/ZLIB-Target-debug.cmake",
+			"cmake-build-debug/conan/build/Debug/generators/ZLIBTargets.cmake",
+			"cmake-build-debug/conan/build/Debug/generators/ZLIBConfig.cmake",
+			"cmake-build-debug/conan/build/Debug/generators/zip-Target-debug.cmake",
+			"cmake-build-debug/conan/build/Debug/generators/zipTargets.cmake",
+			"cmake-build-debug/conan/build/Debug/generators/zip-config.cmake",
+			"cmake-build-debug/conan/build/Debug/generators/poly2tri-Target-debug.cmake",
+			"cmake-build-debug/conan/build/Debug/generators/poly2triTargets.cmake",
+			"cmake-build-debug/conan/build/Debug/generators/poly2tri-config.cmake",
+			"cmake-build-debug/conan/build/Debug/generators/draco-Target-debug.cmake",
+			"cmake-build-debug/conan/build/Debug/generators/dracoTargets.cmake",
+			"cmake-build-debug/conan/build/Debug/generators/draco-config.cmake",
+			"cmake-build-debug/conan/build/Debug/generators/clipper-Target-debug.cmake",
+			"cmake-build-debug/conan/build/Debug/generators/clipperTargets.cmake",
+			"cmake-build-debug/conan/build/Debug/generators/clipper-config.cmake",
+			"cmake-build-debug/conan/build/Debug/generators/openddlparser-Target-debug.cmake",
+			"cmake-build-debug/conan/build/Debug/generators/openddlparserTargets.cmake",
+			"cmake-build-debug/conan/build/Debug/generators/openddlparser-config.cmake"
+		],
+		"nodes" : 
+		[
+			{
+				"file" : 0
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 11,
+				"parent" : 0
+			},
+			{
+				"command" : 1,
+				"file" : 0,
+				"line" : 31,
+				"parent" : 0
+			},
+			{
+				"command" : 4,
+				"file" : 0,
+				"line" : 20,
+				"parent" : 0
+			},
+			{
+				"command" : 4,
+				"file" : 4,
+				"line" : 628,
+				"parent" : 3
+			},
+			{
+				"file" : 3,
+				"parent" : 4
+			},
+			{
+				"command" : 3,
+				"file" : 3,
+				"line" : 16,
+				"parent" : 5
+			},
+			{
+				"file" : 2,
+				"parent" : 6
+			},
+			{
+				"command" : 3,
+				"file" : 2,
+				"line" : 24,
+				"parent" : 7
+			},
+			{
+				"file" : 1,
+				"parent" : 8
+			},
+			{
+				"command" : 2,
+				"file" : 1,
+				"line" : 38,
+				"parent" : 9
+			},
+			{
+				"command" : 5,
+				"file" : 3,
+				"line" : 24,
+				"parent" : 5
+			},
+			{
+				"command" : 4,
+				"file" : 8,
+				"line" : 78,
+				"parent" : 11
+			},
+			{
+				"command" : 4,
+				"file" : 4,
+				"line" : 628,
+				"parent" : 12
+			},
+			{
+				"file" : 7,
+				"parent" : 13
+			},
+			{
+				"command" : 3,
+				"file" : 7,
+				"line" : 16,
+				"parent" : 14
+			},
+			{
+				"file" : 6,
+				"parent" : 15
+			},
+			{
+				"command" : 3,
+				"file" : 6,
+				"line" : 24,
+				"parent" : 16
+			},
+			{
+				"file" : 5,
+				"parent" : 17
+			},
+			{
+				"command" : 2,
+				"file" : 5,
+				"line" : 15,
+				"parent" : 18
+			},
+			{
+				"command" : 2,
+				"file" : 1,
+				"line" : 15,
+				"parent" : 9
+			},
+			{
+				"command" : 4,
+				"file" : 0,
+				"line" : 26,
+				"parent" : 0
+			},
+			{
+				"command" : 4,
+				"file" : 4,
+				"line" : 628,
+				"parent" : 21
+			},
+			{
+				"file" : 11,
+				"parent" : 22
+			},
+			{
+				"command" : 3,
+				"file" : 11,
+				"line" : 16,
+				"parent" : 23
+			},
+			{
+				"file" : 10,
+				"parent" : 24
+			},
+			{
+				"command" : 3,
+				"file" : 10,
+				"line" : 24,
+				"parent" : 25
+			},
+			{
+				"file" : 9,
+				"parent" : 26
+			},
+			{
+				"command" : 2,
+				"file" : 9,
+				"line" : 38,
+				"parent" : 27
+			},
+			{
+				"command" : 2,
+				"file" : 9,
+				"line" : 15,
+				"parent" : 27
+			},
+			{
+				"command" : 5,
+				"file" : 11,
+				"line" : 24,
+				"parent" : 23
+			},
+			{
+				"command" : 4,
+				"file" : 8,
+				"line" : 78,
+				"parent" : 30
+			},
+			{
+				"command" : 4,
+				"file" : 4,
+				"line" : 628,
+				"parent" : 31
+			},
+			{
+				"file" : 14,
+				"parent" : 32
+			},
+			{
+				"command" : 3,
+				"file" : 14,
+				"line" : 16,
+				"parent" : 33
+			},
+			{
+				"file" : 13,
+				"parent" : 34
+			},
+			{
+				"command" : 3,
+				"file" : 13,
+				"line" : 24,
+				"parent" : 35
+			},
+			{
+				"file" : 12,
+				"parent" : 36
+			},
+			{
+				"command" : 2,
+				"file" : 12,
+				"line" : 38,
+				"parent" : 37
+			},
+			{
+				"command" : 5,
+				"file" : 14,
+				"line" : 24,
+				"parent" : 33
+			},
+			{
+				"command" : 4,
+				"file" : 8,
+				"line" : 78,
+				"parent" : 39
+			},
+			{
+				"command" : 4,
+				"file" : 4,
+				"line" : 628,
+				"parent" : 40
+			},
+			{
+				"file" : 17,
+				"parent" : 41
+			},
+			{
+				"command" : 3,
+				"file" : 17,
+				"line" : 16,
+				"parent" : 42
+			},
+			{
+				"file" : 16,
+				"parent" : 43
+			},
+			{
+				"command" : 3,
+				"file" : 16,
+				"line" : 24,
+				"parent" : 44
+			},
+			{
+				"file" : 15,
+				"parent" : 45
+			},
+			{
+				"command" : 2,
+				"file" : 15,
+				"line" : 38,
+				"parent" : 46
+			},
+			{
+				"command" : 5,
+				"file" : 11,
+				"line" : 24,
+				"parent" : 23
+			},
+			{
+				"command" : 4,
+				"file" : 8,
+				"line" : 78,
+				"parent" : 48
+			},
+			{
+				"command" : 4,
+				"file" : 4,
+				"line" : 628,
+				"parent" : 49
+			},
+			{
+				"file" : 20,
+				"parent" : 50
+			},
+			{
+				"command" : 3,
+				"file" : 20,
+				"line" : 16,
+				"parent" : 51
+			},
+			{
+				"file" : 19,
+				"parent" : 52
+			},
+			{
+				"command" : 3,
+				"file" : 19,
+				"line" : 28,
+				"parent" : 53
+			},
+			{
+				"file" : 18,
+				"parent" : 54
+			},
+			{
+				"command" : 2,
+				"file" : 18,
+				"line" : 38,
+				"parent" : 55
+			},
+			{
+				"command" : 5,
+				"file" : 14,
+				"line" : 24,
+				"parent" : 33
+			},
+			{
+				"command" : 4,
+				"file" : 8,
+				"line" : 78,
+				"parent" : 57
+			},
+			{
+				"command" : 4,
+				"file" : 4,
+				"line" : 628,
+				"parent" : 58
+			},
+			{
+				"file" : 23,
+				"parent" : 59
+			},
+			{
+				"command" : 3,
+				"file" : 23,
+				"line" : 16,
+				"parent" : 60
+			},
+			{
+				"file" : 22,
+				"parent" : 61
+			},
+			{
+				"command" : 3,
+				"file" : 22,
+				"line" : 24,
+				"parent" : 62
+			},
+			{
+				"file" : 21,
+				"parent" : 63
+			},
+			{
+				"command" : 2,
+				"file" : 21,
+				"line" : 38,
+				"parent" : 64
+			},
+			{
+				"command" : 5,
+				"file" : 11,
+				"line" : 24,
+				"parent" : 23
+			},
+			{
+				"command" : 4,
+				"file" : 8,
+				"line" : 78,
+				"parent" : 66
+			},
+			{
+				"command" : 4,
+				"file" : 4,
+				"line" : 628,
+				"parent" : 67
+			},
+			{
+				"file" : 26,
+				"parent" : 68
+			},
+			{
+				"command" : 3,
+				"file" : 26,
+				"line" : 16,
+				"parent" : 69
+			},
+			{
+				"file" : 25,
+				"parent" : 70
+			},
+			{
+				"command" : 3,
+				"file" : 25,
+				"line" : 24,
+				"parent" : 71
+			},
+			{
+				"file" : 24,
+				"parent" : 72
+			},
+			{
+				"command" : 2,
+				"file" : 24,
+				"line" : 38,
+				"parent" : 73
+			},
+			{
+				"command" : 5,
+				"file" : 11,
+				"line" : 24,
+				"parent" : 23
+			},
+			{
+				"command" : 4,
+				"file" : 8,
+				"line" : 78,
+				"parent" : 75
+			},
+			{
+				"command" : 4,
+				"file" : 4,
+				"line" : 628,
+				"parent" : 76
+			},
+			{
+				"file" : 29,
+				"parent" : 77
+			},
+			{
+				"command" : 3,
+				"file" : 29,
+				"line" : 16,
+				"parent" : 78
+			},
+			{
+				"file" : 28,
+				"parent" : 79
+			},
+			{
+				"command" : 3,
+				"file" : 28,
+				"line" : 24,
+				"parent" : 80
+			},
+			{
+				"file" : 27,
+				"parent" : 81
+			},
+			{
+				"command" : 2,
+				"file" : 27,
+				"line" : 38,
+				"parent" : 82
+			},
+			{
+				"command" : 5,
+				"file" : 11,
+				"line" : 24,
+				"parent" : 23
+			},
+			{
+				"command" : 4,
+				"file" : 8,
+				"line" : 78,
+				"parent" : 84
+			},
+			{
+				"command" : 4,
+				"file" : 4,
+				"line" : 628,
+				"parent" : 85
+			},
+			{
+				"file" : 32,
+				"parent" : 86
+			},
+			{
+				"command" : 3,
+				"file" : 32,
+				"line" : 16,
+				"parent" : 87
+			},
+			{
+				"file" : 31,
+				"parent" : 88
+			},
+			{
+				"command" : 3,
+				"file" : 31,
+				"line" : 24,
+				"parent" : 89
+			},
+			{
+				"file" : 30,
+				"parent" : 90
+			},
+			{
+				"command" : 2,
+				"file" : 30,
+				"line" : 38,
+				"parent" : 91
+			},
+			{
+				"command" : 5,
+				"file" : 11,
+				"line" : 24,
+				"parent" : 23
+			},
+			{
+				"command" : 4,
+				"file" : 8,
+				"line" : 78,
+				"parent" : 93
+			},
+			{
+				"command" : 4,
+				"file" : 4,
+				"line" : 628,
+				"parent" : 94
+			},
+			{
+				"file" : 35,
+				"parent" : 95
+			},
+			{
+				"command" : 3,
+				"file" : 35,
+				"line" : 16,
+				"parent" : 96
+			},
+			{
+				"file" : 34,
+				"parent" : 97
+			},
+			{
+				"command" : 3,
+				"file" : 34,
+				"line" : 24,
+				"parent" : 98
+			},
+			{
+				"file" : 33,
+				"parent" : 99
+			},
+			{
+				"command" : 2,
+				"file" : 33,
+				"line" : 38,
+				"parent" : 100
+			},
+			{
+				"command" : 5,
+				"file" : 11,
+				"line" : 24,
+				"parent" : 23
+			},
+			{
+				"command" : 4,
+				"file" : 8,
+				"line" : 78,
+				"parent" : 102
+			},
+			{
+				"command" : 4,
+				"file" : 4,
+				"line" : 628,
+				"parent" : 103
+			},
+			{
+				"file" : 38,
+				"parent" : 104
+			},
+			{
+				"command" : 3,
+				"file" : 38,
+				"line" : 16,
+				"parent" : 105
+			},
+			{
+				"file" : 37,
+				"parent" : 106
+			},
+			{
+				"command" : 3,
+				"file" : 37,
+				"line" : 24,
+				"parent" : 107
+			},
+			{
+				"file" : 36,
+				"parent" : 108
+			},
+			{
+				"command" : 2,
+				"file" : 36,
+				"line" : 38,
+				"parent" : 109
+			},
+			{
+				"command" : 6,
+				"file" : 0,
+				"line" : 29,
+				"parent" : 0
+			}
+		]
+	},
+	"compileGroups" : 
+	[
+		{
+			"compileCommandFragments" : 
+			[
+				{
+					"fragment" : "-g -std=gnu++20 -fdiagnostics-color=always"
+				}
+			],
+			"defines" : 
+			[
+				{
+					"backtrace" : 2,
+					"define" : "HAVE_BZIP2"
+				},
+				{
+					"backtrace" : 2,
+					"define" : "OPENDDL_STATIC_LIBARY"
+				}
+			],
+			"includes" : 
+			[
+				{
+					"backtrace" : 111,
+					"path" : "C:/Users/alber/CLionProjects/4_ING_INFORMATICA/PGA/PGA_PRACTICA/GLAD/include"
+				},
+				{
+					"backtrace" : 111,
+					"path" : "C:/Users/alber/CLionProjects/4_ING_INFORMATICA/PGA/PGA_PRACTICA/IMGUI/include"
+				},
+				{
+					"backtrace" : 2,
+					"isSystem" : true,
+					"path" : "C:/Users/alber/.conan2/p/b/glfw2948ac08adbbe/p/include"
+				},
+				{
+					"backtrace" : 2,
+					"isSystem" : true,
+					"path" : "C:/Users/alber/.conan2/p/glmc7261f667dea4/p/include"
+				},
+				{
+					"backtrace" : 2,
+					"isSystem" : true,
+					"path" : "C:/Users/alber/.conan2/p/b/assimbdba3ffda3aa6/p/include"
+				}
+			],
+			"language" : "CXX",
+			"languageStandard" : 
+			{
+				"backtraces" : 
+				[
+					1
+				],
+				"standard" : "20"
+			},
+			"sourceIndexes" : 
+			[
+				0,
+				1,
+				2,
+				3,
+				4,
+				5,
+				6,
+				7,
+				8,
+				9,
+				10,
+				11,
+				12,
+				13,
+				15,
+				16,
+				17,
+				18,
+				19,
+				20,
+				21
+			]
+		},
+		{
+			"compileCommandFragments" : 
+			[
+				{
+					"fragment" : "-g -fdiagnostics-color=always"
+				}
+			],
+			"defines" : 
+			[
+				{
+					"backtrace" : 2,
+					"define" : "HAVE_BZIP2"
+				},
+				{
+					"backtrace" : 2,
+					"define" : "OPENDDL_STATIC_LIBARY"
+				}
+			],
+			"includes" : 
+			[
+				{
+					"backtrace" : 111,
+					"path" : "C:/Users/alber/CLionProjects/4_ING_INFORMATICA/PGA/PGA_PRACTICA/GLAD/include"
+				},
+				{
+					"backtrace" : 111,
+					"path" : "C:/Users/alber/CLionProjects/4_ING_INFORMATICA/PGA/PGA_PRACTICA/IMGUI/include"
+				},
+				{
+					"backtrace" : 2,
+					"isSystem" : true,
+					"path" : "C:/Users/alber/.conan2/p/b/glfw2948ac08adbbe/p/include"
+				},
+				{
+					"backtrace" : 2,
+					"isSystem" : true,
+					"path" : "C:/Users/alber/.conan2/p/glmc7261f667dea4/p/include"
+				},
+				{
+					"backtrace" : 2,
+					"isSystem" : true,
+					"path" : "C:/Users/alber/.conan2/p/b/assimbdba3ffda3aa6/p/include"
+				}
+			],
+			"language" : "C",
+			"sourceIndexes" : 
+			[
+				14
+			]
+		}
+	],
+	"id" : "PGA_PRACTICA::@6890427a1f51a3e7e1df",
+	"link" : 
+	{
+		"commandFragments" : 
+		[
+			{
+				"fragment" : "-g",
+				"role" : "flags"
+			},
+			{
+				"backtrace" : 2,
+				"fragment" : "-LC:\\Users\\alber\\.conan2\\p\\b\\glfw2948ac08adbbe\\p\\lib",
+				"role" : "libraryPath"
+			},
+			{
+				"backtrace" : 2,
+				"fragment" : "-LC:\\Users\\alber\\.conan2\\p\\b\\assimbdba3ffda3aa6\\p\\lib",
+				"role" : "libraryPath"
+			},
+			{
+				"backtrace" : 2,
+				"fragment" : "-LC:\\Users\\alber\\.conan2\\p\\b\\miniz91eee886ca5f5\\p\\lib",
+				"role" : "libraryPath"
+			},
+			{
+				"backtrace" : 2,
+				"fragment" : "-LC:\\Users\\alber\\.conan2\\p\\b\\bzip28d1bf6e079323\\p\\lib",
+				"role" : "libraryPath"
+			},
+			{
+				"backtrace" : 2,
+				"fragment" : "-LC:\\Users\\alber\\.conan2\\p\\b\\zlib05dbe3c299eb2\\p\\lib",
+				"role" : "libraryPath"
+			},
+			{
+				"backtrace" : 2,
+				"fragment" : "-LC:\\Users\\alber\\.conan2\\p\\b\\pugixfb07ebb280e8e\\p\\lib",
+				"role" : "libraryPath"
+			},
+			{
+				"backtrace" : 2,
+				"fragment" : "-LC:\\Users\\alber\\.conan2\\p\\b\\kuba-96c88d3c65fcd\\p\\lib",
+				"role" : "libraryPath"
+			},
+			{
+				"backtrace" : 2,
+				"fragment" : "-LC:\\Users\\alber\\.conan2\\p\\b\\poly27835c7bef2cab\\p\\lib",
+				"role" : "libraryPath"
+			},
+			{
+				"backtrace" : 2,
+				"fragment" : "-LC:\\Users\\alber\\.conan2\\p\\b\\dracoc25e8744f3368\\p\\lib",
+				"role" : "libraryPath"
+			},
+			{
+				"backtrace" : 2,
+				"fragment" : "-LC:\\Users\\alber\\.conan2\\p\\b\\clipp1c13a7cfb95dc\\p\\lib",
+				"role" : "libraryPath"
+			},
+			{
+				"backtrace" : 2,
+				"fragment" : "-LC:\\Users\\alber\\.conan2\\p\\b\\opend91094addb5ad0\\p\\lib",
+				"role" : "libraryPath"
+			},
+			{
+				"backtrace" : 10,
+				"fragment" : "C:\\Users\\alber\\.conan2\\p\\b\\glfw2948ac08adbbe\\p\\lib\\libglfw3.a",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 19,
+				"fragment" : "-lopengl32",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 20,
+				"fragment" : "-lgdi32",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 28,
+				"fragment" : "C:\\Users\\alber\\.conan2\\p\\b\\assimbdba3ffda3aa6\\p\\lib\\libassimp.a",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 29,
+				"fragment" : "-lstdc++",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 38,
+				"fragment" : "C:\\Users\\alber\\.conan2\\p\\b\\miniz91eee886ca5f5\\p\\lib\\libminizip.a",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 47,
+				"fragment" : "C:\\Users\\alber\\.conan2\\p\\b\\bzip28d1bf6e079323\\p\\lib\\libbz2.a",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 56,
+				"fragment" : "C:\\Users\\alber\\.conan2\\p\\b\\pugixfb07ebb280e8e\\p\\lib\\libpugixml.a",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 65,
+				"fragment" : "C:\\Users\\alber\\.conan2\\p\\b\\zlib05dbe3c299eb2\\p\\lib\\libz.a",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 74,
+				"fragment" : "C:\\Users\\alber\\.conan2\\p\\b\\kuba-96c88d3c65fcd\\p\\lib\\libzip.a",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 83,
+				"fragment" : "C:\\Users\\alber\\.conan2\\p\\b\\poly27835c7bef2cab\\p\\lib\\libpoly2tri.a",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 92,
+				"fragment" : "C:\\Users\\alber\\.conan2\\p\\b\\dracoc25e8744f3368\\p\\lib\\libdraco.a",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 101,
+				"fragment" : "C:\\Users\\alber\\.conan2\\p\\b\\clipp1c13a7cfb95dc\\p\\lib\\libpolyclipping.a",
+				"role" : "libraries"
+			},
+			{
+				"backtrace" : 110,
+				"fragment" : "C:\\Users\\alber\\.conan2\\p\\b\\opend91094addb5ad0\\p\\lib\\libopenddlparser.a",
+				"role" : "libraries"
+			},
+			{
+				"fragment" : "-lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32",
+				"role" : "libraries"
+			}
+		],
+		"language" : "CXX"
+	},
+	"name" : "PGA_PRACTICA",
+	"nameOnDisk" : "PGA_PRACTICA.exe",
+	"paths" : 
+	{
+		"build" : ".",
+		"source" : "."
+	},
+	"sourceGroups" : 
+	[
+		{
+			"name" : "Source Files",
+			"sourceIndexes" : 
+			[
+				0,
+				1,
+				2,
+				3,
+				4,
+				5,
+				6,
+				7,
+				8,
+				9,
+				10,
+				11,
+				12,
+				13,
+				14,
+				15,
+				16,
+				17,
+				18,
+				19,
+				20,
+				21
+			]
+		}
+	],
+	"sources" : 
+	[
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "source/camera/Camera.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "source/gui/BgWindow.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "source/gui/CameraWindow.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "source/gui/LoggerWindow.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "source/gui/ManagerGUI.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "source/gui/ModelLoaderWindow.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "source/gui/ShaderLoaderWindow.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "source/main.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "source/model/Model.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "source/rendering/Renderer.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "source/shader/Shader.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "source/shader/ShaderProgram.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "source/utils/Listener.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "source/utils/Logger.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 1,
+			"path" : "GLAD/src/glad.c",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "IMGUI/src/imgui.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "IMGUI/src/imgui_demo.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "IMGUI/src/imgui_draw.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "IMGUI/src/imgui_impl_glfw.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "IMGUI/src/imgui_impl_opengl3.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "IMGUI/src/imgui_tables.cpp",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 1,
+			"compileGroupIndex" : 0,
+			"path" : "IMGUI/src/imgui_widgets.cpp",
+			"sourceGroupIndex" : 0
+		}
+	],
+	"type" : "EXECUTABLE"
+}

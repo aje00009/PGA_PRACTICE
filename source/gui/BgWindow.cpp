@@ -1,6 +1,6 @@
-#include <imgui.h>
 
 #include "BgWindow.h"
+#include <imgui.h>
 
 //Definition of the only instance of this class
 PAG::BgWindow* PAG::BgWindow::instance = nullptr;

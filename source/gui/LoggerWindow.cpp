@@ -1,6 +1,7 @@
-#include <imgui.h>
 
 #include "LoggerWindow.h"
+
+#include <imgui.h>
 #include "../utils/Logger.h"
 
 //Definition of the instance

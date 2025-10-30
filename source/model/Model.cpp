@@ -1,9 +1,10 @@
 #define GLM_ENABLE_EXPERIMENTAL
 #include <stdexcept>
-#include <glm/gtx/transform.hpp>
-#include <assimp/postprocess.h>
 
 #include "Model.h"
+
+#include <assimp/postprocess.h>
+#include <glm/gtx/transform.hpp>
 
 
 PAG::Model::Model(ShaderProgram *shaderProgram, const char* modelPath): _modelMatrix(glm::mat4(1.0f)), _shaderProgram(shaderProgram) {

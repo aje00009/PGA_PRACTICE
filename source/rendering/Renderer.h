@@ -5,15 +5,15 @@
 #ifndef PGA_PRACTICA_RENDERER_H
 #define PGA_PRACTICA_RENDERER_H
 
-#include <memory>
 #include <vector>
 #include <string>
+#include <memory>
 
-#include "../camera/Camera.h"
-#include "../gui/CameraWindow.h"
 #include "../utils/Listener.h"
 #include "../shader/ShaderProgram.h"
 #include "../model/Model.h"
+#include "../camera/Camera.h"
+#include "../gui/CameraWindow.h"
 
 /**
  * @class Renderer Class that will render objects in the application, manage different other objects (shaderPrograms, cameras, models...)

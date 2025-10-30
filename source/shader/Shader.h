@@ -1,8 +1,9 @@
 #ifndef PGA_PRACTICA_SHADER_H
 #define PGA_PRACTICA_SHADER_H
 
-#include "glad/glad.h"
 #include <string>
+#include "glad/glad.h"
+
 
 /**
  * @class Shader Class that generalises both vertex/fragment shader functionality

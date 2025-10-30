@@ -1,7 +1,8 @@
-#include <fstream>
-#include <sstream>
 
 #include "Shader.h"
+
+#include <fstream>
+#include <sstream>
 
 /**
  * @brief Parameterized constructor of the class Shader

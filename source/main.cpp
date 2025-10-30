@@ -1,17 +1,18 @@
-#include <iostream>
-#include <ctime>
-
+// #include <iostream>
+// #include <ctime>
+//
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+//
+#include <imgui.h>
 
-#include "imgui.h"
-#include "gui/BgWindow.h"
-#include "gui/ManagerGUI.h"
 #include "rendering/Renderer.h"
-#include "utils/Logger.h"
+#include "gui/ManagerGUI.h"
+#include "gui/BgWindow.h"
 #include "gui/LoggerWindow.h"
-#include "gui/ModelLoaderWindow.h"
 #include "gui/ShaderLoaderWindow.h"
+#include "gui/ModelLoaderWindow.h"
+#include "utils/Logger.h"
 
 //Global variables
 bool draging = false;

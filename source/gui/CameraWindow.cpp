@@ -1,6 +1,7 @@
-#include "imgui.h"
 
 #include "CameraWindow.h"
+
+#include "imgui.h"
 
 //Definition of the instance for CameraWindow
 PAG::CameraWindow* PAG::CameraWindow::instance = nullptr;

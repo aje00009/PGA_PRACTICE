@@ -1,7 +1,6 @@
-#include <glm/gtc/matrix_transform.hpp>
 
 #include "Camera.h"
-
+#include <glm/gtc/matrix_transform.hpp>
 
 /**
  * @brief Parameterized constructor of the class Camera

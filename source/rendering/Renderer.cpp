@@ -1,6 +1,8 @@
-#include <cstdarg>
 
+//
 #include "Renderer.h"
+
+#include <cstdarg>
 #include "../utils/Logger.h"
 
 //Definition of the only instance of the class

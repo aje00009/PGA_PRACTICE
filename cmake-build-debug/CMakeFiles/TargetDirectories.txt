@@ -1,0 +1,3 @@
+C:/Users/alber/CLionProjects/4_ING_INFORMATICA/PGA/PGA_PRACTICA/cmake-build-debug/CMakeFiles/PGA_PRACTICA.dir
+C:/Users/alber/CLionProjects/4_ING_INFORMATICA/PGA/PGA_PRACTICA/cmake-build-debug/CMakeFiles/edit_cache.dir
+C:/Users/alber/CLionProjects/4_ING_INFORMATICA/PGA/PGA_PRACTICA/cmake-build-debug/CMakeFiles/rebuild_cache.dir

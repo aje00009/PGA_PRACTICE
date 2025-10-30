@@ -1,7 +1,9 @@
-#include <stdexcept>
-#include <glm/gtc/type_ptr.hpp>
+
 
 #include "ShaderProgram.h"
+
+#include <stdexcept>
+#include <glm/gtc/type_ptr.hpp>
 
 /**
  * @brief Default constructor of ShaderProgram
