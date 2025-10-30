@@ -12,25 +12,9 @@ add_executable( ${PROJECT_NAME} ${MY_FILES}
                                 ${GLAD_FILES}
                 ${IMGUI_FILES})
 
-
-# First, tell CMake to find the package.
-# Conan will install the packages so that CMake can find it:
-
-#GLFW
-find_package(glfw3)
-
-find_package(glm)
-
-find_package(opengl_system)
-
-find_package(assimp)
-
 # Then, link your executable or library with the corresponding package targets:
 target_include_directories( ${PROJECT_NAME} PUBLIC GLAD/include IMGUI/include)
 
-target_link_libraries( ${PROJECT_NAME} glfw
-                            opengl::opengl
-                            glm::glm
-                            assimp::assimp)
+target_link_libraries( ${PROJECT_NAME} GL glfw assimp)
 
 

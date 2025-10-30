@@ -48,6 +48,7 @@ void PAG::Model::processMesh(aiMesh *mesh, const aiScene *scene) {
             vertex.Color = { 1.0f, 1.0f, 1.0f };
         }
 
+
         // Normals
         if (mesh->HasNormals()) {
             vertex.Normal = { mesh->mNormals[i].x, mesh->mNormals[i].y, mesh->mNormals[i].z };
@@ -55,13 +56,13 @@ void PAG::Model::processMesh(aiMesh *mesh, const aiScene *scene) {
             vertex.Normal = { 0.0f, 1.0f, 0.0f };
         }
 
-        // Texture coordinates
-        if (mesh->HasTextureCoords(0)) {
-            vertex.TextCoord = { mesh->mTextureCoords[0][i].x, mesh->mTextureCoords[0][i].y };
-        } else {
-            // Si no hay texturas, ponemos una por defecto
-            vertex.TextCoord = { 0.0f, 0.0f };
-        }
+        // // Texture coordinates
+        // if (mesh->HasTextureCoords(0)) {
+        //     vertex.TextCoord = { mesh->mTextureCoords[0][i].x, mesh->mTextureCoords[0][i].y };
+        // } else {
+        //     // Si no hay texturas, ponemos una por defecto
+        //     vertex.TextCoord = { 0.0f, 0.0f };
+        // }
 
         _vertices.push_back(vertex);
     }
@@ -121,7 +122,7 @@ PAG::Model::~Model() {
 
 void PAG::Model::draw() const {
     glBindVertexArray(_idVAO);
-    glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(_vertices.size()), GL_UNSIGNED_INT, nullptr);
+    glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(_indices.size()), GL_UNSIGNED_INT, nullptr);
     glBindVertexArray(0);
 }
 
