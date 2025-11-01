@@ -46,7 +46,7 @@ namespace PAG {
             static void getInfoGL() ;
             void initializeOpenGL() const;
 
-            void createModel();
+            std::vector<std::string> getModelNames() const;
     };
 }
 

@@ -7,12 +7,10 @@
 
 #include <glm/glm.hpp>
 #include <vector>
+#include <assimp/Importer.hpp>
+#include <assimp/scene.h>
 
 #include "../shader/ShaderProgram.h"
-
-struct aiNode;
-struct aiScene;
-struct aiMesh;
 
 namespace PAG {
     struct Vertex {
@@ -37,6 +35,8 @@ namespace PAG {
         std::vector<Texture> _textures;
         std::vector<GLuint> _indices;
 
+        std::string modelName;
+
         glm::mat4 _modelMatrix; ///< Model matrix for each model (rotation, escalation, translation)
 
         ShaderProgram* _shaderProgram = nullptr;
@@ -57,6 +57,7 @@ namespace PAG {
         void setModelMatrix(const glm::mat4& modelMatrix);
         glm::mat4 getModelMatrix() const;
         ShaderProgram* getShaderProgram() const;
+        const std::string& getModelName() const;
 
         //Transformations for models
         void resetModelMatrix();

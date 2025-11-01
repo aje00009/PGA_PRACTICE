@@ -1,12 +1,12 @@
-#include "glad/glad.h"
-#include "Renderer.h"
-
 #include <cstdarg>
 #include <fstream>
 
-#include "../gui/ManagerGUI.h"
+#include "glad/glad.h"
 #include "imgui.h"
-#include "../gui/CameraWindow.h"
+
+#include "Renderer.h"
+#include "../gui/ManagerGUI.h"
+
 #include "../utils/Logger.h"
 #include "../shader/ShaderProgram.h"
 
@@ -175,6 +175,7 @@ void PAG::Renderer::wakeUp(WindowType t, ...) {
                     _activeCamera->reset();
                     break;
             }
+            break;
         }
 
         case WindowType::ModelLoader: {
@@ -205,6 +206,42 @@ void PAG::Renderer::wakeUp(WindowType t, ...) {
                 _activeModel = nullptr;
                 throw e;
             }
+
+            break;
+        }
+
+    case WindowType::ModelTransformation: {
+                std::va_list args;
+                va_start(args, t);
+                // Extraemos el "paquete" de datos completo
+                TransformPackage package = va_arg(args, TransformPackage);
+                va_end(args);
+
+                auto& model = _models[package.modelId];
+
+                switch (package.type)
+                {
+                case TransformType::TRANSLATE:
+                    {
+                        model->translate(package.transf);
+                        break;
+                    }
+                case TransformType::ROTATE:
+                    {
+                        model->rotate(package.transf,glm::radians(package.angleDegrees));
+                        break;
+                    }
+                case TransformType::SCALE:
+                    {
+                        model->scale(package.transf);
+                        break;
+                    }
+                case TransformType::RESET:
+                    {
+                        model->resetModelMatrix();
+                        break;
+                    }
+                }
 
             break;
         }
@@ -274,9 +311,6 @@ void PAG::Renderer::refresh() const {
     if (_activeModel) {
         const ShaderProgram* shaderProgram = _activeModel->getShaderProgram();
 
-        if (!shaderProgram)
-            throw std::runtime_error("Error: Active model has no shader program linked to it");
-
         shaderProgram->use();
 
         //Let shader program know the uniforms
@@ -312,4 +346,18 @@ void PAG::Renderer::initializeOpenGL() const {
     glClearColor ( _bgColor[0], instance->_bgColor[1], instance->_bgColor[2], instance->_bgColor[3] );
     glEnable ( GL_DEPTH_TEST );
     glEnable( GL_MULTISAMPLE );
+}
+
+std::vector<std::string> PAG::Renderer::getModelNames() const
+{
+    std::vector<std::string> modelNames;
+
+    modelNames.reserve(_models.size());
+
+    for (const auto& model: _models)
+    {
+        modelNames.push_back(model->getModelName());
+    }
+
+    return modelNames;
 }

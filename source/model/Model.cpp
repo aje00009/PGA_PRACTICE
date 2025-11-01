@@ -1,12 +1,13 @@
 #define GLM_ENABLE_EXPERIMENTAL
+
+#include <assimp/postprocess.h>
 #include <glm/gtx/transform.hpp>
-#include "Model.h"
 #include <string>
 
 #include "../utils/Logger.h"
-#include <assimp/Importer.hpp>
-#include <assimp/scene.h>
-#include <assimp/postprocess.h>
+#include "Model.h"
+
+#include <filesystem>
 
 PAG::Model::Model(ShaderProgram *shaderProgram, const std::string &modelPath): _shaderProgram(shaderProgram), _modelMatrix(glm::mat4(1.0f)) {
     Assimp::Importer importer;
@@ -16,6 +17,9 @@ PAG::Model::Model(ShaderProgram *shaderProgram, const std::string &modelPath): _
     if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) {
         throw std::runtime_error("Assimp error while loading model: " + std::string(importer.GetErrorString()));
     }
+
+
+    modelName = std::filesystem::path(modelPath).filename().string();
 
     processNode(scene->mRootNode, scene);
 
@@ -128,6 +132,11 @@ void PAG::Model::draw() const {
 
 PAG::ShaderProgram * PAG::Model::getShaderProgram() const {
     return this->_shaderProgram;
+}
+
+const std::string& PAG::Model::getModelName() const
+{
+    return modelName;
 }
 
 void PAG::Model::setModelMatrix(const glm::mat4& matrix) {
