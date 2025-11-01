@@ -1,10 +1,7 @@
-//
-// Created by alber on 11/10/2025.
-//
+#include "imgui.h"
 
 #include "CameraWindow.h"
-
-#include "imgui.h"
+#include "../utils/Types.h"
 
 //Definition of the instance for CameraWindow
 PAG::CameraWindow* PAG::CameraWindow::instance = nullptr;

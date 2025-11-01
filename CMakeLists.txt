@@ -10,7 +10,8 @@ file( GLOB IMGUI_FILES IMGUI/src/*.cpp )
 
 add_executable( ${PROJECT_NAME} ${MY_FILES}
                                 ${GLAD_FILES}
-                ${IMGUI_FILES})
+                                ${IMGUI_FILES}
+        source/utils/Types.h)
 
 # Then, link your executable or library with the corresponding package targets:
 target_include_directories( ${PROJECT_NAME} PUBLIC GLAD/include IMGUI/include)

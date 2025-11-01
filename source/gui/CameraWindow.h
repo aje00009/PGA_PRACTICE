@@ -9,36 +9,6 @@
 
 namespace PAG {
     /**
-     * @enum CameraMovement Enum that represents the different movements a camera can perform
-     */
-    enum class CameraMovement {
-        //When clicking with left mouse button
-        PAN,
-        TILT,
-        DOLLY,
-        ORBIT,
-
-        //Specific for GUI buttons
-        PAN_LEFT,
-        PAN_RIGHT,
-
-        TILT_UP,
-        TILT_DOWN,
-
-        DOLLY_FORWARD,
-        DOLLY_BACKWARD,
-        DOLLY_RIGHT,
-        DOLLY_LEFT,
-
-        ORBIT_LATITUDE_UP,
-        ORBIT_LATITUDE_DOWN,
-        ORBIT_LONGITUDE_LEFT,
-        ORBIT_LONGITUDE_RIGHT,
-
-        RESET
-    };
-
-    /**
      * @class CameraWindow Class that represents the camera control window in the UI
      */
     class CameraWindow: public GUIElement {
