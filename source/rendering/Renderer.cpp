@@ -5,6 +5,9 @@
 #include "imgui.h"
 
 #include "Renderer.h"
+
+#include <filesystem>
+
 #include "../gui/ManagerGUI.h"
 
 #include "../utils/Logger.h"
@@ -193,15 +196,32 @@ void PAG::Renderer::wakeUp(WindowType t, ...) {
 
             try {
                 std::string pathStr(filePath);
+                std::string modelName = std::filesystem::path(pathStr).filename().string();
 
-                auto newModel = std::make_unique<Model>(_activeShaderProgram,pathStr);
+                Model* findModel = nullptr;
+                for (const auto& model: _models) {
+                    if (model->getModelName() == modelName) {
+                        findModel = model.get();
+                        break;
+                    }
+                }
 
-                _models.push_back(std::move(newModel));
+                if (findModel) {
+                    Logger::getInstance()->addMessage("Model '" + modelName + "' already loaded, setting as active");
+                    _activeModel = findModel;
 
+                    if (_activeModel->getShaderProgram() != _activeShaderProgram) {
+                        Logger::getInstance()->addMessage("Warning: Model was loaded with a different shader. Switching to model's original shader.");
+                        _activeShaderProgram = _activeModel->getShaderProgram();
+                    }
+                }else {
+                    auto newModel = std::make_unique<Model>(_activeShaderProgram,pathStr);
 
-                _activeModel = _models.back().get();
+                    _models.push_back(std::move(newModel));
+                    _activeModel = _models.back().get();
 
-                Logger::getInstance()->addMessage("Model " + pathStr + " loaded successfully");
+                    Logger::getInstance()->addMessage("Model '" + modelName + "' loaded successfully");
+                }
             }catch (const std::runtime_error& e) {
                 _activeModel = nullptr;
                 throw e;
