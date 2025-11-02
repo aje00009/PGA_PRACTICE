@@ -46,6 +46,13 @@ std::string PAG::Logger::getMessages() const {
     return this->messages.str();
 }
 
+PAG::Logger::~Logger() {
+    if (instance) {
+        delete instance;
+        instance = nullptr;
+    }
+}
+
 /**
  * @brief Method that adds a message to the current log in the instance
  * @param message Message to be added to the log

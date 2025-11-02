@@ -6,6 +6,13 @@
 //Definition of the instance
 PAG::LoggerWindow* PAG::LoggerWindow::instance = nullptr;
 
+PAG::LoggerWindow::~LoggerWindow() {
+    if (instance) {
+        delete instance;
+        instance = nullptr;
+    }
+}
+
 /**
  * @brief Gets the only instance of this class and create it if it is the first time the function is called
  * @return The instance of this class itself

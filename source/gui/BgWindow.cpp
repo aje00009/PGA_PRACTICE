@@ -4,6 +4,13 @@
 //Definition of the only instance of this class
 PAG::BgWindow* PAG::BgWindow::instance = nullptr;
 
+PAG::BgWindow::~BgWindow() {
+    if (instance) {
+        delete instance;
+        instance = nullptr;
+    }
+}
+
 /**
  * @brief Method that creates (first time is called) and returns the only instance for this class
  * @return The instance for this class

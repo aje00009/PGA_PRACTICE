@@ -11,6 +11,13 @@ PAG::ManagerGUI* PAG::ManagerGUI::instance = nullptr;
  */
 PAG::ManagerGUI::ManagerGUI() = default;
 
+PAG::ManagerGUI::~ManagerGUI() {
+    if (instance) {
+        delete instance;
+        instance = nullptr;
+    }
+}
+
 /**
  * @brief Method that creates an instance of this class (first time is called) and returns it
  * @return The only instance for this class

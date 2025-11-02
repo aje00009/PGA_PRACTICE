@@ -16,6 +16,7 @@ namespace PAG {
     public:
         template<class T>
         Logger& operator<<(const T& smth);
+        ~Logger();
 
         void addMessage(const std::string& message);
         static Logger* getInstance();

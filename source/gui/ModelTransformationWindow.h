@@ -26,6 +26,7 @@ namespace PAG
         void warnListeners() const;
 
     public:
+        ~ModelTransformationWindow();
         static ModelTransformationWindow* getInstance();
 
         void render() override;

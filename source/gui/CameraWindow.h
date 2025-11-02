@@ -18,6 +18,7 @@ namespace PAG {
         void warnListeners() const;
 
     public:
+        ~CameraWindow();
         static CameraWindow* getInstance();
 
         void render() override;

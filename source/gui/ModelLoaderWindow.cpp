@@ -13,6 +13,13 @@ void PAG::ModelLoaderWindow::warnListeners() const {
     }
 }
 
+PAG::ModelLoaderWindow::~ModelLoaderWindow() {
+    if (instance) {
+        delete instance;
+        instance = nullptr;
+    }
+}
+
 /**
  * @brief Method that creates (first time is called) and returns the only instance for this class
  * @return The only instance for this class

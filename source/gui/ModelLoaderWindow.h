@@ -17,6 +17,7 @@ namespace PAG {
 
             void warnListeners() const;
         public:
+            ~ModelLoaderWindow();
             static ModelLoaderWindow* getInstance();
 
             void render() override;

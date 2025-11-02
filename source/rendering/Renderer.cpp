@@ -22,7 +22,7 @@ PAG::Renderer::~Renderer() {
     delete[] _bgColor;
     _bgColor = nullptr;
 
-    if (!instance) {
+    if (instance) {
         delete instance;
         instance = nullptr;
     }

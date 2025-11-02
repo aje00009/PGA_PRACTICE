@@ -51,6 +51,12 @@ PAG::ShaderProgram::~ShaderProgram() {
         glDeleteShader(vs->getId());
     if (fs->getId() != 0)
         glDeleteShader(fs->getId());
+
+    delete vs;
+    vs = nullptr;
+
+    delete fs;
+    fs = nullptr;
 }
 
 /**

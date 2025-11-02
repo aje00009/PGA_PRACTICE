@@ -10,9 +10,10 @@ namespace PAG {
     class LoggerWindow : public GUIElement {
     private:
         static LoggerWindow* instance;
-    public:
-        LoggerWindow() = default;
 
+        LoggerWindow() = default;
+    public:
+        ~LoggerWindow();
         static LoggerWindow* getInstance();
 
         void render() override;

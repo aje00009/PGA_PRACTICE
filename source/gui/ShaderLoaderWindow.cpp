@@ -5,6 +5,13 @@
 //Definition of the only instance of this class
 PAG::ShaderLoaderWindow* PAG::ShaderLoaderWindow::instance = nullptr;
 
+PAG::ShaderLoaderWindow::~ShaderLoaderWindow() {
+    if (instance) {
+        delete instance;
+        instance = nullptr;
+    }
+}
+
 /**
  * @brief Method that creates (if it is called for the first time) and returns the only instance for this class
  * @return The only instance for this class

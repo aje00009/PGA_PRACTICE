@@ -18,6 +18,7 @@ namespace PAG {
         ManagerGUI();
 
     public:
+        ~ManagerGUI();
         static ManagerGUI* getInstance();
 
         static void initialize(GLFWwindow* window);

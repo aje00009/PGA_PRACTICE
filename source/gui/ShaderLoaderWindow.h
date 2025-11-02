@@ -12,8 +12,9 @@ namespace PAG {
         char nameShader[128]{};
         static ShaderLoaderWindow* instance;
 
-    public:
         ShaderLoaderWindow() = default;
+    public:
+        ~ShaderLoaderWindow();
 
         static ShaderLoaderWindow* getInstance();
 

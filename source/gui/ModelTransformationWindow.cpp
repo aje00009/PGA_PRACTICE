@@ -16,6 +16,13 @@ void PAG::ModelTransformationWindow::warnListeners() const
     }
 }
 
+PAG::ModelTransformationWindow::~ModelTransformationWindow() {
+    if (instance) {
+        delete instance;
+        instance = nullptr;
+    }
+}
+
 /**
  * @brief Method that creates (first time is called) and return the only instance for this class
  * @return The only instance for this class
