@@ -6,6 +6,9 @@
 #define PGA_PRACTICA_TYPES_H
 #include <glm/vec3.hpp>
 
+/**
+ * @file Types.h File that contains definition of different general types, enums, data structures, etc.
+ */
 namespace PAG
 {
     /**

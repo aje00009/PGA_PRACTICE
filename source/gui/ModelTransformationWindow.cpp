@@ -6,6 +6,9 @@
 //Definition of the instance
 PAG::ModelTransformationWindow* PAG::ModelTransformationWindow::instance = nullptr;
 
+/**
+ * @brief Method that wakes up all subscribers to the events of this class
+ */
 void PAG::ModelTransformationWindow::warnListeners() const
 {
     for (auto listener: _listeners) {
@@ -13,6 +16,10 @@ void PAG::ModelTransformationWindow::warnListeners() const
     }
 }
 
+/**
+ * @brief Method that creates (first time is called) and return the only instance for this class
+ * @return The only instance for this class
+ */
 PAG::ModelTransformationWindow* PAG::ModelTransformationWindow::getInstance()
 {
     if (!instance)
@@ -20,6 +27,9 @@ PAG::ModelTransformationWindow* PAG::ModelTransformationWindow::getInstance()
     return instance;
 }
 
+/**
+ * @brief Method that renders the GUI window for transformations on models
+ */
 void PAG::ModelTransformationWindow::render()
 {
     ImGui::Begin("Model transformation");

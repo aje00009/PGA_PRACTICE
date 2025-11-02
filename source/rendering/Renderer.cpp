@@ -368,6 +368,10 @@ void PAG::Renderer::initializeOpenGL() const {
     glEnable( GL_MULTISAMPLE );
 }
 
+/**
+ * @brief Method that returns all model names (model.obj) loaded in the application at the moment
+ * @return All model names (string) loaded at the moment in the application
+ */
 std::vector<std::string> PAG::Renderer::getModelNames() const
 {
     std::vector<std::string> modelNames;

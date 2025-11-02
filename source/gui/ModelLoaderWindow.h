@@ -9,6 +9,9 @@
 #include "imfilebrowser.h"
 
 namespace PAG {
+    /**
+     * @class ModelLoaderWindow Class that represents the GUI window that allows loading models on the application
+     */
     class ModelLoaderWindow: public GUIElement {
         private:
             static ModelLoaderWindow* instance;

@@ -14,20 +14,20 @@
 namespace PAG {
     class Renderer: public Listener {
         private:
+            //General
             static Renderer* instance;
-
             float *_bgColor;
 
             //Shader programs
-            std::vector<std::pair<std::string, std::unique_ptr<ShaderProgram>>> _shaderPrograms;
-            ShaderProgram* _activeShaderProgram = nullptr;
+            std::vector<std::pair<std::string, std::unique_ptr<ShaderProgram>>> _shaderPrograms; ///< Set of shader programs loaded in the application
+            ShaderProgram* _activeShaderProgram = nullptr; ///< Current shader program being executed
 
             //Models
-            std::vector<std::unique_ptr<Model>> _models;
-            Model* _activeModel = nullptr;
+            std::vector<std::unique_ptr<Model>> _models; ///< Set of models loaded in the application
+            Model* _activeModel = nullptr; ///< Current model showed in the scene
 
             //Cameras
-            Camera* _activeCamera = nullptr;
+            Camera* _activeCamera = nullptr; ///< Current active camera
 
             Renderer();
         public:
