@@ -56,6 +56,7 @@ namespace PAG
         TRANSLATE,
         ROTATE,
         SCALE,
+        DELETE,
         RESET
     };
 

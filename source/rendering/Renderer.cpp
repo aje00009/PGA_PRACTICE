@@ -189,33 +189,28 @@ void PAG::Renderer::wakeUp(WindowType t, ...) {
                 std::string pathStr(filePath);
                 std::string modelName = std::filesystem::path(pathStr).filename().string();
 
-                Model* findModel = nullptr;
+                bool modelFound = false;
                 for (const auto& model: _models) {
                     if (model->getModelName() == modelName) {
-                        findModel = model.get();
+                        modelFound = true;
                         break;
                     }
                 }
 
-                if (findModel) {
-                    Logger::getInstance()->addMessage("Model '" + modelName + "' already loaded, setting as active");
-                    _activeModel = findModel;
-
-                    if (_activeModel->getShaderProgram() != _activeShaderProgram) {
-                        Logger::getInstance()->addMessage("Warning: Model was loaded with a different shader. Switching to model's original shader.");
-                        _activeShaderProgram = _activeModel->getShaderProgram();
-                    }
+                if (modelFound) {
+                    Logger::getInstance()->addMessage("Model '" + modelName + "' already loaded");
                 }else {
                     auto newModel = std::make_unique<Model>(_activeShaderProgram,pathStr);
 
+                    float xOffset = static_cast<float>(_models.size()) * 2.0f;
+                    newModel->translate(glm::vec3(xOffset, 0.0f, 0.0f));
+
                     _models.push_back(std::move(newModel));
-                    _activeModel = _models.back().get();
 
                     Logger::getInstance()->addMessage("Model '" + modelName + "' loaded successfully");
                 }
             }catch (const std::runtime_error& e) {
-                _activeModel = nullptr;
-                throw e;
+                throw;
             }
 
             break;
@@ -250,6 +245,13 @@ void PAG::Renderer::wakeUp(WindowType t, ...) {
                 case TransformType::RESET:
                     {
                         model->resetModelMatrix();
+                        break;
+                    }
+                case TransformType::DELETE:
+                    {
+                        Logger::getInstance()->addMessage("Deleting model '" + _models[package.modelId]->getModelName() + "'");
+                        _models.erase(_models.begin() + package.modelId);
+
                         break;
                     }
                 }
@@ -319,21 +321,24 @@ void PAG::Renderer::refresh() const {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glPolygonMode ( GL_FRONT_AND_BACK, GL_LINE );
 
-    if (_activeModel) {
-        const ShaderProgram* shaderProgram = _activeModel->getShaderProgram();
+    const glm::mat4 view = _activeCamera->getViewMatrix();
+    const glm::mat4 projection = _activeCamera->getProjectionMatrix();
+
+    for (const auto& model : _models) {
+        if (!model) continue;
+
+        ShaderProgram* shaderProgram = model->getShaderProgram();
+        if (!shaderProgram) continue;
 
         shaderProgram->use();
 
-        //Let shader program know the uniforms
-        const auto model = _activeModel->getModelMatrix();
-        const glm::mat4 view = _activeCamera->getViewMatrix();
-        const glm::mat4 projection = _activeCamera->getProjectionMatrix();
+        const auto modelMatrix = model->getModelMatrix();
 
-        _activeShaderProgram->setUniformMat4("model",model);
-        _activeShaderProgram->setUniformMat4("view",view);
-        _activeShaderProgram->setUniformMat4("projection",projection);
+        shaderProgram->setUniformMat4("model",modelMatrix);
+        shaderProgram->setUniformMat4("view",view);
+        shaderProgram->setUniformMat4("projection",projection);
 
-        _activeModel->draw();
+        model->draw();
     }
 }
 

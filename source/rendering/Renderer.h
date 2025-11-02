@@ -23,7 +23,6 @@ namespace PAG {
 
             //Models
             std::vector<std::unique_ptr<Model>> _models; ///< Set of models loaded in the application
-            Model* _activeModel = nullptr; ///< Current model showed in the scene
 
             //Cameras
             Camera* _activeCamera = nullptr; ///< Current active camera

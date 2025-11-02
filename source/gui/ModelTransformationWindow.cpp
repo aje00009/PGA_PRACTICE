@@ -122,5 +122,12 @@ void PAG::ModelTransformationWindow::render()
         warnListeners();
     }
 
+    if (ImGui::Button("Delete model")) {
+        _package.modelId = _selectedModel;
+        _package.type = TransformType::DELETE;
+
+        warnListeners();
+    }
+
     ImGui::End();
 }
