@@ -1,13 +1,7 @@
-//
-// Created by alber on 25/10/2025.
-//
-
 #ifndef PGA_PRACTICA_MODEL_H
 #define PGA_PRACTICA_MODEL_H
 
-#include <glm/glm.hpp>
 #include <vector>
-#include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 
 #include "../shader/ShaderProgram.h"

@@ -1,7 +1,3 @@
-//
-// Created by alber on 25/09/2025.
-//
-
 #ifndef PGA_PRACTICA_LISTENER_H
 #define PGA_PRACTICA_LISTENER_H
 

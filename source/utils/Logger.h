@@ -1,7 +1,3 @@
-//
-// Created by alber on 17/09/2025.
-//
-
 #ifndef PGA_PRACTICA_LOGGER_H
 #define PGA_PRACTICA_LOGGER_H
 

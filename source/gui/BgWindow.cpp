@@ -1,7 +1,3 @@
-//
-// Created by alber on 28/09/2025.
-//
-
 #include "BgWindow.h"
 #include <imgui.h>
 

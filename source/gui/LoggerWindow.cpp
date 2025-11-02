@@ -1,7 +1,7 @@
+#include "imgui.h"
 
 #include "LoggerWindow.h"
 #include "../utils/Logger.h"
-#include <imgui.h>
 
 //Definition of the instance
 PAG::LoggerWindow* PAG::LoggerWindow::instance = nullptr;

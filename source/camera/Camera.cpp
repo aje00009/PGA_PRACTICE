@@ -1,12 +1,7 @@
-//
-// Created by alber on 09/10/2025.
-//
-
-#include "Camera.h"
-
 #include <iostream>
 #include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtx/transform.hpp>
+
+#include "Camera.h"
 
 /**
  * @brief Parameterized constructor of the class Camera

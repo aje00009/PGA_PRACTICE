@@ -1,7 +1,3 @@
-//
-// Created by albertoje04 on 1/11/25.
-//
-
 #ifndef PGA_PRACTICA_MODELTRANSFORMATIONWINDOW_H
 #define PGA_PRACTICA_MODELTRANSFORMATIONWINDOW_H
 #include "GUIElement.h"

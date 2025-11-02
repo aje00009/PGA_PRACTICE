@@ -1,7 +1,3 @@
-//
-// Created by alber on 28/09/2025.
-//
-
 #ifndef PGA_PRACTICA_BGWINDOW_H
 #define PGA_PRACTICA_BGWINDOW_H
 

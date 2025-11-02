@@ -1,7 +1,3 @@
-//
-// Created by alber on 11/10/2025.
-//
-
 #ifndef PGA_PRACTICA_CAMERAWINDOW_H
 #define PGA_PRACTICA_CAMERAWINDOW_H
 

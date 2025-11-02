@@ -4,7 +4,6 @@
 #include <memory>
 
 #include "../camera/Camera.h"
-#include "../gui/CameraWindow.h"
 #include "../utils/Listener.h"
 #include "../model/Model.h"
 

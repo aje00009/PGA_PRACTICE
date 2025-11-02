@@ -1,10 +1,7 @@
-//
-// Created by alber on 28/09/2025.
-//
-
-#include "ManagerGUI.h"
 #include "imgui_impl_glfw.h"
 #include "imgui_impl_opengl3.h"
+
+#include "ManagerGUI.h"
 
 //Definition of the instace
 PAG::ManagerGUI* PAG::ManagerGUI::instance = nullptr;

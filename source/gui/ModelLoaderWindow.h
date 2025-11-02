@@ -1,7 +1,3 @@
-//
-// Created by alber on 25/10/2025.
-//
-
 #ifndef PGA_PRACTICA_MODELLOADERWINDOW_H
 #define PGA_PRACTICA_MODELLOADERWINDOW_H
 #include "GUIElement.h"

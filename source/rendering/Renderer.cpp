@@ -1,17 +1,8 @@
 #include <cstdarg>
-#include <fstream>
-
-#include "glad/glad.h"
-#include "imgui.h"
-
-#include "Renderer.h"
-
 #include <filesystem>
 
-#include "../gui/ManagerGUI.h"
-
+#include "Renderer.h"
 #include "../utils/Logger.h"
-#include "../shader/ShaderProgram.h"
 
 //Definition of the only instance of the class
 PAG::Renderer* PAG::Renderer::instance = nullptr;

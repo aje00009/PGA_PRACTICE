@@ -1,10 +1,5 @@
-//
-// Created by alber on 28/09/2025.
-//
-
 #ifndef PGA_PRACTICA_GUI_H
 #define PGA_PRACTICA_GUI_H
-
 
 #include <vector>
 #include <GLFW/glfw3.h>

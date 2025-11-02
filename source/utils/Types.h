@@ -1,7 +1,3 @@
-//
-// Created by albertoje04 on 1/11/25.
-//
-
 #ifndef PGA_PRACTICA_TYPES_H
 #define PGA_PRACTICA_TYPES_H
 #include <glm/vec3.hpp>
