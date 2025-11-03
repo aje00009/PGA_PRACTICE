@@ -99,3 +99,59 @@ Los movimientos son los siguientes:
 
 Aquí estaría el UML resultante tras los cambios implementados en esta práctica
 ![Imagen UML Práctica 5](resources/images/uml_prac5.png)
+
+### PRÁCTICA 6
+Para esta práctica, he modularizado la gestión de modelos encapsulando un modelo en una nueva clase `Model`. En esta encontramos:
+* **_vertices** : vector de vertices que contiene todo el modelo (malla)
+* **_indices** : vector de índices que indica la topología del modelo (como se unen los vértices)
+* **_textures** : vector de texturas que se usará a futuro para aplicar una textura a un modelo concreto
+* **_idVAO** : ID del VAO asociado al modelo
+* **_idVBO** : ID del VBO (entrelazado) asociado al modelo
+* **_idIBO** : ID del IBO asociado al modelo
+* **modelName** : cadena de caracteres del nombre del modelo (nombre.obj)
+* **_modelMatrix** : matriz de transformación individual de cada modelo
+* **_shaderProgram** : shader program asociado al modelo
+
+Esta clase `Model` se encargará de cargar en memoria un modelo usando la librería `assimp`. También se encargará de 
+gestionar los buffer y crear los VAO, VBO, etc. Cada modelo tendrá también la posibilidad de aplicar transformaciones a
+la malla que encapsula (`translate`,`rotate`,`scale`).
+
+#### Tipos de datos necesarios:
+* `Vertex` : encapsula un vértice y su información relacionada (posición, normal, coordenada de textura, color)
+* `Texture` : encapsula la textura y su información relacionada (id, tipo) (Aún no se utiliza)
+* `TransformType` : es un enum que define los tipos de transformaciones disponibles para un modelo. Contiene las nombradas anteriormente, además de una opción para resetear el modelo a su matriz original y otro para borrar el modelo.
+* `TransformPackage` : es un struct que encapsula un payload mediante el cual la ventana de la interfaz GUI es capaz de mandar el mensaje sobre una transformación a realizar sobre un modelo en concreto a `Renderer`
+
+También he añadido dos nuevas ventanas a la interfaz de usuario:
+* `ModelLoaderWindow` : esta ventana nos permite seleccionar un archivo de nuestro directorio y cargar un modelo.
+* `ModelTransformationWindow` : esta ventana nos permite seleccionar un modelo previamente cargado en memoria y aplicarle una transformación.
+
+En cuanto a `Renderer`, los cambios son los siguientes:
+* Se ha eliminado toda la funcionalidad referente a la gestión de buffers, VAO, VBO, ids, etc.
+* Cuando se refresca la escena (`refresh`), se dibujan todos los modelos cargados en memoria en pantalla, pasando cada uno de los uniforms necesarios (matrix de modelado, visión y proyección) al shader program asociado a cada modelo
+* Ahora `Renderer` escuchará dos nuevos eventos:
+  * De la ventana `ModelLoaderWindow` : para cargar modelos en memoria y añadirlos al vector de modelos.
+  * De la ventana `ModelTransformationWindow` : para transformar los modelos cargados y que esta transformación pueda verse reflejada en pantalla.
+
+En cuanto a la funcionalidad de esta nueva parte de la aplicación, es bastante sencilla:
+1. Cargamos previamente un shader program de los posibles (para esta práctica: pag06) usando la ventana de carga de shaders.
+2. Pinchamos en seleccionar un modelo dentro de la ventana de carga de modelos
+3. Seleccionamos un archivo con el formato adecuado (.obj) y le damos a "ok"
+4. Si queremos aplicar una transformación (traslación, rotación o escalado):
+   * Nos dirigimos a la ventana de transformaciones de modelos.
+   * Seleccionamos un modelo.
+   * Elegimos el tipo de transformación (traslación, rotación, escalado).
+   * Escribimos los parámetros para dicha transformación (posición, factores de escalado, ángulo, etc.).
+   * Le damos a aplicar.
+5. Si queremos reiniciar la matriz de modelado (resetear el modelo como estaba cuando lo cargamos):
+   * Nos dirigimos a la ventana de transformaciones de modelos.
+   * Seleccionamos un modelo.
+   * Pulsamos el botón de "reset"
+6. Si queremos eliminar el modelo:
+   * Nos dirigimos a la ventana de transformaciones de modelos.
+   * Seleccionamos un modelo.
+   * Pulsamos en eliminar el modelo.
+
+Finalmente, el UML actualizado quedaría así:
+
+![Imagen diagrama UML práctica 6](/resources/images/uml_prac6.png)
