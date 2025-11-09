@@ -46,15 +46,15 @@ namespace PAG
         Camera,
         ShaderLoad,
         ModelLoader,
-        ModelTransformation,
+        ModelEditor,
         MaterialEditor,
         RenderMode
     };
 
     /**
-     * @enum TransformType Enum for every type of transformation that can be applied to a model
+     * @enum ModelEditType Enum for every type of transformation that can be applied to a model
      */
-    enum class TransformType
+    enum class ModelEditType
     {
         TRANSLATE,
         ROTATE,
@@ -80,7 +80,7 @@ namespace PAG
     struct ModelEditPackage
     {
         int modelId;
-        TransformType type;
+        ModelEditType type;
         glm::vec3 transf;
         float angleDegrees;
         int materialId;

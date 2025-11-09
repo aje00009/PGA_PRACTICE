@@ -155,3 +155,39 @@ En cuanto a la funcionalidad de esta nueva parte de la aplicación, es bastante 
 Finalmente, el UML actualizado quedaría así:
 
 ![Imagen diagrama UML práctica 6](/resources/images/uml_prac6.png)
+
+### PRÁCTICA 7
+Para esta práctica, he añadido el uso de subrutinas para controlar el renderizado de modelos mediante el modo de wireframe (color fijo) o el modo de relleno (material), además de la implementación de materiales en la aplicación.
+Hay varias cosas añadidas al proyecto:
+* `MaterialEditingWindow` en `gui`: esta ventana nueva de la GUI se dedicará a la creación/edición de materiales.
+* `ModelManager` en `gui`: esta ventana, antes llamada `ModelTransformationWindow` ha creado más responsabilidades, por ello la he refactorizado. 
+Ahora también se encarga de asignar el tipo de material (de los que creamos en la ventana anterior) al modelo seleccionado.
+* `Material` en `gui`: nueva clase que encapsula las propiedades de un material (color ambiente, difuso, especular y brillo)
+* `Model` en `gui`: para soportar al material, tiene un puntero (asignación) hacia él. 
+* `Renderer` en `rendering`: 
+  * **Atributos añadidos**:
+    * `_renderMode: RenderMode`: nuevo atributo para indicar el modo actual de renderizado (SOLID/WIREFRAME)
+    * `_subroutineSolid`: nuevo atributo para guardar el index de la subrutina del modo de renderizado SOLID
+    * `subroutineWireframe`: nuevo atributo para guardar el index de la subrutina del modo de renderizado WIREFRAME
+    * `_materials: vector<Material>`: nueva colección para guardar todos los materiales que se van creando en la aplicación
+  * **Nuevo comportamiento**:
+    * `initialize()`: ahora inicializa un material por defecto para que a los modelos se les asignen ese por defecto
+    * `wakeUp()`:
+      * `ShaderLoad`: al cargar el shader, se piden los index de las subrutinas para tenerlos guardados con antelación a la hora de activarla después
+      * `RenderMode`: nuevo evento a escuchar para cambiar el modo de renderizado
+      * `ModelEditor`: antes llamado `ModelTransformationWindow`, ahora también tendrá un apartado `MATERIAL_ASSIGN`, donde se asignará el material al modelo tras haber confirmado en la ventana de edición de modelos
+      * `MaterialEditor`: evento que escucha `Renderer` para crear/editar un material desde la ventana de `MaterialEditingWindow`.
+    * `refresh()`:
+      * Ahora hay que comprobar el modo de dibujado cada vez que refresquemos según el `_renderMode`
+      * Se pasan los uniforms del material al shader
+      * Se activa la subrutina adecuada según `_renderMode`
+* **Tipos/structs que se han añadido**:
+  * `RenderMode`: para elegir entre el modo de renderizado SOLID (material) o WIREFRAME (color blanco fijo)
+  * `MaterialEditingPackage`: payload que se envía a `Renderer` con la información de creación/edición de un material
+
+Para usar estas nuevas funcionalidades, podemos acceder a la ventana de gestión de materiales para crear o modificar un material ya creado. Después (tras cargar el shader y el modelo), asignamos un material que queramos 
+al modelo (aunque tiene uno por defecto). Finalmente, podemos elegir ver nuestros modelos en modo SOLID o WIREFRAME.
+
+El UML resultante tras esta práctica es el siguiente:
+
+![Imagen UML Práctica 7](resources/images/uml_prac7.png)

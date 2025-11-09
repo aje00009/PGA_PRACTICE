@@ -12,7 +12,7 @@ PAG::ModelManager* PAG::ModelManager::instance = nullptr;
 void PAG::ModelManager::warnListeners() const
 {
     for (auto listener: _listeners) {
-        listener->wakeUp(WindowType::ModelTransformation, _package);
+        listener->wakeUp(WindowType::ModelEditor, _package);
     }
 }
 
@@ -97,13 +97,13 @@ void PAG::ModelManager::render()
         switch (_selectedTransformation) {
             case 0:
                 {
-                    _package.type = TransformType::TRANSLATE;
+                    _package.type = ModelEditType::TRANSLATE;
                     _package.transf = glm::vec3(_translateVec[0], _translateVec[1], _translateVec[2]);
                     break;
                 }
             case 1:
                 {
-                    _package.type = TransformType::ROTATE;
+                    _package.type = ModelEditType::ROTATE;
                     if (_rotateAxis == 0) _package.transf = glm::vec3(1.0f, 0.0f, 0.0f); // X
                     if (_rotateAxis == 1) _package.transf = glm::vec3(0.0f, 1.0f, 0.0f); // Y
                     if (_rotateAxis == 2) _package.transf = glm::vec3(0.0f, 0.0f, 1.0f); // Z
@@ -112,7 +112,7 @@ void PAG::ModelManager::render()
                 }
             case 2:
                 {
-                    _package.type = TransformType::SCALE;
+                    _package.type = ModelEditType::SCALE;
                     _package.transf = glm::vec3(_scaleVec[0], _scaleVec[1], _scaleVec[2]);
                     break;
                 }
@@ -125,7 +125,7 @@ void PAG::ModelManager::render()
     ImGui::SameLine();
     if (ImGui::Button("Reset model")) {
         _package.modelId = _selectedModel;
-        _package.type = TransformType::RESET;
+        _package.type = ModelEditType::RESET;
         _package.transf = glm::vec3(0.0f);
         _package.angleDegrees = 0.0f;
 
@@ -143,7 +143,7 @@ void PAG::ModelManager::render()
         ImGui::Separator();
         if (ImGui::Button("Yes, delete", ImVec2(120, 0))) {
             _package.modelId = _selectedModel;
-            _package.type = TransformType::DELETE;
+            _package.type = ModelEditType::DELETE;
 
             warnListeners();
             ImGui::CloseCurrentPopup();
@@ -173,7 +173,7 @@ void PAG::ModelManager::render()
     ImGui::Combo("Material", &_selectedMaterial, cMatNames.data(), cMatNames.size());
     ImGui::SameLine();
     if (ImGui::Button("Asignar")) {
-        _package.type = TransformType::MATERIAL_ASSIGN;
+        _package.type = ModelEditType::MATERIAL_ASSIGN;
         _package.modelId = _selectedModel;
         _package.materialId = _selectedMaterial - 1;
 

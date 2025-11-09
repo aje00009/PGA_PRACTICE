@@ -38,6 +38,10 @@ PAG::Renderer *PAG::Renderer::getInstance() {
     return instance;
 }
 
+/**
+ * @brief Method to initialize the instance of Renderer
+ * @param aspectRatio Aspect ratio of window
+ */
 void PAG::Renderer::initialize(float aspectRatio) {
     //Initializing back ground color
     if (!instance) {
@@ -232,7 +236,7 @@ void PAG::Renderer::wakeUp(WindowType t, ...) {
             break;
         }
 
-    case WindowType::ModelTransformation: {
+    case WindowType::ModelEditor: {
                 std::va_list args;
                 va_start(args, t);
                 // Extraemos el "paquete" de datos completo
@@ -243,34 +247,34 @@ void PAG::Renderer::wakeUp(WindowType t, ...) {
 
                 switch (package.type)
                 {
-                case TransformType::TRANSLATE:
+                case ModelEditType::TRANSLATE:
                     {
                         model->translate(package.transf);
                         break;
                     }
-                case TransformType::ROTATE:
+                case ModelEditType::ROTATE:
                     {
                         model->rotate(package.transf,glm::radians(package.angleDegrees));
                         break;
                     }
-                case TransformType::SCALE:
+                case ModelEditType::SCALE:
                     {
                         model->scale(package.transf);
                         break;
                     }
-                case TransformType::RESET:
+                case ModelEditType::RESET:
                     {
                         model->resetModelMatrix();
                         break;
                     }
-                case TransformType::DELETE:
+                case ModelEditType::DELETE:
                     {
                         Logger::getInstance()->addMessage("Deleting model '" + _models[package.modelId]->getModelName() + "'");
                         _models.erase(_models.begin() + package.modelId);
 
                         break;
                     }
-                case TransformType::MATERIAL_ASSIGN:
+                case ModelEditType::MATERIAL_ASSIGN:
                     {
                         if (package.modelId < _models.size()) {
                             Material* mat = nullptr;
