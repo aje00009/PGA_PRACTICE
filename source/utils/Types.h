@@ -66,11 +66,17 @@ namespace PAG
         RESET
     };
 
+    /**
+     * @enum RenderMode Represents the different types of modes to render models
+     */
     enum class RenderMode {
         SOLID,
         WIREFRAME
     };
 
+    /**
+     * @struct ModelEditPackage Encapsulates the data to be sent when modifying a model
+     */
     struct ModelEditPackage
     {
         int modelId;
@@ -80,6 +86,9 @@ namespace PAG
         int materialId;
     };
 
+    /**
+     * @struct MaterialEditingPackage Encapsulates the data to be sent when creating/editing a material
+     */
     struct MaterialEditingPackage {
         int materialId;
         std::string name;

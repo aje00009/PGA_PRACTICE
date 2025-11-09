@@ -10,13 +10,13 @@
 namespace PAG {
     class ShaderProgram {
     private:
-        VertexShader *vs = nullptr;
-        FragmentShader *fs = nullptr;
-        GLuint _programId = 0;
+        VertexShader *vs = nullptr; ///< Vertex shader linked to this shader program
+        FragmentShader *fs = nullptr; ///< Fragment shader linked to this shader program
+        GLuint _programId = 0; ///< ID of shader program
 
     public:
         ShaderProgram(const std::string& vertexShaderPath, const std::string& fragmentShaderPath);
-        ~ShaderProgram(); // Usamos RAII
+        ~ShaderProgram();
 
         void use() const;
         void setUniformMat4(const std::string& uniformName, const glm::mat4& matrix) const;

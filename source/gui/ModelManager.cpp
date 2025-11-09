@@ -16,6 +16,9 @@ void PAG::ModelManager::warnListeners() const
     }
 }
 
+/**
+ * @brief Destructor of this class
+ */
 PAG::ModelManager::~ModelManager() {
     if (instance) {
         delete instance;
@@ -41,12 +44,14 @@ void PAG::ModelManager::render()
 {
     ImGui::Begin("Model transformation");
 
+    //Get model names currently in the app
     auto modelNames = Renderer::getInstance()->getModelNames();
     if (modelNames.empty()) {
         ImGui::Text("No models loaded yet");
         ImGui::End();
         return;
     }
+
     std::vector<const char*> cModelNames;
     cModelNames.reserve(modelNames.size());
     for (const auto& name : modelNames) {
@@ -55,9 +60,12 @@ void PAG::ModelManager::render()
     if (_selectedModel >= cModelNames.size()) {
         _selectedModel = 0;
     }
+
+    //Show available models
     ImGui::Combo("Model", &_selectedModel, cModelNames.data(), cModelNames.size());
     ImGui::Separator();
 
+    //Transformations
     const char* transformTypes[] = { "Translation", "Rotation", "Scale" };
     ImGui::Combo("Tipo", &_selectedTransformation, transformTypes, IM_ARRAYSIZE(transformTypes));
 
@@ -82,6 +90,7 @@ void PAG::ModelManager::render()
     }
 
 
+    //Apply changes on transformations
     if (ImGui::Button("Apply")) {
         _package.modelId = _selectedModel;
 
@@ -112,6 +121,7 @@ void PAG::ModelManager::render()
         warnListeners();
     }
 
+    //Reset model
     ImGui::SameLine();
     if (ImGui::Button("Reset model")) {
         _package.modelId = _selectedModel;
@@ -122,6 +132,7 @@ void PAG::ModelManager::render()
         warnListeners();
     }
 
+    //Delete model
     if (ImGui::Button("Delete model")) {
         ImGui::OpenPopup("Confirm elimination");
     }
@@ -147,7 +158,7 @@ void PAG::ModelManager::render()
 
     ImGui::Separator();
 
-    // Assign material to model
+    // Material assigment
     ImGui::Text("Material assigment");
 
     auto materialNames = Renderer::getInstance()->getMaterialNames();
@@ -158,6 +169,7 @@ void PAG::ModelManager::render()
         cMatNames.push_back(name.c_str());
     }
 
+    //Assign material button
     ImGui::Combo("Material", &_selectedMaterial, cMatNames.data(), cMatNames.size());
     ImGui::SameLine();
     if (ImGui::Button("Asignar")) {

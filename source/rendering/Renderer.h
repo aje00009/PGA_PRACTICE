@@ -14,12 +14,12 @@ namespace PAG {
     class Renderer: public Listener {
         private:
             //General
-            static Renderer* instance;
-            float *_bgColor;
-            RenderMode _renderMode = RenderMode::WIREFRAME;
+            static Renderer* instance; ///< Instance of Renderer
+            float *_bgColor; ///< Background color of the window
+            RenderMode _renderMode = RenderMode::WIREFRAME; ///< Renderer mode of the models
 
-            GLuint _subroutineSolid = GL_INVALID_INDEX;
-            GLuint _subroutineWireframe = GL_INVALID_INDEX;
+            GLuint _subroutineSolid = GL_INVALID_INDEX; ///< Subroutine index to draw models in solid mode
+            GLuint _subroutineWireframe = GL_INVALID_INDEX; ///< Subroutine index to draw models in wireframe mode
 
             //Shader programs
             std::vector<std::pair<std::string, std::unique_ptr<ShaderProgram>>> _shaderPrograms; ///< Set of shader programs loaded in the application

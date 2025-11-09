@@ -7,6 +7,11 @@
 
 #include "Model.h"
 
+/**
+ * @brief Parameterizde constructor of Model
+ * @param shaderProgram Shader program assigned to the model
+ * @param modelPath Path of the model to be loaded
+ */
 PAG::Model::Model(ShaderProgram *shaderProgram, const std::string &modelPath): _shaderProgram(shaderProgram), _modelMatrix(glm::mat4(1.0f)) {
     Assimp::Importer importer;
 
@@ -24,6 +29,11 @@ PAG::Model::Model(ShaderProgram *shaderProgram, const std::string &modelPath): _
     setupBuffers();
 }
 
+/**
+ * @brief Method that process a node following assimp logic
+ * @param node Current node defined by assimp
+ * @param scene Scene defined by assimp
+ */
 void PAG::Model::processNode(aiNode *node, const aiScene *scene) {
     for (unsigned int i = 0; i < node->mNumMeshes; i++) {
         aiMesh *mesh = scene->mMeshes[node->mMeshes[i]];
@@ -35,6 +45,11 @@ void PAG::Model::processNode(aiNode *node, const aiScene *scene) {
     }
 }
 
+/**
+ * @brief Method that process a mesh (only one per model)
+ * @param mesh Mesh defined by assimp
+ * @param scene Scene defined by assimp
+ */
 void PAG::Model::processMesh(aiMesh *mesh, const aiScene *scene) {
 
     //Loop for all vertices of the model
@@ -58,13 +73,12 @@ void PAG::Model::processMesh(aiMesh *mesh, const aiScene *scene) {
             vertex.Normal = { 0.0f, 1.0f, 0.0f };
         }
 
-        // // Texture coordinates
-        // if (mesh->HasTextureCoords(0)) {
-        //     vertex.TextCoord = { mesh->mTextureCoords[0][i].x, mesh->mTextureCoords[0][i].y };
-        // } else {
-        //     // Si no hay texturas, ponemos una por defecto
-        //     vertex.TextCoord = { 0.0f, 0.0f };
-        // }
+        // Texture coordinates
+        if (mesh->HasTextureCoords(0)) {
+            vertex.TextCoord = { mesh->mTextureCoords[0][i].x, mesh->mTextureCoords[0][i].y };
+        } else {
+            vertex.TextCoord = { 0.0f, 0.0f };
+        }
 
         _vertices.push_back(vertex);
     }
@@ -81,6 +95,9 @@ void PAG::Model::processMesh(aiMesh *mesh, const aiScene *scene) {
 
 }
 
+/**
+ * @brief Method that encaspulates the generation, enabling and binding of buffers (VAO,VBO,IBO)
+ */
 void PAG::Model::setupBuffers() {
     glGenVertexArrays(1, &_idVAO);
     glBindVertexArray(_idVAO);
@@ -112,7 +129,10 @@ void PAG::Model::setupBuffers() {
     glBindVertexArray(0);
 }
 
-
+/**
+ * @brief Destructor of class Model
+ * @post It will destroy all necessary buffers
+ */
 PAG::Model::~Model() {
     if (_idVAO)
         glDeleteVertexArrays(1, &_idVAO);
@@ -122,52 +142,88 @@ PAG::Model::~Model() {
         glDeleteBuffers(1, &_idIBO);
 }
 
+/**
+ * @brief Method that draws the model on the scene
+ */
 void PAG::Model::draw() const {
     glBindVertexArray(_idVAO);
     glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(_indices.size()), GL_UNSIGNED_INT, nullptr);
     glBindVertexArray(0);
 }
 
+/**
+ * @return Shader program associated to the model
+ */
 PAG::ShaderProgram * PAG::Model::getShaderProgram() const {
     return this->_shaderProgram;
 }
 
+/**
+ * @return Method that return the material associated to the model
+ */
 PAG::Material * PAG::Model::getMaterial() const {
     return _material;
 }
 
+/**
+ * @brief Method that assigns a material to a model
+ * @param mat Material to be assigned
+ */
 void PAG::Model::setMaterial(Material *mat) {
     _material = mat;
 }
 
+/**
+ * @return The name of the model
+ */
 const std::string& PAG::Model::getModelName() const
 {
     return modelName;
 }
 
+/**
+ * @brief Method that sets a model matrix to a model
+ * @param matrix The model matrix to be assigned
+ */
 void PAG::Model::setModelMatrix(const glm::mat4& matrix) {
     _modelMatrix = matrix;
 }
 
+/**
+ * @return The model matrix for the model
+ */
 glm::mat4 PAG::Model::getModelMatrix() const {
     return _modelMatrix;
 }
 
+/**
+ * @brief Method that resets the model -> Resets the model matrix of the model (identity)
+ */
 void PAG::Model::resetModelMatrix() {
     _modelMatrix = glm::mat4(1.0f);
 }
 
-// Aplica una traslación A LA MATRIZ ACTUAL
+/**
+ * @brief Method that translates a model
+ * @param v Traslation to be applied to the model
+ */
 void PAG::Model::translate(const glm::vec3& v) {
     _modelMatrix = glm::translate(_modelMatrix, v);
 }
 
-// Aplica una rotación A LA MATRIZ ACTUAL
+/**
+ * @brief Method that rotates a model
+ * @param axis Axis (x,y,z) to be rotated by
+ * @param angleRadians Angle in radians of the rotation to be applied
+ */
 void PAG::Model::rotate(const glm::vec3& axis, float angleRadians) {
     _modelMatrix = glm::rotate(_modelMatrix, angleRadians, axis);
 }
 
-// Aplica un escalado A LA MATRIZ ACTUAL
+/**
+ * @brief Method that scales a model
+ * @param s Scaling factors to be applied (x,y,z)
+ */
 void PAG::Model::scale(const glm::vec3& s) {
     _modelMatrix = glm::scale(_modelMatrix, s);
 }

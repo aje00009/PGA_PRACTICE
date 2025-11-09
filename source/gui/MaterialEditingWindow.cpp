@@ -6,6 +6,9 @@
 //Definition of the instance
 PAG::MaterialEditingWindow* PAG::MaterialEditingWindow::instance = nullptr;
 
+/**
+ * @brief Method that wakes up all listeners to the events of this window
+ */
 void PAG::MaterialEditingWindow::warnListeners() {
     _package.name = _nameBuffer;
 
@@ -14,12 +17,29 @@ void PAG::MaterialEditingWindow::warnListeners() {
     }
 }
 
+/**
+ * @brief Destructor of this class
+ */
+PAG::MaterialEditingWindow::~MaterialEditingWindow() {
+    if (instance) {
+        delete instance;
+        instance = nullptr;
+    }
+}
+
+/**
+ * @brief Method that creates (first time is called) and returns the only instance for this class
+ * @return The only instance of this class
+ */
 PAG::MaterialEditingWindow * PAG::MaterialEditingWindow::getInstance() {
     if (!instance)
         instance = new MaterialEditingWindow();
     return instance;
 }
 
+/**
+ * @brief Method that draws the GUI window for this class
+ */
 void PAG::MaterialEditingWindow::render() {
     ImGui::Begin("Material editor");
 

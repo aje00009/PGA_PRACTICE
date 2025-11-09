@@ -8,6 +8,9 @@
 #include "../shader/ShaderProgram.h"
 
 namespace PAG {
+    /**
+     * @struct Vertex Encapsulates vertex data
+     */
     struct Vertex {
         glm::vec3 Position;
         glm::vec3 Normal;
@@ -15,22 +18,28 @@ namespace PAG {
         glm::vec2 TextCoord;
     };
 
+    /**
+     * @struct Texture Encapsulates texture data
+     */
     struct Texture {
         unsigned int id;
         std::string type;
     };
 
+    /**
+     * @class Model Encapsulates model information and behaviour (vertices, indicies, name, model matrix, transformations...)
+     */
     class Model {
     private:
-        GLuint _idVAO = 0;
-        GLuint _idVBO = 0;
-        GLuint _idIBO = 0;
+        GLuint _idVAO = 0; ///< ID of VAO from this model
+        GLuint _idVBO = 0; ///< ID of VBO from this model
+        GLuint _idIBO = 0; ///< ID of IBO from this model
 
-        std::vector<Vertex> _vertices;
-        std::vector<Texture> _textures;
-        std::vector<GLuint> _indices;
+        std::vector<Vertex> _vertices; ///< Vertices representing the mesh of this model
+        std::vector<Texture> _textures; ///< Textures associated to the mesh of this model
+        std::vector<GLuint> _indices; ///< Topology associated to the mesh of this model
 
-        std::string modelName;
+        std::string modelName; ///< Name of the model (filename)
 
         glm::mat4 _modelMatrix; ///< Model matrix for each model (rotation, escalation, translation)
 

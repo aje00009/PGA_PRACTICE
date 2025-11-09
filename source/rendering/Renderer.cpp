@@ -462,6 +462,9 @@ std::vector<std::string> PAG::Renderer::getModelNames() const
     return modelNames;
 }
 
+/**
+ * @return The collection of names of the materials registered in the application
+ */
 std::vector<std::string> PAG::Renderer::getMaterialNames() const {
     std::vector<std::string> materialNames;
 
@@ -472,6 +475,11 @@ std::vector<std::string> PAG::Renderer::getMaterialNames() const {
     return materialNames;
 }
 
+/**
+ * @brief Method that returns a material given an index (position in array)
+ * @param index Position of the material in the array
+ * @return The material in position "index"
+ */
 PAG::Material* PAG::Renderer::getMaterial(int index) const {
     return _materials[index].get();
 }

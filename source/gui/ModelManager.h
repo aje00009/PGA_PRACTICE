@@ -23,7 +23,7 @@ namespace PAG
         // Material selection
         int _selectedMaterial = 0; ///< 0 = No material, 1 = first material in collection...
 
-        ModelEditPackage _package{}; ///< Payload to be sended to Renderer
+        ModelEditPackage _package{}; ///< Payload to be sent to Renderer
 
         ModelManager() = default;
         void warnListeners() const;

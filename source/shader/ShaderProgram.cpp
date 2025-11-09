@@ -4,7 +4,6 @@
 #include "ShaderProgram.h"
 #include "VertexShader.h"
 #include "FragmentShader.h"
-#include "../utils/Logger.h"
 
 /**
  * @brief Default constructor of ShaderProgram
@@ -67,6 +66,11 @@ void PAG::ShaderProgram::use() const {
     glUseProgram(_programId);
 }
 
+/**
+ * @Method to send a uniform of type mat4 to the shader
+ * @param uniformName Name of the uniform to link it to shader
+ * @param matrix Matrix of type mat4 to be passed as uniform
+ */
 void PAG::ShaderProgram::setUniformMat4(const std::string &uniformName, const glm::mat4 &matrix) const {
     GLint position = glGetUniformLocation(_programId, uniformName.c_str());
 
@@ -74,6 +78,11 @@ void PAG::ShaderProgram::setUniformMat4(const std::string &uniformName, const gl
         glUniformMatrix4fv(position, 1, GL_FALSE, glm::value_ptr(matrix));
 }
 
+/**
+ * @Method to send a uniform of type vec3 to the shader
+ * @param uniformName Name of the uniform to link it to shader
+ * @param vector Vector of type vec3 to be passed as uniform
+ */
 void PAG::ShaderProgram::setUniformVec3(const std::string &uniformName, const glm::vec3 &vector) const {
     GLuint position = glGetUniformLocation(_programId, uniformName.c_str());
 
@@ -81,6 +90,11 @@ void PAG::ShaderProgram::setUniformVec3(const std::string &uniformName, const gl
         glUniform3fv(position, 1, glm::value_ptr(vector));
 }
 
+/**
+ * @Method to send a uniform of type float to the shader
+ * @param uniformName Name of the uniform to link it to shader
+ * @param value Float to be passed as uniform
+ */
 void PAG::ShaderProgram::setUniformFloat(const std::string &uniformName, float value) const {
     GLuint position = glGetUniformLocation(_programId, uniformName.c_str());
 
@@ -96,6 +110,11 @@ GLuint PAG::ShaderProgram::getId() const {
     return _programId;
 }
 
+/**
+ * @brief Method that returns the index of a subroutine given its name (implementation)
+ * @param name Name of the subroutine (implementation)
+ * @return The index of the implementation of the subroutine
+ */
 GLuint PAG::ShaderProgram::getSubroutineIndex(const std::string &name) const {
     // Esta función nos da el ID de una implementación [cite: 71]
     GLuint index = glGetSubroutineIndex(_programId, GL_FRAGMENT_SHADER, name.c_str());
@@ -105,6 +124,10 @@ GLuint PAG::ShaderProgram::getSubroutineIndex(const std::string &name) const {
     return index;
 }
 
+/**
+ * @brief Method that activates an implementation of a subroutine
+ * @param subroutineIndex Index of an implementation of the subroutine
+ */
 void PAG::ShaderProgram::activateSubroutine(GLuint subroutineIndex) const {
     glUniformSubroutinesuiv(GL_FRAGMENT_SHADER, 1, &subroutineIndex);
 }

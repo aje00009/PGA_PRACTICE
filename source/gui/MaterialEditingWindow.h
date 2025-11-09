@@ -9,8 +9,8 @@ namespace PAG {
         static MaterialEditingWindow* instance;
 
         int _selectedMaterial = 0;  ///< 0 = New material, 1 = first material on collection...
-        int _lastSelected = -1;
-        MaterialEditingPackage _package;
+        int _lastSelected = -1; ///< Last selected option
+        MaterialEditingPackage _package; ///< Payload to be sent to listeners
 
         char _nameBuffer[128] = "New material"; ///< char array for ImGui
 
@@ -18,6 +18,7 @@ namespace PAG {
         void warnListeners();
 
     public:
+        ~MaterialEditingWindow() override;
         static MaterialEditingWindow* getInstance();
 
         void render() override;
