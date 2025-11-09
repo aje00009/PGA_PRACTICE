@@ -1,22 +1,22 @@
 #include "imgui.h"
 
-#include "ModelTransformationWindow.h"
+#include "ModelManager.h"
 #include "../rendering/Renderer.h"
 
 //Definition of the instance
-PAG::ModelTransformationWindow* PAG::ModelTransformationWindow::instance = nullptr;
+PAG::ModelManager* PAG::ModelManager::instance = nullptr;
 
 /**
  * @brief Method that wakes up all subscribers to the events of this class
  */
-void PAG::ModelTransformationWindow::warnListeners() const
+void PAG::ModelManager::warnListeners() const
 {
     for (auto listener: _listeners) {
         listener->wakeUp(WindowType::ModelTransformation, _package);
     }
 }
 
-PAG::ModelTransformationWindow::~ModelTransformationWindow() {
+PAG::ModelManager::~ModelManager() {
     if (instance) {
         delete instance;
         instance = nullptr;
@@ -27,17 +27,17 @@ PAG::ModelTransformationWindow::~ModelTransformationWindow() {
  * @brief Method that creates (first time is called) and return the only instance for this class
  * @return The only instance for this class
  */
-PAG::ModelTransformationWindow* PAG::ModelTransformationWindow::getInstance()
+PAG::ModelManager* PAG::ModelManager::getInstance()
 {
     if (!instance)
-        instance = new ModelTransformationWindow();
+        instance = new ModelManager();
     return instance;
 }
 
 /**
  * @brief Method that renders the GUI window for transformations on models
  */
-void PAG::ModelTransformationWindow::render()
+void PAG::ModelManager::render()
 {
     ImGui::Begin("Model transformation");
 
@@ -47,15 +47,15 @@ void PAG::ModelTransformationWindow::render()
         ImGui::End();
         return;
     }
-    std::vector<const char*> cNames;
-    cNames.reserve(modelNames.size());
+    std::vector<const char*> cModelNames;
+    cModelNames.reserve(modelNames.size());
     for (const auto& name : modelNames) {
-        cNames.push_back(name.c_str());
+        cModelNames.push_back(name.c_str());
     }
-    if (_selectedModel >= cNames.size()) {
+    if (_selectedModel >= cModelNames.size()) {
         _selectedModel = 0;
     }
-    ImGui::Combo("Model", &_selectedModel, cNames.data(), cNames.size());
+    ImGui::Combo("Model", &_selectedModel, cModelNames.data(), cModelNames.size());
     ImGui::Separator();
 
     const char* transformTypes[] = { "Translation", "Rotation", "Scale" };
@@ -123,8 +123,46 @@ void PAG::ModelTransformationWindow::render()
     }
 
     if (ImGui::Button("Delete model")) {
+        ImGui::OpenPopup("Confirm elimination");
+    }
+
+    // Popup window for deleting model
+    if (ImGui::BeginPopupModal("Confirm elimination", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
+        ImGui::Text("¿Are you sure you want to delete '%s'?", cModelNames[_selectedModel]);
+        ImGui::Separator();
+        if (ImGui::Button("Yes, delete", ImVec2(120, 0))) {
+            _package.modelId = _selectedModel;
+            _package.type = TransformType::DELETE;
+
+            warnListeners();
+            ImGui::CloseCurrentPopup();
+        }
+        ImGui::SetItemDefaultFocus();
+        ImGui::SameLine();
+        if (ImGui::Button("Cancel", ImVec2(120, 0))) {
+            ImGui::CloseCurrentPopup();
+        }
+        ImGui::EndPopup();
+    }
+
+    ImGui::Separator();
+
+    // Assign material to model
+    ImGui::Text("Material assigment");
+
+    auto materialNames = Renderer::getInstance()->getMaterialNames();
+    std::vector<const char*> cMatNames;
+
+    cMatNames.push_back("[ No material ]");
+    for (const auto& name : materialNames) {
+        cMatNames.push_back(name.c_str());
+    }
+
+    ImGui::Combo("Material", &_selectedMaterial, cMatNames.data(), cMatNames.size());
+    ImGui::SameLine();
+    if (ImGui::Button("Asignar")) {
         _package.modelId = _selectedModel;
-        _package.type = TransformType::DELETE;
+        _package.materialId = _selectedMaterial - 1;
 
         warnListeners();
     }

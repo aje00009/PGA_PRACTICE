@@ -5,13 +5,13 @@
 namespace PAG
 {
     /**
-     * @class ModelTransformationWindow Class that represents the GUI window that allow model transformation into models
+     * @class ModelManager Class that represents the GUI window that allow model transformation into models
      */
-    class ModelTransformationWindow: public GUIElement {
+    class ModelManager: public GUIElement {
     private:
-        static ModelTransformationWindow* instance;
+        static ModelManager* instance;
 
-        //Selection options (default)
+        //Selection options for transformations(default)
         int _selectedModel = 0;  ///< Selected model id
         int _selectedTransformation = 0; ///< Selected transformation (translation = 0, rotation = 1, scale = 2)
 
@@ -20,14 +20,17 @@ namespace PAG
         int _rotateAxis = 1; ///< X = 0, Y = 1, Z = 2
         float _scaleVec[3] = {1,1,1}; ///< Scalation on x,y,z
 
-        TransformPackage _package{}; ///< Payload to be sended to Renderer
+        // Material selection
+        int _selectedMaterial = 0; ///< 0 = No material, 1 = first material in collection...
 
-        ModelTransformationWindow() = default;
+        ModelEditPackage _package{}; ///< Payload to be sended to Renderer
+
+        ModelManager() = default;
         void warnListeners() const;
 
     public:
-        ~ModelTransformationWindow();
-        static ModelTransformationWindow* getInstance();
+        ~ModelManager();
+        static ModelManager* getInstance();
 
         void render() override;
     };

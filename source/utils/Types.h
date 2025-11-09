@@ -1,5 +1,6 @@
 #ifndef PGA_PRACTICA_TYPES_H
 #define PGA_PRACTICA_TYPES_H
+#include <string>
 #include <glm/vec3.hpp>
 
 /**
@@ -46,6 +47,7 @@ namespace PAG
         ShaderLoad,
         ModelLoader,
         ModelTransformation,
+        MaterialEditor,
     };
 
     /**
@@ -56,16 +58,30 @@ namespace PAG
         TRANSLATE,
         ROTATE,
         SCALE,
+
+        MATERIAL_ASSIGN,
+
         DELETE,
         RESET
     };
 
-    struct TransformPackage
+    struct ModelEditPackage
     {
         int modelId;
         TransformType type;
         glm::vec3 transf;
         float angleDegrees;
+        int materialId;
     };
+
+    struct MaterialEditingPackage {
+        int materialId;
+        std::string name;
+        glm::vec3 ambient;
+        glm::vec3 diffuse;
+        glm::vec3 specular;
+        float shininess;
+    };
+
 }
 #endif //PGA_PRACTICA_TYPES_H

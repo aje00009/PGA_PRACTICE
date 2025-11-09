@@ -132,6 +132,14 @@ PAG::ShaderProgram * PAG::Model::getShaderProgram() const {
     return this->_shaderProgram;
 }
 
+PAG::Material * PAG::Model::getMaterial() const {
+    return _material;
+}
+
+void PAG::Model::setMaterial(Material *mat) {
+    _material = mat;
+}
+
 const std::string& PAG::Model::getModelName() const
 {
     return modelName;

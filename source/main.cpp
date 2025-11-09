@@ -11,8 +11,9 @@
 #include "rendering/Renderer.h"
 #include "utils/Logger.h"
 #include "gui/LoggerWindow.h"
+#include "gui/MaterialEditingWindow.h"
 #include "gui/ModelLoaderWindow.h"
-#include "gui/ModelTransformationWindow.h"
+#include "gui/ModelManager.h"
 #include "gui/ShaderLoaderWindow.h"
 
 //Global variables
@@ -94,14 +95,16 @@ void initializeGUI() {
     PAG::ManagerGUI::getInstance()->addWindow(PAG::ShaderLoaderWindow::getInstance());
     PAG::ManagerGUI::getInstance()->addWindow(PAG::CameraWindow::getInstance());
     PAG::ManagerGUI::getInstance()->addWindow(PAG::ModelLoaderWindow::getInstance());
-    PAG::ManagerGUI::getInstance()->addWindow(PAG::ModelTransformationWindow::getInstance());
+    PAG::ManagerGUI::getInstance()->addWindow(PAG::ModelManager::getInstance());
+    PAG::ManagerGUI::getInstance()->addWindow(PAG::MaterialEditingWindow::getInstance());
 
     //Add listeners GUI
     PAG::BgWindow::getInstance()->addListener(PAG::Renderer::getInstance());
     PAG::ShaderLoaderWindow::getInstance()->addListener(PAG::Renderer::getInstance());
     PAG::CameraWindow::getInstance()->addListener(PAG::Renderer::getInstance());
     PAG::ModelLoaderWindow::getInstance()->addListener(PAG::Renderer::getInstance());
-    PAG::ModelTransformationWindow::getInstance()->addListener(PAG::Renderer::getInstance());
+    PAG::ModelManager::getInstance()->addListener(PAG::Renderer::getInstance());
+    PAG::MaterialEditingWindow::getInstance()->addListener(PAG::Renderer::getInstance());
 }
 
 int main() {

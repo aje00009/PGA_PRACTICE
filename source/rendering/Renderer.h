@@ -24,6 +24,9 @@ namespace PAG {
             //Models
             std::vector<std::unique_ptr<Model>> _models; ///< Set of models loaded in the application
 
+            //Materials
+            std::vector<std::unique_ptr<Material>> _materials; ///< Set of materials created in the application
+
             //Cameras
             Camera* _activeCamera = nullptr; ///< Current active camera
 
@@ -45,6 +48,8 @@ namespace PAG {
             void initializeOpenGL() const;
 
             std::vector<std::string> getModelNames() const;
+            std::vector<std::string> getMaterialNames() const;
+            Material* getMaterial(int index) const;
     };
 }
 

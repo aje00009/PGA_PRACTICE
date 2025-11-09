@@ -4,6 +4,7 @@
 #include <vector>
 #include <assimp/scene.h>
 
+#include "Material.h"
 #include "../shader/ShaderProgram.h"
 
 namespace PAG {
@@ -33,7 +34,9 @@ namespace PAG {
 
         glm::mat4 _modelMatrix; ///< Model matrix for each model (rotation, escalation, translation)
 
-        ShaderProgram* _shaderProgram = nullptr;
+        ShaderProgram* _shaderProgram = nullptr; ///< Shader program assigned to Model
+
+        Material* _material = nullptr; ///< Material assigned to Model
 
         void processNode(aiNode* node, const aiScene* scene);
 
@@ -51,6 +54,8 @@ namespace PAG {
         void setModelMatrix(const glm::mat4& modelMatrix);
         glm::mat4 getModelMatrix() const;
         ShaderProgram* getShaderProgram() const;
+        Material* getMaterial() const;
+        void setMaterial(Material* mat);
         const std::string& getModelName() const;
 
         //Transformations for models

@@ -50,6 +50,9 @@ void PAG::Renderer::initialize(float aspectRatio) {
 
         //Initializing main camera
         instance->_activeCamera = new Camera(aspectRatio);
+
+        //Initialize default material
+        instance->_materials.push_back(std::make_unique<Material>("Default material"));
     }
 }
 
@@ -220,7 +223,7 @@ void PAG::Renderer::wakeUp(WindowType t, ...) {
                 std::va_list args;
                 va_start(args, t);
                 // Extraemos el "paquete" de datos completo
-                TransformPackage package = va_arg(args, TransformPackage);
+                ModelEditPackage package = va_arg(args, ModelEditPackage);
                 va_end(args);
 
                 auto& model = _models[package.modelId];
@@ -254,8 +257,48 @@ void PAG::Renderer::wakeUp(WindowType t, ...) {
 
                         break;
                     }
+                case TransformType::MATERIAL_ASSIGN:
+                    {
+                        if (package.modelId < _models.size()) {
+                            Material* mat = nullptr; // Por defecto (sin material)
+                            if (package.modelId >= 0 && package.modelId < _materials.size()) {
+                                mat = _materials[package.modelId].get();
+                            }
+                            _models[package.modelId]->setMaterial(mat);
+                        }
+                        break;
+                    }
                 }
 
+            break;
+        }
+
+        case WindowType::MaterialEditor: {
+            std::va_list args;
+            va_start(args, t);
+            MaterialEditingPackage* package = va_arg(args, MaterialEditingPackage*);
+            va_end(args);
+
+            if (package->materialId == -1) {
+                // Create new material
+                _materials.push_back(std::make_unique<Material>(package->name));
+
+                Material* newMat = _materials.back().get();
+
+                newMat->setDiffuseColor(package->diffuse);
+                newMat->setAmbientColor(package->ambient);
+                newMat->setSpecularColor(package->specular);
+                newMat->setShininess(package->shininess);
+
+            } else if (package->materialId < _materials.size()) {
+                // Edit existing material
+                Material* mat = _materials[package->materialId].get();
+                mat->setName(package->name);
+                mat->setDiffuseColor(package->diffuse);
+                mat->setAmbientColor(package->ambient);
+                mat->setSpecularColor(package->specular);
+                mat->setShininess(package->shininess);
+            }
             break;
         }
     }
@@ -380,4 +423,18 @@ std::vector<std::string> PAG::Renderer::getModelNames() const
     }
 
     return modelNames;
+}
+
+std::vector<std::string> PAG::Renderer::getMaterialNames() const {
+    std::vector<std::string> materialNames;
+
+    for (const auto& material: _materials) {
+        materialNames.push_back(material->getName());
+    }
+
+    return materialNames;
+}
+
+PAG::Material* PAG::Renderer::getMaterial(int index) const {
+    return _materials[index].get();
 }
