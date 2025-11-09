@@ -4,6 +4,7 @@
 #include "ShaderProgram.h"
 #include "VertexShader.h"
 #include "FragmentShader.h"
+#include "../utils/Logger.h"
 
 /**
  * @brief Default constructor of ShaderProgram
@@ -66,11 +67,25 @@ void PAG::ShaderProgram::use() const {
     glUseProgram(_programId);
 }
 
-void PAG::ShaderProgram::setUniformMat4(const std::string &uniformName, const glm::mat4 &matrix) {
+void PAG::ShaderProgram::setUniformMat4(const std::string &uniformName, const glm::mat4 &matrix) const {
     GLint position = glGetUniformLocation(_programId, uniformName.c_str());
 
     if ( position != -1 )
         glUniformMatrix4fv(position, 1, GL_FALSE, glm::value_ptr(matrix));
+}
+
+void PAG::ShaderProgram::setUniformVec3(const std::string &uniformName, const glm::vec3 &vector) const {
+    GLuint position = glGetUniformLocation(_programId, uniformName.c_str());
+
+    if ( position != -1 )
+        glUniform3fv(position, 1, glm::value_ptr(vector));
+}
+
+void PAG::ShaderProgram::setUniformFloat(const std::string &uniformName, float value) const {
+    GLuint position = glGetUniformLocation(_programId, uniformName.c_str());
+
+    if ( position != -1 )
+        glUniform1f(position, value);
 }
 
 /**
@@ -80,3 +95,17 @@ void PAG::ShaderProgram::setUniformMat4(const std::string &uniformName, const gl
 GLuint PAG::ShaderProgram::getId() const {
     return _programId;
 }
+
+GLuint PAG::ShaderProgram::getSubroutineIndex(const std::string &name) const {
+    // Esta función nos da el ID de una implementación [cite: 71]
+    GLuint index = glGetSubroutineIndex(_programId, GL_FRAGMENT_SHADER, name.c_str());
+    if (index == GL_INVALID_INDEX) {
+        throw std::runtime_error("Subroutine with name " + name + " does not exist.");
+    }
+    return index;
+}
+
+void PAG::ShaderProgram::activateSubroutine(GLuint subroutineIndex) const {
+    glUniformSubroutinesuiv(GL_FRAGMENT_SHADER, 1, &subroutineIndex);
+}
+

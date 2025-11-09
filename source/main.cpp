@@ -14,6 +14,7 @@
 #include "gui/MaterialEditingWindow.h"
 #include "gui/ModelLoaderWindow.h"
 #include "gui/ModelManager.h"
+#include "gui/RenderModeWindow.h"
 #include "gui/ShaderLoaderWindow.h"
 
 //Global variables
@@ -97,6 +98,7 @@ void initializeGUI() {
     PAG::ManagerGUI::getInstance()->addWindow(PAG::ModelLoaderWindow::getInstance());
     PAG::ManagerGUI::getInstance()->addWindow(PAG::ModelManager::getInstance());
     PAG::ManagerGUI::getInstance()->addWindow(PAG::MaterialEditingWindow::getInstance());
+    PAG::ManagerGUI::getInstance()->addWindow(PAG::RenderModeWindow::getInstance());
 
     //Add listeners GUI
     PAG::BgWindow::getInstance()->addListener(PAG::Renderer::getInstance());
@@ -105,6 +107,7 @@ void initializeGUI() {
     PAG::ModelLoaderWindow::getInstance()->addListener(PAG::Renderer::getInstance());
     PAG::ModelManager::getInstance()->addListener(PAG::Renderer::getInstance());
     PAG::MaterialEditingWindow::getInstance()->addListener(PAG::Renderer::getInstance());
+    PAG::RenderModeWindow::getInstance()->addListener(PAG::Renderer::getInstance());
 }
 
 int main() {

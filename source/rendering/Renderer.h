@@ -16,6 +16,10 @@ namespace PAG {
             //General
             static Renderer* instance;
             float *_bgColor;
+            RenderMode _renderMode = RenderMode::WIREFRAME;
+
+            GLuint _subroutineSolid = GL_INVALID_INDEX;
+            GLuint _subroutineWireframe = GL_INVALID_INDEX;
 
             //Shader programs
             std::vector<std::pair<std::string, std::unique_ptr<ShaderProgram>>> _shaderPrograms; ///< Set of shader programs loaded in the application

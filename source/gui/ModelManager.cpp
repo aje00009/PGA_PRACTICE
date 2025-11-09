@@ -161,6 +161,7 @@ void PAG::ModelManager::render()
     ImGui::Combo("Material", &_selectedMaterial, cMatNames.data(), cMatNames.size());
     ImGui::SameLine();
     if (ImGui::Button("Asignar")) {
+        _package.type = TransformType::MATERIAL_ASSIGN;
         _package.modelId = _selectedModel;
         _package.materialId = _selectedMaterial - 1;
 

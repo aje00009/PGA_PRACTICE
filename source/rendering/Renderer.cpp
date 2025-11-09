@@ -108,6 +108,11 @@ void PAG::Renderer::wakeUp(WindowType t, ...) {
 
                     _activeShaderProgram = _shaderPrograms.back().second.get();
                 }
+
+                _activeShaderProgram->use(); //Activate shader program before reading from it
+                _subroutineSolid = _activeShaderProgram->getSubroutineIndex("solidColor");
+                _subroutineWireframe = _activeShaderProgram->getSubroutineIndex("wireframeColor");
+
             }catch (const std::runtime_error& e) {
                 Logger::getInstance()->addMessage(e.what());
                 _activeShaderProgram = nullptr;
@@ -172,6 +177,14 @@ void PAG::Renderer::wakeUp(WindowType t, ...) {
                     _activeCamera->reset();
                     break;
             }
+            break;
+        }
+
+        case WindowType::RenderMode: {
+            std::va_list args;
+            va_start(args, t);
+            _renderMode = va_arg(args, RenderMode);
+            va_end(args);
             break;
         }
 
@@ -260,9 +273,9 @@ void PAG::Renderer::wakeUp(WindowType t, ...) {
                 case TransformType::MATERIAL_ASSIGN:
                     {
                         if (package.modelId < _models.size()) {
-                            Material* mat = nullptr; // Por defecto (sin material)
-                            if (package.modelId >= 0 && package.modelId < _materials.size()) {
-                                mat = _materials[package.modelId].get();
+                            Material* mat = nullptr;
+                            if (package.materialId >= 0 && package.materialId < _materials.size()) {
+                                mat = _materials[package.materialId].get();
                             }
                             _models[package.modelId]->setMaterial(mat);
                         }
@@ -362,7 +375,13 @@ void PAG::Renderer::cursor_pos_callback(CameraMovement movement, double deltaX, 
 void PAG::Renderer::refresh() const {
     glClearColor(_bgColor[0], _bgColor[1], _bgColor[2], _bgColor[3]);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glPolygonMode ( GL_FRONT_AND_BACK, GL_LINE );
+
+    //Activate render mode
+    if (_renderMode == RenderMode::WIREFRAME) {
+        glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+    }else {
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+    }
 
     const glm::mat4 view = _activeCamera->getViewMatrix();
     const glm::mat4 projection = _activeCamera->getProjectionMatrix();
@@ -377,10 +396,28 @@ void PAG::Renderer::refresh() const {
 
         const auto modelMatrix = model->getModelMatrix();
 
+        //Uniform matrices
         shaderProgram->setUniformMat4("model",modelMatrix);
         shaderProgram->setUniformMat4("view",view);
         shaderProgram->setUniformMat4("projection",projection);
 
+        //Material properties
+        Material* mat = model->getMaterial();
+        if (mat) {
+            shaderProgram->setUniformVec3("material.diffuse", mat->getDiffuseColor());
+            shaderProgram->setUniformVec3("material.ambient", mat->getAmbientColor());
+            shaderProgram->setUniformVec3("material.specular", mat->getSpecularColor());
+            shaderProgram->setUniformFloat("material.shininess", mat->getShininess());
+        }
+
+        //Activate correct subroutine
+        if (_renderMode == RenderMode::WIREFRAME) {
+            shaderProgram->activateSubroutine(_subroutineWireframe);
+        }else {
+            shaderProgram->activateSubroutine(_subroutineSolid);
+        }
+
+        //Draw models
         model->draw();
     }
 }

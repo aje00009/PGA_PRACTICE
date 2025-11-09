@@ -48,6 +48,7 @@ namespace PAG
         ModelLoader,
         ModelTransformation,
         MaterialEditor,
+        RenderMode
     };
 
     /**
@@ -63,6 +64,11 @@ namespace PAG
 
         DELETE,
         RESET
+    };
+
+    enum class RenderMode {
+        SOLID,
+        WIREFRAME
     };
 
     struct ModelEditPackage

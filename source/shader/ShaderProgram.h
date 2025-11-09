@@ -19,8 +19,13 @@ namespace PAG {
         ~ShaderProgram(); // Usamos RAII
 
         void use() const;
-        void setUniformMat4(const std::string& uniformName, const glm::mat4& matrix);
+        void setUniformMat4(const std::string& uniformName, const glm::mat4& matrix) const;
+        void setUniformVec3(const std::string& uniformName, const glm::vec3& vector) const;
+        void setUniformFloat(const std::string& uniformName, float value) const;
         GLuint getId() const;
+
+        GLuint getSubroutineIndex(const std::string& name) const;
+        void activateSubroutine(GLuint subroutineIndex) const;
     };
 }
 
