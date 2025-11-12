@@ -224,6 +224,7 @@ void PAG::Renderer::wakeUp(WindowType t, ...) {
 
                     float xOffset = static_cast<float>(_models.size()) * 2.0f;
                     newModel->translate(glm::vec3(xOffset, 0.0f, 0.0f));
+                    newModel->setMaterial(_materials.front().get());
 
                     _models.push_back(std::move(newModel));
 
