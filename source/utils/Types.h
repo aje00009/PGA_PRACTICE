@@ -75,6 +75,17 @@ namespace PAG
     };
 
     /**
+     * @enum LightType Represents the different types of light existing in the application
+     */
+    enum class LightType
+    {
+        AMBIENT_LIGHT = 0,
+        POINT_LIGHT = 1,
+        DIRECTIONAL_LIGHT = 2,
+        SPOT_LIGHT = 3
+    };
+
+    /**
      * @struct ModelEditPackage Encapsulates the data to be sent when modifying a model
      */
     struct ModelEditPackage
@@ -97,6 +108,24 @@ namespace PAG
         glm::vec3 specular;
         float shininess;
     };
+
+    struct LightPackage {
+        int lightId;
+        bool deleteLight;
+        LightType type;
+
+        std::string name;
+        glm::vec3 ambient;
+        glm::vec3 diffuse;
+        glm::vec3 specular;
+        glm::vec3 position;
+        glm::vec3 direction;
+        float angle;
+        float exp;
+    };
+
+    //CONSTANTES
+    constexpr int NUM_LIGHTS = 4;
 
 }
 #endif //PGA_PRACTICA_TYPES_H
