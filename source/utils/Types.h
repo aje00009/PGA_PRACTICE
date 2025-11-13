@@ -75,6 +75,17 @@ namespace PAG
     };
 
     /**
+     * @enum LightType Represents the different types of light existing in the application
+     */
+    enum class LightType
+    {
+        POINT_LIGHT,
+        DIRECTIONAL_LIGHT,
+        SPOT_LIGHT,
+        AMBIENT_LIGHT
+    };
+
+    /**
      * @struct ModelEditPackage Encapsulates the data to be sent when modifying a model
      */
     struct ModelEditPackage
