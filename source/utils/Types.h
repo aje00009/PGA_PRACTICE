@@ -48,7 +48,8 @@ namespace PAG
         ModelLoader,
         ModelEditor,
         MaterialEditor,
-        RenderMode
+        RenderMode,
+        ManagerLight
     };
 
     /**
@@ -110,18 +111,19 @@ namespace PAG
     };
 
     struct LightPackage {
-        int lightId;
-        bool deleteLight;
-        LightType type;
+        int lightId = -1;
+        bool deleteLight = false;
+        bool isEnabled = true;
+        LightType type = LightType::POINT_LIGHT;
 
-        std::string name;
-        glm::vec3 ambient;
-        glm::vec3 diffuse;
-        glm::vec3 specular;
-        glm::vec3 position;
-        glm::vec3 direction;
-        float angle;
-        float exp;
+        std::string name = "New light";
+        glm::vec3 ambient {0.1,0.1,0.1};
+        glm::vec3 diffuse {1.0,1.0,1.0};
+        glm::vec3 specular {1.0,1.0,1.0};
+        glm::vec3 position {0.0,2.0,2.0};
+        glm::vec3 direction {-0.0,-1.0,-1.0};
+        float angle = 12.5;
+        float exp = 1.0;
     };
 
     //CONSTANTES
