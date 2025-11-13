@@ -2,6 +2,9 @@
 #include <filesystem>
 
 #include "Renderer.h"
+
+#include <glm/ext/matrix_transform.hpp>
+
 #include "../utils/Logger.h"
 
 //Definition of the only instance of the class
@@ -402,9 +405,11 @@ void PAG::Renderer::refresh() const {
         const auto modelMatrix = model->getModelMatrix();
 
         //Uniform matrices
-        shaderProgram->setUniformMat4("model",modelMatrix);
-        shaderProgram->setUniformMat4("view",view);
-        shaderProgram->setUniformMat4("projection",projection);
+        glm::mat4 modelView = glm::transpose(glm::inverse(view * modelMatrix));
+        glm::mat4 MVP = projection * view * modelMatrix;
+        shaderProgram->setUniformMat4("MVP",MVP);
+        shaderProgram->setUniformMat4("modelView",modelView);
+
 
         //Material properties
         Material* mat = model->getMaterial();

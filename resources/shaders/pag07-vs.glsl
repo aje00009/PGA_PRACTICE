@@ -6,9 +6,8 @@ layout (location = 1) in vec3 aColor;
 layout (location = 2) in vec3 aNormal;
 layout (location = 3) in vec2 aTexCoords;
 
-uniform mat4 model;
-uniform mat4 view;
-uniform mat4 projection;
+uniform mat4 modelView;
+uniform mat4 MVP;
 
 out VS_OUT {
     vec3 vColor;
@@ -20,10 +19,10 @@ out VS_OUT {
 void main()
 {
     // Final position of the vertex (after projection)
-    gl_Position = projection * view * model * vec4(aPos, 1.0);
+    gl_Position = MVP * vec4(aPos, 1.0);
 
-    vs_out.FragPos_World = vec3(model * vec4(aPos, 1.0));
-    vs_out.Normal_World = mat3(transpose(inverse(model))) * aNormal;
+    vs_out.FragPos_World = vec3(modelView * vec4(aPos, 1.0));
+    vs_out.Normal_World = vec3(modelView * vec4(aNormal,0.0));
     vs_out.vColor = aColor;
     vs_out.TexCoords = aTexCoords;
 }
