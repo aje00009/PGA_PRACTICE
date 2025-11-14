@@ -128,6 +128,9 @@ void PAG::Renderer::wakeUp(WindowType t, ...) {
                 }
 
                 _activeShaderProgram->use(); //Activate shader program before reading from it
+
+                _activeShaderProgram->queryStoreSubroutineInfo();
+
                 _subroutineSolid = _activeShaderProgram->getSubroutineIndex("solidColor");
                 _subroutineWireframe = _activeShaderProgram->getSubroutineIndex("wireframeColor");
 
@@ -465,6 +468,15 @@ void PAG::Renderer::refresh() const {
 
             light->applyLight(shaderProgram);
 
+            //Activate correct subroutine
+            if (_renderMode == RenderMode::WIREFRAME) {
+                shaderProgram->activateSubroutine(_subroutineWireframe,"uChosenMethod");
+            }else {
+                shaderProgram->activateSubroutine(_subroutineSolid,"uChosenMethod");
+            }
+
+            shaderProgram->applySubroutines();
+
             const auto modelMatrix = model->getModelMatrix();
 
             //Uniform matrices
@@ -481,13 +493,6 @@ void PAG::Renderer::refresh() const {
                 shaderProgram->setUniformVec3("material.ambient", mat->getAmbientColor());
                 shaderProgram->setUniformVec3("material.specular", mat->getSpecularColor());
                 shaderProgram->setUniformFloat("material.shininess", mat->getShininess());
-            }
-
-            //Activate correct subroutine
-            if (_renderMode == RenderMode::WIREFRAME) {
-                shaderProgram->activateSubroutine(_subroutineWireframe);
-            }else {
-                shaderProgram->activateSubroutine(_subroutineSolid);
             }
 
             //Draw models

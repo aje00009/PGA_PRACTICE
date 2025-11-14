@@ -7,7 +7,7 @@ namespace PAG {
     public:
         void applyLight(LightProperties* properties, ShaderProgram* shaderProgram) override {
             GLuint subroutineIndex = shaderProgram->getSubroutineIndex("ambientLight");
-            shaderProgram->activateSubroutine(subroutineIndex);
+            shaderProgram->activateSubroutine(subroutineIndex,"uLightType");
 
             shaderProgram->setUniformVec3("uLight.ambient",properties->getIa());
         }

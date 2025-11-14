@@ -7,7 +7,7 @@ namespace PAG {
         public:
             void applyLight(LightProperties* properties, ShaderProgram* shaderProgram) override {
                 GLuint subroutineIndex = shaderProgram->getSubroutineIndex("spotLight");
-                shaderProgram->activateSubroutine(subroutineIndex);
+                shaderProgram->activateSubroutine(subroutineIndex,"uLightType");
 
                 shaderProgram->setUniformVec3("uLight.position",properties->getPos());
                 shaderProgram->setUniformVec3("uLight.direction",properties->getDirection());

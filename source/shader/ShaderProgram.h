@@ -1,6 +1,7 @@
 #ifndef PGA_PRACTICA_SHADERPROGRAM_H
 #define PGA_PRACTICA_SHADERPROGRAM_H
 
+#include <map>
 #include <glm/glm.hpp>
 
 #include "FragmentShader.h"
@@ -16,6 +17,10 @@ namespace PAG {
         FragmentShader *fs = nullptr; ///< Fragment shader linked to this shader program
         GLuint _programId = 0; ///< ID of shader program
 
+        std::map<GLint, GLuint> _subroutineState;
+        GLint _numActiveSubroutineUniforms;
+        std::map<std::string, GLint> _subroutineUniformLocations;
+
     public:
         ShaderProgram(const std::string& vertexShaderPath, const std::string& fragmentShaderPath);
         ~ShaderProgram();
@@ -26,8 +31,10 @@ namespace PAG {
         void setUniformFloat(const std::string& uniformName, float value) const;
         GLuint getId() const;
 
+        void queryStoreSubroutineInfo();
         GLuint getSubroutineIndex(const std::string& name) const;
-        void activateSubroutine(GLuint subroutineIndex) const;
+        void activateSubroutine(GLuint subroutineIndex,const std::string& uniformName);
+        void applySubroutines();
     };
 }
 

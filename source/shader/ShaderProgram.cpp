@@ -2,6 +2,9 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include "ShaderProgram.h"
+
+#include <vector>
+
 #include "VertexShader.h"
 #include "FragmentShader.h"
 
@@ -110,6 +113,31 @@ GLuint PAG::ShaderProgram::getId() const {
     return _programId;
 }
 
+void PAG::ShaderProgram::queryStoreSubroutineInfo() {
+    // Limpiamos el estado anterior
+    _subroutineUniformLocations.clear();
+    _subroutineState.clear();
+
+    // Obtenemos el NÚMERO TOTAL de uniforms de subrutina (como en querySubroutines.txt)
+    glGetProgramStageiv(_programId, GL_FRAGMENT_SHADER, GL_ACTIVE_SUBROUTINE_UNIFORMS, &_numActiveSubroutineUniforms);
+
+    if (_numActiveSubroutineUniforms == 0) return;
+
+    GLchar name[256];
+    GLsizei length;
+
+    for (int i = 0; i< _numActiveSubroutineUniforms; ++i) {
+        glGetActiveSubroutineUniformName(_programId,GL_FRAGMENT_SHADER,i,256,&length, name);
+        std::string uniformName(name);
+
+        GLint location = glGetSubroutineUniformLocation(_programId,GL_FRAGMENT_SHADER,name);
+
+        _subroutineUniformLocations[uniformName] = location;
+
+        _subroutineState[location] = 0;
+    }
+}
+
 /**
  * @brief Method that returns the index of a subroutine given its name (implementation)
  * @param name Name of the subroutine (implementation)
@@ -127,8 +155,35 @@ GLuint PAG::ShaderProgram::getSubroutineIndex(const std::string &name) const {
 /**
  * @brief Method that activates an implementation of a subroutine
  * @param subroutineIndex Index of an implementation of the subroutine
+ * @param uniformName Name of the subroutine uniform
  */
-void PAG::ShaderProgram::activateSubroutine(GLuint subroutineIndex) const {
-    glUniformSubroutinesuiv(GL_FRAGMENT_SHADER, 1, &subroutineIndex);
+void PAG::ShaderProgram::activateSubroutine(GLuint subroutineIndex, const std::string& uniformName) {
+    // 1. Busca la "posición" del uniform (ej. 0 para uLightType, 1 para uChosenMethod)
+    auto it = _subroutineUniformLocations.find(uniformName);
+
+    // 2. Si existe, actualiza el índice que queremos en esa posición
+    if (it != _subroutineUniformLocations.end()) {
+        GLint location = it->second;
+        _subroutineState[location] = subroutineIndex;
+    }
+}
+
+void PAG::ShaderProgram::applySubroutines() {
+    if (_numActiveSubroutineUniforms == 0) return;
+
+    // 1. Creamos el array de índices (como en el anexo: GLuint subroutines[...])
+    std::vector<GLuint> indices(_numActiveSubroutineUniforms);
+
+    // 2. Rellenamos el array con el estado que hemos guardado
+    for (auto const& [location, index] : _subroutineState)
+    {
+        if (location < indices.size()) {
+            indices[location] = index;
+        }
+    }
+
+    // 3. ¡LA LLAMADA CLAVE!
+    // Enviamos el array completo (ej. [ambientIndex, wireframeIndex])
+    glUniformSubroutinesuiv(GL_FRAGMENT_SHADER, _numActiveSubroutineUniforms, indices.data());
 }
 
