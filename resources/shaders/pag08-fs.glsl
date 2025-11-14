@@ -1,7 +1,6 @@
 #version 410
 
 in VS_OUT {
-    vec3 vColor;
     vec3 FragPos_World;
     vec3 Normal_World;
     vec2 TexCoords;
@@ -53,10 +52,10 @@ vec3 ambientLight(){
 }
 
 subroutine (fLightType)
-vec3 positionLight(){
+vec3 pointLight(){
     vec3 L = normalize(uLight.position-fs_in.FragPos_World);
 
-    return calculateDiffSpec(L,N,V);
+    return calculateDiffSpec(L);
 }
 
 subroutine (fLightType)

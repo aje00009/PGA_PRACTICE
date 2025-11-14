@@ -63,6 +63,14 @@ void PAG::Renderer::initialize(float aspectRatio) {
 
         //Initialize light applicators using Strategy design pattern
         Light::initializeApplicators();
+
+        //Default ambient light to be able to show models without creating a light
+        LightPackage defaultLight;
+        defaultLight.type = LightType::AMBIENT_LIGHT;
+        defaultLight.name = "Ambient light (default)";
+        defaultLight.ambient = glm::vec3(0.5f, 0.5f, 0.5f);
+
+        instance->_lights.push_back(std::make_unique<Light>(defaultLight));
     }
 }
 
@@ -435,41 +443,56 @@ void PAG::Renderer::refresh() const {
     const glm::mat4 view = _activeCamera->getViewMatrix();
     const glm::mat4 projection = _activeCamera->getProjectionMatrix();
 
-    for (const auto& model : _models) {
-        if (!model) continue;
+    bool firstLight = true;
 
-        ShaderProgram* shaderProgram = model->getShaderProgram();
-        if (!shaderProgram) continue;
+    for (const auto& light: _lights) {
+        if (!light->isEnabled()) continue;
 
-        shaderProgram->use();
-
-        const auto modelMatrix = model->getModelMatrix();
-
-        //Uniform matrices
-        glm::mat4 modelView = glm::transpose(glm::inverse(view * modelMatrix));
-        glm::mat4 MVP = projection * view * modelMatrix;
-        shaderProgram->setUniformMat4("MVP",MVP);
-        shaderProgram->setUniformMat4("modelView",modelView);
-
-
-        //Material properties
-        Material* mat = model->getMaterial();
-        if (mat) {
-            shaderProgram->setUniformVec3("material.diffuse", mat->getDiffuseColor());
-            shaderProgram->setUniformVec3("material.ambient", mat->getAmbientColor());
-            shaderProgram->setUniformVec3("material.specular", mat->getSpecularColor());
-            shaderProgram->setUniformFloat("material.shininess", mat->getShininess());
-        }
-
-        //Activate correct subroutine
-        if (_renderMode == RenderMode::WIREFRAME) {
-            shaderProgram->activateSubroutine(_subroutineWireframe);
+        if (firstLight) {
+            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+            firstLight = false;
         }else {
-            shaderProgram->activateSubroutine(_subroutineSolid);
+            glBlendFunc(GL_SRC_ALPHA, GL_ONE);
         }
 
-        //Draw models
-        model->draw();
+        for (const auto& model : _models) {
+            if (!model) continue;
+
+            ShaderProgram* shaderProgram = model->getShaderProgram();
+            if (!shaderProgram) continue;
+
+            shaderProgram->use();
+
+            light->applyLight(shaderProgram);
+
+            const auto modelMatrix = model->getModelMatrix();
+
+            //Uniform matrices
+            glm::mat4 modelView = glm::transpose(glm::inverse(view * modelMatrix));
+            glm::mat4 MVP = projection * view * modelMatrix;
+            shaderProgram->setUniformMat4("MVP",MVP);
+            shaderProgram->setUniformMat4("modelView",modelView);
+
+
+            //Material properties
+            Material* mat = model->getMaterial();
+            if (mat) {
+                shaderProgram->setUniformVec3("material.diffuse", mat->getDiffuseColor());
+                shaderProgram->setUniformVec3("material.ambient", mat->getAmbientColor());
+                shaderProgram->setUniformVec3("material.specular", mat->getSpecularColor());
+                shaderProgram->setUniformFloat("material.shininess", mat->getShininess());
+            }
+
+            //Activate correct subroutine
+            if (_renderMode == RenderMode::WIREFRAME) {
+                shaderProgram->activateSubroutine(_subroutineWireframe);
+            }else {
+                shaderProgram->activateSubroutine(_subroutineSolid);
+            }
+
+            //Draw models
+            model->draw();
+        }
     }
 }
 
@@ -491,8 +514,10 @@ void PAG::Renderer::getInfoGL() {
  */
 void PAG::Renderer::initializeOpenGL() const {
     glClearColor ( _bgColor[0], instance->_bgColor[1], instance->_bgColor[2], instance->_bgColor[3] );
-    glEnable ( GL_DEPTH_TEST );
     glEnable( GL_MULTISAMPLE );
+    glEnable( GL_BLEND );
+    glEnable ( GL_DEPTH_TEST );
+    glDepthFunc ( GL_LEQUAL );
 }
 
 /**
