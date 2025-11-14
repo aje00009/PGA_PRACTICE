@@ -21,7 +21,7 @@ namespace PAG
         float _s;
 
     public:
-        LightProperties(glm::vec3 Ia, glm::vec3 Id, glm::vec3 Is, glm::vec3 pos,
+        LightProperties(std::string name, glm::vec3 Ia, glm::vec3 Id, glm::vec3 Is, glm::vec3 pos,
             glm::vec3 direction, float angle, float s);
 
         [[nodiscard]] glm::vec3 getIa() const;

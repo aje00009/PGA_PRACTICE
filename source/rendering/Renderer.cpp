@@ -60,6 +60,9 @@ void PAG::Renderer::initialize(float aspectRatio) {
 
         //Initialize default material
         instance->_materials.push_back(std::make_unique<Material>("Default material"));
+
+        //Initialize light applicators using Strategy design pattern
+        Light::initializeApplicators();
     }
 }
 
@@ -322,6 +325,44 @@ void PAG::Renderer::wakeUp(WindowType t, ...) {
             }
             break;
         }
+
+        case WindowType::ManagerLight: {
+            std::va_list args;
+            va_start(args, t);
+
+            const LightPackage* payload = va_arg(args, LightPackage*);
+
+            va_end(args);
+
+            if (payload->deleteLight) {
+                Logger::getInstance()->addMessage("Light erased: " + _lights[payload->lightId]->getLightProperties()->getName());
+                _lights.erase(_lights.begin() + payload->lightId);
+            }
+            else if (payload->lightId == -1) {
+                if (payload->name.empty()) {
+                    Logger::getInstance()->addMessage("Cannot create a light without a name");
+                } else {
+                    Logger::getInstance()->addMessage("Creating new light: " + payload->name);
+
+                    _lights.push_back(std::make_unique<Light>(*payload));
+                }
+            }
+            else {
+                // Obtenemos las propiedades de la luz existente
+                Light* l = _lights[payload->lightId].get();
+                LightProperties* props = l->getLightProperties();
+
+                props->setName(payload->name);
+                props->setEnable(payload->isEnabled);
+                props->setIa(payload->ambient);
+                props->setId(payload->diffuse);
+                props->setIs(payload->specular);
+                props->setPos(payload->position);
+                props->setDirection(payload->direction);
+                props->setAngle(payload->angle);
+                props->setExponent(payload->exp);
+            }
+        }
     }
 }
 
@@ -492,4 +533,17 @@ std::vector<std::string> PAG::Renderer::getMaterialNames() const {
  */
 PAG::Material* PAG::Renderer::getMaterial(int index) const {
     return _materials[index].get();
+}
+
+std::vector<std::string> PAG::Renderer::getLightNames() const {
+    std::vector<std::string> lightNames;
+    for (const auto& light : _lights) {
+        lightNames.push_back(light->getLightProperties()->getName());
+    }
+
+    return lightNames;
+}
+
+PAG::Light * PAG::Renderer::getLight(int index) const {
+    return _lights[index].get();
 }

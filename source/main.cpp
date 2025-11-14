@@ -7,6 +7,7 @@
 #include "gui/BgWindow.h"
 #include "imgui.h"
 #include "gui/CameraWindow.h"
+#include "gui/LightManager.h"
 #include "gui/ManagerGUI.h"
 #include "rendering/Renderer.h"
 #include "utils/Logger.h"
@@ -99,6 +100,7 @@ void initializeGUI() {
     PAG::ManagerGUI::getInstance()->addWindow(PAG::ModelManager::getInstance());
     PAG::ManagerGUI::getInstance()->addWindow(PAG::MaterialEditingWindow::getInstance());
     PAG::ManagerGUI::getInstance()->addWindow(PAG::RenderModeWindow::getInstance());
+    PAG::ManagerGUI::getInstance()->addWindow(PAG::LightManager::getInstance());
 
     //Add listeners GUI
     PAG::BgWindow::getInstance()->addListener(PAG::Renderer::getInstance());
@@ -108,6 +110,7 @@ void initializeGUI() {
     PAG::ModelManager::getInstance()->addListener(PAG::Renderer::getInstance());
     PAG::MaterialEditingWindow::getInstance()->addListener(PAG::Renderer::getInstance());
     PAG::RenderModeWindow::getInstance()->addListener(PAG::Renderer::getInstance());
+    PAG::LightManager::getInstance()->addListener(PAG::Renderer::getInstance());
 }
 
 int main() {

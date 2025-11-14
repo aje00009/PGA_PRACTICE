@@ -4,6 +4,7 @@
 #include <memory>
 
 #include "../camera/Camera.h"
+#include "../light/Light.h"
 #include "../utils/Listener.h"
 #include "../model/Model.h"
 
@@ -18,8 +19,14 @@ namespace PAG {
             float *_bgColor; ///< Background color of the window
             RenderMode _renderMode = RenderMode::WIREFRAME; ///< Renderer mode of the models
 
+            //Subroutines
             GLuint _subroutineSolid = GL_INVALID_INDEX; ///< Subroutine index to draw models in solid mode
             GLuint _subroutineWireframe = GL_INVALID_INDEX; ///< Subroutine index to draw models in wireframe mode
+
+            GLuint _subroutineAmbientLight = GL_INVALID_INDEX; ///< Subroutine index to use ambient light calculation
+            GLuint _subroutinePointLight = GL_INVALID_INDEX; ///< Subroutine index to use pointlight calculation
+            GLuint _subroutineDirectionalLight = GL_INVALID_INDEX; ///< Subroutine index to use directional light calculation
+            GLuint _subroutineSpotLight = GL_INVALID_INDEX; ///< Subroutine index to use spotlight calculation
 
             //Shader programs
             std::vector<std::pair<std::string, std::unique_ptr<ShaderProgram>>> _shaderPrograms; ///< Set of shader programs loaded in the application
@@ -30,6 +37,9 @@ namespace PAG {
 
             //Materials
             std::vector<std::unique_ptr<Material>> _materials; ///< Set of materials created in the application
+
+            //Lights
+            std::vector<std::unique_ptr<Light>> _lights;
 
             //Cameras
             Camera* _activeCamera = nullptr; ///< Current active camera
@@ -48,12 +58,14 @@ namespace PAG {
             static void cursor_pos_callback(CameraMovement movement, double deltaX, double deltaY);
 
             void refresh() const;
-            static void getInfoGL() ;
+            static void getInfoGL();
             void initializeOpenGL() const;
 
-            std::vector<std::string> getModelNames() const;
-            std::vector<std::string> getMaterialNames() const;
-            Material* getMaterial(int index) const;
+            [[nodiscard]] std::vector<std::string> getModelNames() const;
+            [[nodiscard]] std::vector<std::string> getMaterialNames() const;
+            [[nodiscard]] Material* getMaterial(int index) const;
+            [[nodiscard]] std::vector<std::string> getLightNames() const;
+            [[nodiscard]] Light* getLight(int index) const;
     };
 }
 

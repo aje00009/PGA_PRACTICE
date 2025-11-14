@@ -6,6 +6,8 @@
 
 #include "../rendering/Renderer.h"
 
+PAG::LightManager* PAG::LightManager::instance = nullptr;
+
 void PAG::LightManager::warnListeners() {
     _payload.name = _nameBuffer;
 
@@ -34,10 +36,9 @@ PAG::LightManager * PAG::LightManager::getInstance() {
 }
 
 void PAG::LightManager::render() {
-    ImGui::Begin("Gestor de Luces");
+    ImGui::Begin("Light Manager");
 
-    // --- 1. Selector de Luz ---
-    // (¡Necesitarás crear getLightNames() en tu Renderer!)
+    // Light Selector
     auto lightNames = Renderer::getInstance()->getLightNames();
     std::vector<const char*> cNames;
     cNames.push_back("[ CREAR NUEVA LUZ ]");
@@ -45,128 +46,122 @@ void PAG::LightManager::render() {
         cNames.push_back(name.c_str());
     }
 
-    // Si la lista de luces cambia (ej. borramos una), ajustamos el índice
+    // If list is changed, we need to reload
     if (_selectedLight >= cNames.size()) {
         _selectedLight = 0;
-        _lastSelected = -1; // Forzar recarga
+        _lastSelected = -1;
     }
 
-    if (ImGui::Combo("Luz Seleccionada", &_selectedLight, cNames.data(), cNames.size())) {
-        _lastSelected = -1; // El usuario ha cambiado la selección, forzar recarga
+    if (ImGui::Combo("Selected light", &_selectedLight, cNames.data(), cNames.size())) {
+        _lastSelected = -1;
     }
 
     if (_selectedLight != _lastSelected) {
         if (_selectedLight == 0) {
-            // --- Modo "Crear Nuevo" ---
-            _payload = LightPackage(); // Resetea a valores por defecto
+            // Create new light mode
+            _payload = LightPackage(); // Reset default values
             _payload.lightId = -1;
-            strcpy(_nameBuffer, "Nueva Luz");
+            strcpy(_nameBuffer, "New light");
         } else {
-            // --- Modo "Editar" ---
+            // Edit light mode
             int realIndex = _selectedLight - 1;
-            // (¡Necesitarás crear getLightProperties(index) en tu Renderer!)
-            LightProperties* props = Renderer::getInstance()->getLightProperties(realIndex);
-            if (props) {
-                // Copiamos los datos de la luz existente al payload
-                _payload.lightId = realIndex;
-                _payload.name = props->_name;
-                _payload.type = props->_type;
-                _payload.isEnabled = props->_isEnabled;
-                _payload.ambient = props->_ambient;
-                _payload.diffuse = props->_diffuse;
-                _payload.specular = props->_specular;
-                _payload.position = props->_position;
-                _payload.direction = props->_direction;
-                _payload.angle = props->_gamma;
-                _payload.exp = props->_s;
-                strcpy(_nameBuffer, props->_name.c_str());
-            }
+            Light* light = Renderer::getInstance()->getLight(realIndex);
+            LightProperties* props = light->getLightProperties();
+
+            // Copy data from existing light to payload
+            _payload.lightId = realIndex;
+            _payload.name = props->getName();
+            _payload.type = light->getType();
+            _payload.isEnabled = props->isEnabled();
+            _payload.ambient = props->getIa();
+            _payload.diffuse = props->getId();
+            _payload.specular = props->getIs();
+            _payload.position = props->getPos();
+            _payload.direction = props->getDirection();
+            _payload.angle = props->getAngle();
+            _payload.exp = props->getExponent();
+            strcpy(_nameBuffer, props->getName().c_str());
         }
         _lastSelected = _selectedLight;
     }
 
     ImGui::Separator();
 
-    // --- 3. Editores de Propiedades (con "Live Update") ---
-    bool changed = false; // Flag para detectar si algo cambia
+    // Property editor
+    bool changed = false;
 
-    ImGui::InputText("Nombre", _nameBuffer, 128);
-    changed |= ImGui::Checkbox("Activada", &_payload.isEnabled);
+    ImGui::InputText("Name", _nameBuffer, 128);
+    changed |= ImGui::Checkbox("On", &_payload.isEnabled);
 
-    const char* lightTypes[] = { "Ambiente", "Puntual", "Direccional", "Foco" };
+    const char* lightTypes[] = { "Ambient", "Point", "Directional", "Spot" };
     int typeIndex = static_cast<int>(_payload.type);
-    if (ImGui::Combo("Tipo", &typeIndex, lightTypes, 4)) {
+    if (ImGui::Combo("Type", &typeIndex, lightTypes, 4)) {
         _payload.type = static_cast<LightType>(typeIndex);
         changed = true;
     }
 
-    // --- Controles dinámicos según el tipo de luz ---
-    if (ImGui::ColorEdit3("Ambiente (Ia)", glm::value_ptr(_payload.ambient))) changed = true;
+    // Dynamic controls depending on light type
+    if (ImGui::ColorEdit3("Ambient (Ia)", glm::value_ptr(_payload.ambient))) changed = true;
 
     if (_payload.type != LightType::AMBIENT_LIGHT) {
-        if (ImGui::ColorEdit3("Difusa (Id)", glm::value_ptr(_payload.diffuse))) changed = true;
-        if (ImGui::ColorEdit3("Especular (Is)", glm::value_ptr(_payload.specular))) changed = true;
+        if (ImGui::ColorEdit3("Diffuse (Id)", glm::value_ptr(_payload.diffuse))) changed = true;
+        if (ImGui::ColorEdit3("Specular (Is)", glm::value_ptr(_payload.specular))) changed = true;
     }
 
     if (_payload.type == LightType::POINT_LIGHT || _payload.type == LightType::SPOT_LIGHT) {
-        if (ImGui::DragFloat3("Posición", glm::value_ptr(_payload.position), 0.1f)) changed = true;
+        if (ImGui::DragFloat3("Position", glm::value_ptr(_payload.position), 0.1f)) changed = true;
     }
 
     if (_payload.type == LightType::DIRECTIONAL_LIGHT || _payload.type == LightType::SPOT_LIGHT) {
-        if (ImGui::DragFloat3("Dirección", glm::value_ptr(_payload.direction), 0.01f)) changed = true;
+        if (ImGui::DragFloat3("Direction", glm::value_ptr(_payload.direction), 0.01f)) changed = true;
     }
 
     if (_payload.type == LightType::SPOT_LIGHT) {
-        if (ImGui::SliderFloat("Ángulo (Gamma)", &_payload.angle, 0.0f, 90.0f)) changed = true;
-        if (ImGui::SliderFloat("Exp. (s)", &_payload.exp, 0.0f, 128.0f)) changed = true;
+        if (ImGui::SliderFloat("Angle (Gamma)", &_payload.angle, 0.0f, 90.0f)) changed = true;
+        if (ImGui::SliderFloat("Exponent (s)", &_payload.exp, 0.0f, 128.0f)) changed = true;
     }
 
     ImGui::Separator();
 
-    // --- 4. Botones de Acción ---
+    // Action buttons
     if (_selectedLight == 0) {
-        // --- Modo "Crear" ---
-        if (ImGui::Button("Crear Luz")) {
+        if (ImGui::Button("Create light")) {
             _isDelete = false;
             warnListeners();
-            // Hacemos que se seleccione la luz que acabamos de crear
+            // Make selected light the one we have just created
             _selectedLight = cNames.size();
-            _lastSelected = -1; // Forzar recarga en el próximo frame
+            _lastSelected = -1;
         }
     } else {
-        // --- Modo "Editar" ---
-        // El botón de "Guardar" es solo para el nombre (los sliders se guardan solos)
-        if (ImGui::Button("Guardar Nombre")) {
+        if (ImGui::Button("Save")) {
             changed = true;
         }
         ImGui::SameLine();
-        if (ImGui::Button("Eliminar")) {
-            ImGui::OpenPopup("Confirmar Borrado Luz");
+        if (ImGui::Button("Delete")) {
+            ImGui::OpenPopup("Confirm light delete");
         }
     }
 
-    // Si cualquier control cambió, notificar al Renderer
-    // (Solo en modo Editar, para no enviar spam mientras se crea una nueva)
     if (changed && _selectedLight != 0) {
         _isDelete = false;
         warnListeners();
     }
 
-    // --- 5. Popup de Confirmación ---
-    if (ImGui::BeginPopupModal("Confirmar Borrado Luz", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
-        ImGui::Text("¿Seguro que quieres eliminar '%s'?", _payload.name.c_str());
+    // Confirmation popup
+    if (ImGui::BeginPopupModal("Confirm light delete", NULL, ImGuiWindowFlags_AlwaysAutoResize)) {
+        ImGui::Text("¿Sure you wanna delete '%s'?", _payload.name.c_str());
         ImGui::Separator();
 
-        if (ImGui::Button("Si, Eliminar", ImVec2(120, 0))) {
+        if (ImGui::Button("Yes, delete", ImVec2(120, 0))) {
             _isDelete = true;
-            warnListeners(); // ¡Notificar con "delete=true"!
-            _selectedLight = 0; // Volver a "Crear Nuevo"
+            warnListeners();
+            _selectedLight = 0;
             _lastSelected = -1;
             ImGui::CloseCurrentPopup();
         }
         ImGui::SetItemDefaultFocus();
         ImGui::SameLine();
-        if (ImGui::Button("Cancelar", ImVec2(120, 0))) {
+        if (ImGui::Button("Cancel", ImVec2(120, 0))) {
             ImGui::CloseCurrentPopup();
         }
         ImGui::EndPopup();

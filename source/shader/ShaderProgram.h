@@ -1,6 +1,8 @@
 #ifndef PGA_PRACTICA_SHADERPROGRAM_H
 #define PGA_PRACTICA_SHADERPROGRAM_H
 
+#include <glm/glm.hpp>
+
 #include "FragmentShader.h"
 #include "VertexShader.h"
 

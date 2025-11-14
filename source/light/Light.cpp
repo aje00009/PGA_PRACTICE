@@ -10,7 +10,7 @@ std::vector<std::unique_ptr<PAG::LightApplicator>> PAG::Light::_lightApplicators
 PAG::Light::Light(const LightPackage &payloadLight) {
     _type = payloadLight.type;
 
-    _properties = std::make_unique<LightProperties>(payloadLight.ambient,payloadLight.diffuse,payloadLight.specular,
+    _properties = std::make_unique<LightProperties>(payloadLight.name, payloadLight.ambient,payloadLight.diffuse,payloadLight.specular,
         payloadLight.position,payloadLight.direction,payloadLight.angle,payloadLight.exp);
 }
 

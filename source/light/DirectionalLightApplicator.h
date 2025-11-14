@@ -13,7 +13,7 @@ namespace PAG {
                 shaderProgram->setUniformVec3("uLight.diffuse",properties->getId());
                 shaderProgram->setUniformVec3("uLight.specular",properties->getIs());
             }
-    }
+    };
 }
 
 #endif //PGA_PRACTICA_DIRECTIONALLIGHTAPPLICATOR_H
