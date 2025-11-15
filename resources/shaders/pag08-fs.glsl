@@ -67,17 +67,31 @@ vec3 directionalLight(){
 
 subroutine (fLightType)
 vec3 spotLight(){
-    vec3 L = normalize(uLight.position-fs_in.FragPos_World);
-    vec3 D = uLight.direction;
-    float cosGamma = cos(uLight.angle);
-    float cosTheta = dot(-L,D);
-    float spotFactor = 1.0;
+    // 1. Normalizar el vector de dirección del foco (¡ARREGLA EL BUG DE BRILLO!)
+    vec3 D = normalize(uLight.direction);
 
-    if(cosTheta < cosGamma) { spotFactor = 0.0; }
+    // 2. Vector L (del fragmento a la luz)
+    vec3 L = normalize(uLight.position - fs_in.FragPos_World);
 
-    float attenuation = pow(cosTheta,uLight.exponent);
+    // 3. Coseno del ángulo entre el píxel y el centro del foco
+    //    (dot(-L, D) es correcto: vector del fragmento A la luz, y dirección del foco)
+    float cosTheta = dot(-L, D);
 
-    return spotFactor * calculateDiffSpec(L);
+    // 4. Coseno del ángulo de apertura del cono (tu código ya estaba bien)
+    float cosGamma = cos(radians(uLight.angle));
+
+    // 5. Comprobar si estamos FUERA del cono (¡ARREGLA EL BUG DEL ÁNGULO!)
+    if (cosTheta < cosGamma) {
+    return vec3(0.0); // Estamos fuera, la luz es 0 (negro)
+    }
+
+    // --- Si estamos DENTRO del cono ---
+
+    // 6. Calcular la atenuación del borde suave (ahora funciona)
+    float spotAttenuation = pow(cosTheta, uLight.exponent);
+
+    // 7. Devolver el color Phong * la atenuación del foco
+    return spotAttenuation * calculateDiffSpec(L);
 }
 
 //************ Definition of subroutine for render mode *****************//

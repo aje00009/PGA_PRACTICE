@@ -10,6 +10,7 @@ PAG::LightManager* PAG::LightManager::instance = nullptr;
 
 void PAG::LightManager::warnListeners() {
     _payload.name = _nameBuffer;
+    _payload.deleteLight = _isDelete;
 
     for (auto listener: _listeners) {
         listener->wakeUp(WindowType::ManagerLight,&_payload);
