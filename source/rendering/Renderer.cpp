@@ -558,6 +558,10 @@ PAG::Material* PAG::Renderer::getMaterial(int index) const {
     return _materials[index].get();
 }
 
+/**
+ * @brief Method that returns the name of all lights existing in the application
+ * @return The names of all lights existing at the moment
+ */
 std::vector<std::string> PAG::Renderer::getLightNames() const {
     std::vector<std::string> lightNames;
     for (const auto& light : _lights) {
@@ -567,6 +571,11 @@ std::vector<std::string> PAG::Renderer::getLightNames() const {
     return lightNames;
 }
 
+/**
+ * @brief Method that returns a light of the vector of lights given its index
+ * @param index Id of the light in the array
+ * @return A pointer to the light in the array
+ */
 PAG::Light * PAG::Renderer::getLight(int index) const {
     return _lights[index].get();
 }

@@ -17,9 +17,9 @@ namespace PAG {
         FragmentShader *fs = nullptr; ///< Fragment shader linked to this shader program
         GLuint _programId = 0; ///< ID of shader program
 
-        std::map<GLint, GLuint> _subroutineState;
-        GLint _numActiveSubroutineUniforms;
-        std::map<std::string, GLint> _subroutineUniformLocations;
+        std::map<GLint, GLuint> _subroutineState; ///< Map saving ids of the subroutines currently chosen
+        GLint _numActiveSubroutineUniforms; ///< Number of active subroutine uniforms
+        std::map<std::string, GLint> _subroutineUniformLocations; ///< Map saving a pair nameUniform-IdUniform
 
     public:
         ShaderProgram(const std::string& vertexShaderPath, const std::string& fragmentShaderPath);

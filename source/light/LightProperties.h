@@ -4,24 +4,27 @@
 #include <string>
 #include <glm/vec3.hpp>
 
+/**
+ * @class LightProperties Class that represents the properties of a light
+ */
 namespace PAG
 {
     class LightProperties
     {
     private:
-        std::string _name;
-        bool _on = true;
+        std::string _name; ///< Name of the light
+        bool _on = true; ///< Light on/off
 
-        glm::vec3 _Ia;
-        glm::vec3 _Id;
-        glm::vec3 _Is;
-        glm::vec3 _pos;
-        glm::vec3 _direction;
-        float _angle;
-        float _s;
-        float _c0;
-        float _c1;
-        float _c2;
+        glm::vec3 _Ia; ///< Ambient intensity
+        glm::vec3 _Id; ///< Diffuse intensity
+        glm::vec3 _Is; ///< Specular intensity
+        glm::vec3 _pos; ///< Position of the light (position)
+        glm::vec3 _direction; ///< Direction of the light (directional)
+        float _angle; ///< Angle of the light (spotlight)
+        float _s; ///< Exponent for soft borders
+        float _c0; ///< First component for attenuation factor
+        float _c1; ///< Second component for attenuation factor
+        float _c2; ///< Third component for attenuation factor
 
     public:
         LightProperties(std::string name, glm::vec3 Ia, glm::vec3 Id, glm::vec3 Is, glm::vec3 pos,

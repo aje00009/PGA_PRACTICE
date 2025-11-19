@@ -4,18 +4,20 @@
 #include "GUIElement.h"
 #include "../utils/Types.h"
 
+/**
+ * @class LightManager Class representing GUI controls for light management (creation, edition, etc.)
+ */
 namespace PAG {
     class LightManager: public GUIElement {
     private:
-        //Background color for main window
-        static LightManager* instance;
+        static LightManager* instance; ///< Singleton instance
 
-        int _selectedLight;
-        int _lastSelected;
-        bool _isDelete = false;
-        char _nameBuffer[128] = "New light";
+        int _selectedLight; ///< Current selected light
+        int _lastSelected; ///< Last light selected
+        bool _isDelete = false; ///< Delete flag (if the model will be deleted)
+        char _nameBuffer[128] = "New light"; ///< Name of the light
 
-        LightPackage _payload;
+        LightPackage _payload; ///< Payload to send to listeners in order to manage light
 
         void warnListeners();
 

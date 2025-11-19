@@ -6,7 +6,7 @@
 namespace PAG {
     class Material {
     private:
-        std::string _name;
+        std::string _name; ///< Name of the material
         glm::vec3 _ambientColor{1.0f, 1.0f, 1.0f}; ///< Ambient color for material
         glm::vec3 _diffuseColor{1.0f, 1.0f, 1.0f}; ///< Diffuse color for material
         glm::vec3 _specularColor{1.0f, 1.0f, 1.0f}; ///< Specular color for material

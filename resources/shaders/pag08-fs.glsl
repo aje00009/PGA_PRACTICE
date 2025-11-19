@@ -30,6 +30,7 @@ struct Light {
 };
 uniform Light uLight;
 
+//Function that calculates the fatt given a light position and the fragment position
 float calculateAttenuationFactor(vec3 lightPos, vec3 fragPos) {
     float d = length(lightPos - fragPos);
     float att = 1.0 / (uLight.c0 + (uLight.c1 * d) + (uLight.c2 * d * d));
@@ -64,7 +65,7 @@ subroutine (fLightType)
 vec3 pointLight(){
     vec3 L = normalize(uLight.position-fs_in.FragPos_World);
 
-    // Calculamos la atenuación
+    //Calculate attenuation by distance
     float attenuation = calculateAttenuationFactor(uLight.position, fs_in.FragPos_World);
 
     return attenuation * calculateDiffSpec(L);
@@ -79,37 +80,31 @@ vec3 directionalLight(){
 
 subroutine (fLightType)
 vec3 spotLight(){
-// 1. Vectores y Distancia
-vec3 D = normalize(uLight.direction);
-vec3 L_notNorm = uLight.position - fs_in.FragPos_World;
-vec3 L = normalize(L_notNorm);
-float distance = length(L_notNorm);
+    vec3 D = normalize(uLight.direction);
+    vec3 L_notNorm = uLight.position - fs_in.FragPos_World;
+    vec3 L = normalize(L_notNorm);
+    float distance = length(L_notNorm);
 
-// --- PARTE 1: ATENUACIÓN POR DISTANCIA (Tu fórmula) ---
-// Esto hace que la luz pierda fuerza cuanto más lejos esté el objeto
-float distanceAttenuation = calculateAttenuationFactor(uLight.position, fs_in.FragPos_World);
+    // Distance attenuation
+    float distanceAttenuation = calculateAttenuationFactor(uLight.position, fs_in.FragPos_World);
 
 
-// --- PARTE 2: CÁLCULO DEL ÁNGULO ---
-float cosTheta = dot(-L, D);
-float cosOuter = cos(radians(uLight.angle));
-float cosInner = cos(radians(uLight.angle * 0.80)); // Borde interior al 80%
+    // Angle calculation
+    float cosTheta = dot(-L, D);
+    float cosOuter = cos(radians(uLight.angle));
+    float cosInner = cos(radians(uLight.angle * 0.80));
 
 
-// --- PARTE 3: SUAVIZADO DEL BORDE (Smoothstep) ---
-// Esto elimina el corte a negro duro.
-float spotSoftness = smoothstep(cosOuter, cosInner, cosTheta);
+    // Border softness
+    float spotSoftness = smoothstep(cosOuter, cosInner, cosTheta);
 
 
-// --- PARTE 4: EXPONENTE / HOTSPOT (Esto es lo que faltaba) ---
-// Esto concentra la luz en el centro del foco.
-// Usamos max(0.0, cosTheta) para evitar problemas matemáticos si el ángulo es negativo.
-float hotspot = pow(max(0.0, cosTheta), uLight.exponent);
+    // Light fade on spotlight
+    float hotspot = pow(max(0.0, cosTheta), uLight.exponent);
 
 
-// --- RESULTADO FINAL ---
-// Multiplicamos: (Luz Phong) * (Distancia) * (Borde Suave) * (Exponente)
-return calculateDiffSpec(L) * distanceAttenuation * spotSoftness * hotspot;
+    // Final result (diffuse + specular default) * (distance attenuation fatt) * (border softness) * (exponent light fade)
+    return calculateDiffSpec(L) * distanceAttenuation * spotSoftness * hotspot;
 }
 
 //************ Definition of subroutine for render mode *****************//

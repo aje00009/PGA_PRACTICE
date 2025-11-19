@@ -2,6 +2,9 @@
 #define PGA_PRACTICA_AMBIENTLIGHTAPPLICATOR_H
 #include "LightApplicator.h"
 
+/**
+ * @class AmbientLightApplicator Class that implements LightApplicator using ambient light
+ */
 namespace PAG {
     class AmbientLightApplicator: public LightApplicator {
     public:

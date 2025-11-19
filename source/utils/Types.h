@@ -8,6 +8,8 @@
  */
 namespace PAG
 {
+    //ENUMS
+
     /**
      * @enum CameraMovement Enum that represents the different movements a camera can perform
      */
@@ -86,6 +88,8 @@ namespace PAG
         SPOT_LIGHT = 3
     };
 
+    //STRUCTS
+
     /**
      * @struct ModelEditPackage Encapsulates the data to be sent when modifying a model
      */
@@ -110,6 +114,9 @@ namespace PAG
         float shininess;
     };
 
+    /**
+     * @struct LightPackage Struct encapsulating all information about the creation/edition/deletion of a light
+     */
     struct LightPackage {
         int lightId = -1;
         bool deleteLight = false;
@@ -130,7 +137,7 @@ namespace PAG
         float c2;
     };
 
-    //CONSTANTES
+    //CONSTANTS
     constexpr int NUM_LIGHTS = 4;
 
 }

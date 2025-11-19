@@ -1,7 +1,18 @@
 #include "LightProperties.h"
 
+/**
+ * @brief Parameterized constructor
+ * @param name Name of the light
+ * @param Ia Ambient intensity
+ * @param Id Diffuse intensity
+ * @param Is Specular intensity
+ * @param pos Position of the light
+ * @param direction Direction of the light
+ * @param angle Angle of the light
+ * @param s Exponent for soft borders
+ */
 PAG::LightProperties::LightProperties(std::string name, glm::vec3 Ia, glm::vec3 Id, glm::vec3 Is, glm::vec3 pos,
-        glm::vec3 direction, float angle, float s)
+                                      glm::vec3 direction, float angle, float s)
 {
     _name = name;
     _Ia = Ia;
