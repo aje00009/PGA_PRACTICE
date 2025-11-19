@@ -2,6 +2,9 @@
 #define PGA_PRACTICA_DIRECTIONALLIGHTAPPLICATOR_H
 #include "LightApplicator.h"
 
+/**
+ * @class DirectionalLightApplicator Class that implements LightApplicator using directional light
+ */
 namespace PAG {
     class DirectionalLightApplicator: public LightApplicator {
         public:

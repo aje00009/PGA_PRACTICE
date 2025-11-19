@@ -2,6 +2,9 @@
 #define PGA_PRACTICA_POINTLIGHTAPPLICATOR_H
 #include "LightApplicator.h"
 
+/**
+ * @class PointLightApplicator Class that implements LightApplicator using point light
+ */
 namespace PAG
 {
     class PointLightApplicator: public LightApplicator

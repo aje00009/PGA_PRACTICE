@@ -6,6 +6,7 @@
 
 #include "../rendering/Renderer.h"
 
+//Definition of the instance
 PAG::LightManager* PAG::LightManager::instance = nullptr;
 
 void PAG::LightManager::warnListeners() {
@@ -17,11 +18,18 @@ void PAG::LightManager::warnListeners() {
     }
 }
 
+/**
+ * @brief Default constructor of this class
+ * @post It initialises necessary parameters to show default information in the window
+ */
 PAG::LightManager::LightManager() {
     _payload.lightId = -1;
     _payload.type = LightType::POINT_LIGHT;
 }
 
+/**
+ * @brief Destructor of the class
+ */
 PAG::LightManager::~LightManager() {
     if (instance) {
         delete instance;
@@ -29,6 +37,10 @@ PAG::LightManager::~LightManager() {
     }
 }
 
+/**
+ * @brief Method that creates (first time is called) and returns the only instance for this class
+ * @return The only instance for this class
+ */
 PAG::LightManager * PAG::LightManager::getInstance() {
     if (!instance) {
         instance = new LightManager();
@@ -36,6 +48,9 @@ PAG::LightManager * PAG::LightManager::getInstance() {
     return instance;
 }
 
+/**
+ * @brief Method that draws the corresponding window in order to use light management in GUI
+ */
 void PAG::LightManager::render() {
     ImGui::Begin("Light Manager");
 

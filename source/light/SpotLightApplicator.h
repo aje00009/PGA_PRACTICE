@@ -2,6 +2,9 @@
 #define PGA_PRACTICA_SPOTLIGHTAPPLICATOR_H
 #include "LightApplicator.h"
 
+/**
+ * @class SpotLightApplicator Class that implements LightApplicator using spot light
+ */
 namespace PAG {
     class SpotLightApplicator: public LightApplicator {
         public:

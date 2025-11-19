@@ -1,5 +1,9 @@
 #include "Material.h"
 
+/**
+ * @brief Parameterized constructor
+ * @param name Name of the material
+ */
 PAG::Material::Material(const std::string &name): _name(name) {
 }
 

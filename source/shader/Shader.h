@@ -10,8 +10,8 @@
 namespace PAG {
     class Shader {
     protected:
-        GLuint _id = 0;
-        GLenum _type;
+        GLuint _id = 0; ///< Id of the shader
+        GLenum _type; ///< Type of shader (vertex/fragment)
 
         void compile(const std::string& source);
 

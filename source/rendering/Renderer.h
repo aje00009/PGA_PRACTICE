@@ -39,7 +39,7 @@ namespace PAG {
             std::vector<std::unique_ptr<Material>> _materials; ///< Set of materials created in the application
 
             //Lights
-            std::vector<std::unique_ptr<Light>> _lights;
+            std::vector<std::unique_ptr<Light>> _lights; ///< Set of lights created in the application
 
             //Cameras
             Camera* _activeCamera = nullptr; ///< Current active camera
