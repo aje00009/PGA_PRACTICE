@@ -15,6 +15,10 @@ namespace PAG {
                 shaderProgram->setUniformVec3("uLight.specular",properties->getIs());
                 shaderProgram->setUniformFloat("uLight.angle",properties->getAngle());
                 shaderProgram->setUniformFloat("uLight.exponent",properties->getExponent());
+
+                shaderProgram->setUniformFloat("uLight.c0", properties->getC0());
+                shaderProgram->setUniformFloat("uLight.c1", properties->getC1());
+                shaderProgram->setUniformFloat("uLight.c2", properties->getC2());
             }
     };
 }

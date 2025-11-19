@@ -19,6 +19,9 @@ namespace PAG
         glm::vec3 _direction;
         float _angle;
         float _s;
+        float _c0;
+        float _c1;
+        float _c2;
 
     public:
         LightProperties(std::string name, glm::vec3 Ia, glm::vec3 Id, glm::vec3 Is, glm::vec3 pos,
@@ -59,6 +62,14 @@ namespace PAG
         [[nodiscard]] bool isEnabled() const;
 
         void setEnable(const bool on);
+
+        void setAttenuation (float c0, float c1, float c2);
+
+        float getC0() const;
+
+        float getC1() const;
+
+        float getC2() const;
     };
 }
 

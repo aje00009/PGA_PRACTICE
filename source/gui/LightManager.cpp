@@ -111,6 +111,11 @@ void PAG::LightManager::render() {
 
     if (_payload.type == LightType::POINT_LIGHT || _payload.type == LightType::SPOT_LIGHT) {
         if (ImGui::DragFloat3("Position", glm::value_ptr(_payload.position), 0.1f)) changed = true;
+
+        ImGui::Text("Attenuation (Distance)");
+        if (ImGui::DragFloat("Constant (c0)", &_payload.c0, 0.01f, 0.001f, 10.0f)) changed = true;
+        if (ImGui::DragFloat("Lineal (c1)", &_payload.c1, 0.001f, 0.0f, 1.0f, "%.4f")) changed = true;
+        if (ImGui::DragFloat("Quadratic (c2)", &_payload.c2, 0.001f, 0.0f, 1.0f, "%.4f")) changed = true;
     }
 
     if (_payload.type == LightType::DIRECTIONAL_LIGHT || _payload.type == LightType::SPOT_LIGHT) {

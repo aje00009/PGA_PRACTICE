@@ -124,6 +124,10 @@ namespace PAG
         glm::vec3 direction {-0.0,-1.0,-1.0};
         float angle = 12.5;
         float exp = 1.0;
+
+        float c0;
+        float c1;
+        float c2;
     };
 
     //CONSTANTES

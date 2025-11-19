@@ -98,3 +98,25 @@ bool PAG::LightProperties::isEnabled() const {
 void PAG::LightProperties::setEnable(const bool on) {
     this->_on = on;
 }
+
+void PAG::LightProperties::setAttenuation(float c0, float c1, float c2)
+{
+    _c0 = c0;
+    _c1 = c1;
+    _c2 = c2;
+}
+
+float PAG::LightProperties::getC0() const
+{
+    return _c0;
+}
+
+float PAG::LightProperties::getC1() const
+{
+    return _c1;
+}
+
+float PAG::LightProperties::getC2() const
+{
+    return _c2;
+}

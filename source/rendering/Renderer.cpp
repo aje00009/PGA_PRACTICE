@@ -63,14 +63,6 @@ void PAG::Renderer::initialize(float aspectRatio) {
 
         //Initialize light applicators using Strategy design pattern
         Light::initializeApplicators();
-
-        // //Default ambient light to be able to show models without creating a light
-        // LightPackage defaultLight;
-        // defaultLight.type = LightType::AMBIENT_LIGHT;
-        // defaultLight.name = "Ambient light (default)";
-        // defaultLight.ambient = glm::vec3(0.5f, 0.5f, 0.5f);
-        //
-        // instance->_lights.push_back(std::make_unique<Light>(defaultLight));
     }
 }
 
@@ -372,6 +364,7 @@ void PAG::Renderer::wakeUp(WindowType t, ...) {
                 props->setDirection(payload->direction);
                 props->setAngle(payload->angle);
                 props->setExponent(payload->exp);
+                props->setAttenuation(payload->c0, payload->c1, payload->c2);
             }
         }
     }

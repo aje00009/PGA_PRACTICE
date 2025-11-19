@@ -24,8 +24,17 @@ struct Light {
     vec3 ambient;
     float angle;
     float exponent;
+    float c0;
+    float c1;
+    float c2;
 };
 uniform Light uLight;
+
+float calculateAttenuationFactor(vec3 lightPos, vec3 fragPos) {
+    float d = length(lightPos - fragPos);
+    float att = 1.0 / (uLight.c0 + (uLight.c1 * d) + (uLight.c2 * d * d));
+    return min(att, 1.0);
+}
 
 //************ Definition of subroutine for light type *****************//
 subroutine vec3 fLightType();
@@ -55,7 +64,10 @@ subroutine (fLightType)
 vec3 pointLight(){
     vec3 L = normalize(uLight.position-fs_in.FragPos_World);
 
-    return calculateDiffSpec(L);
+    // Calculamos la atenuación
+    float attenuation = calculateAttenuationFactor(uLight.position, fs_in.FragPos_World);
+
+    return attenuation * calculateDiffSpec(L);
 }
 
 subroutine (fLightType)
@@ -67,31 +79,37 @@ vec3 directionalLight(){
 
 subroutine (fLightType)
 vec3 spotLight(){
-    // 1. Normalizar el vector de dirección del foco (¡ARREGLA EL BUG DE BRILLO!)
-    vec3 D = normalize(uLight.direction);
+// 1. Vectores y Distancia
+vec3 D = normalize(uLight.direction);
+vec3 L_notNorm = uLight.position - fs_in.FragPos_World;
+vec3 L = normalize(L_notNorm);
+float distance = length(L_notNorm);
 
-    // 2. Vector L (del fragmento a la luz)
-    vec3 L = normalize(uLight.position - fs_in.FragPos_World);
+// --- PARTE 1: ATENUACIÓN POR DISTANCIA (Tu fórmula) ---
+// Esto hace que la luz pierda fuerza cuanto más lejos esté el objeto
+float distanceAttenuation = calculateAttenuationFactor(uLight.position, fs_in.FragPos_World);
 
-    // 3. Coseno del ángulo entre el píxel y el centro del foco
-    //    (dot(-L, D) es correcto: vector del fragmento A la luz, y dirección del foco)
-    float cosTheta = dot(-L, D);
 
-    // 4. Coseno del ángulo de apertura del cono (tu código ya estaba bien)
-    float cosGamma = cos(radians(uLight.angle));
+// --- PARTE 2: CÁLCULO DEL ÁNGULO ---
+float cosTheta = dot(-L, D);
+float cosOuter = cos(radians(uLight.angle));
+float cosInner = cos(radians(uLight.angle * 0.80)); // Borde interior al 80%
 
-    // 5. Comprobar si estamos FUERA del cono (¡ARREGLA EL BUG DEL ÁNGULO!)
-    if (cosTheta < cosGamma) {
-    return vec3(0.0); // Estamos fuera, la luz es 0 (negro)
-    }
 
-    // --- Si estamos DENTRO del cono ---
+// --- PARTE 3: SUAVIZADO DEL BORDE (Smoothstep) ---
+// Esto elimina el corte a negro duro.
+float spotSoftness = smoothstep(cosOuter, cosInner, cosTheta);
 
-    // 6. Calcular la atenuación del borde suave (ahora funciona)
-    float spotAttenuation = pow(cosTheta, uLight.exponent);
 
-    // 7. Devolver el color Phong * la atenuación del foco
-    return spotAttenuation * calculateDiffSpec(L);
+// --- PARTE 4: EXPONENTE / HOTSPOT (Esto es lo que faltaba) ---
+// Esto concentra la luz en el centro del foco.
+// Usamos max(0.0, cosTheta) para evitar problemas matemáticos si el ángulo es negativo.
+float hotspot = pow(max(0.0, cosTheta), uLight.exponent);
+
+
+// --- RESULTADO FINAL ---
+// Multiplicamos: (Luz Phong) * (Distancia) * (Borde Suave) * (Exponente)
+return calculateDiffSpec(L) * distanceAttenuation * spotSoftness * hotspot;
 }
 
 //************ Definition of subroutine for render mode *****************//
