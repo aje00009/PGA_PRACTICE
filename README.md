@@ -31,7 +31,7 @@ una instancia ``static App* punteroApp`` que sirva de puntero a la instancia ÚN
 
 Si queremos visualizarlo de forma visual, tenemos el siguiente UML:
 
-![Imagen UML Práctica 1 Ejercicio 2](resources/images/uml_prac1_ejer2.png)
+![Imagen UML Práctica 1 Ejercicio 2](resources/images/uml/uml_prac1_ejer2.png)
 
 Sin meternos en detalles de atributos que pudieran llegar a tener cada clase, observamos que se trata
 de, simplemente, una relación de composición, en la que ``App`` usa a `Renderer` para refrescar la ventana. Es 
@@ -45,7 +45,7 @@ el programa en sí.
 
 Tras ello, el diagrama UML resultante es el siguiente:
 
-![Imagen UML Práctica 2](resources/images/uml_prac2.png)
+![Imagen UML Práctica 2](resources/images/uml/uml_prac2.png)
 
 De esta forma hemos encapsulado la funcionalidad de renderizar la escena y sus callbacks adheridos (y futuros modelos, nubes de puntos...) a
 la clase ``PAG::Renderer``; la funcionalidad de diseñar y mostrar la interfaz de usuario (ventanas modales, popups, menús, etc.) a la clase
@@ -61,7 +61,7 @@ he implementado una relación de herencia para diferenciar los distintos objetos
 ``GUIElement`` que implementarán distintas ventanas y/o controles (`BgWindow`, `LoggerWindow`). Finalmente, tendré un gestor de la interfaz (`ManagerGUI`),
 que se encargará de gestionar la inicialización y destrucción de objetos de ImGui y de manejar las ventanas que existen en la aplicación.
 
-![Imagen UML Práctica 3](resources/images/uml_prac3.png)
+![Imagen UML Práctica 3](resources/images/uml/uml_prac3.png)
 
 ### PRÁCTICA 4
 
@@ -75,7 +75,7 @@ clases para mejorar la cohesión de mi proyecto. En este caso, he realizado una 
 * ``Renderer``: ahora esta clase se encargará de guardar, por un lado, todos los shader programs creados en la ejecución de la aplicación en un vector. Así, podremos llevar una cuenta de los shader que el usuario ha creado, cada uno con su respectivo Vertex/Fragment Shader. Por otro lado, en todo momento tendremos el Shader Program activo (si es que hay alguno). También, se mantienen los atributos de idVAO, idVBO, etc. Estos son necesarios para crear el modelo, es decir, para decirle al shader como van a leerse los vertices y de que forman están conectados, etc. Esta función se queda en el shader pues este es el encargado de crear (render) el modelo.
 
 En la imagen de abajo apreciamos el diagrama UML con los cambios comentados. 
-![Imagen UML Práctica 4](resources/images/uml_prac4.png)
+![Imagen UML Práctica 4](resources/images/uml/uml_prac4.png)
 
 ### PRÁCTICA 5
 En esta práctica incluimos la implementación de la camara virtual, de forma que se definan todos sus parámetros correspondientes
@@ -98,7 +98,7 @@ Los movimientos son los siguientes:
 * **Zoom**: modifica el fov de la cámara para aumentar o disminuir el ángulo de visión de la cámara
 
 Aquí estaría el UML resultante tras los cambios implementados en esta práctica
-![Imagen UML Práctica 5](resources/images/uml_prac5.png)
+![Imagen UML Práctica 5](resources/images/uml/uml_prac5.png)
 
 ### PRÁCTICA 6
 Para esta práctica, he modularizado la gestión de modelos encapsulando un modelo en una nueva clase `Model`. En esta encontramos:
@@ -154,7 +154,7 @@ En cuanto a la funcionalidad de esta nueva parte de la aplicación, es bastante 
 
 Finalmente, el UML actualizado quedaría así:
 
-![Imagen diagrama UML práctica 6](/resources/images/uml_prac6.png)
+![Imagen diagrama UML práctica 6](/resources/images/uml/uml_prac6.png)
 
 ### PRÁCTICA 7
 Para esta práctica, he añadido el uso de subrutinas para controlar el renderizado de modelos mediante el modo de wireframe (color fijo) o el modo de relleno (material), además de la implementación de materiales en la aplicación.
@@ -190,4 +190,131 @@ al modelo (aunque tiene uno por defecto). Finalmente, podemos elegir ver nuestro
 
 El UML resultante tras esta práctica es el siguiente:
 
-![Imagen UML Práctica 7](resources/images/uml_prac7.png)
+![Imagen UML Práctica 7](resources/images/uml/uml_prac7.png)
+
+### PRÁCTICA 8
+Para esta nueva práctica, se han añadido diferentes funcionalides para el control de luces en la escena. Esto incluye la creación y eliminación de las mismas, así como su renderizado en la escena.
+Para lograrlo, se han añadido las siguiente cosas:
+* Nuevas EEDD y tipos (`Types.h`):
+  * `LightType`: enum para diferenciar el tipo de luz (`AMBIENT_LIGHT`,`DIRECTIONAL_LIGHT`,`SPOT_LIGHT`,`POINT_LIGHT`).
+  * `WindowType::LightManager`: nuevo tipo de ventana añadido, el cual hace referencia a la ventana para gestionar las luces.
+  * `LightPackage`: estructura de datos para transferir datos de creación de luces desde la GUI al Renderer.
+  * `NUM_LIGHTS`: constante representativa del número de luces existentes (4);
+* Sistema de iluminación (Aplicando Patrón Estrategia):
+  * `Light`: clase "principal" que encapsula la información y comportamiento de una luz en la escena. Tiene varios componentes:
+    * `LightProperties`: propiedades asociada a la luz (difusa, ambiente, posicion, dirección, etc.), en concreto a cualquier tipo de luz.
+    * `LightApplicator [NUM_LIGHTS]`: vector asociado a una luz (estático para todas las instancias de luces) con el cual se aplica el Patrón Estrategia. De esta forma, cada posición en el vector es un aplicador de luz diferente, asociado al enum `LightType`. Cada uno enviará al shader program unos uniforms u otros dependiendo del tipo de luz:
+      * `AmbientLightApplicator`
+      * `PointLightApplicator`
+      * `DirectionalLightApplicator`
+      * `SpotLightApplicator`
+      * En el vector se crean instancias que son implementaciones de la clase abstracta (`LightApplicator`) y hacen override del método `applyLight()`, donde cada tipo de luz lo hará de diferente forma.
+* Shaders:
+  * Vertex shader: no hay cambios
+  * Fragment shader: 
+    * Struct `Light`: incluye todos los parámetros propios de una luz (propiedades), lo usamos para encapsular los datos y no tenerlos en variables inviduales
+      * Subrutinas: ahora tenemos dos subrutinas:
+        * `uLightType`: selecciona el tipo de luz y realiza el cálculo de la misma respecto a ello (`ambientLight`,`pointLight`, etc.)
+        * `uChosenMethod`: selecciona el modo de renderizado (`solidColor`,`wireframeColor`)
+        * Se implementan diferentes formas de calcular la luz utilizando también atenuaciones de borde ("s"), factor de atenuación por distancia, etc.
+* `ShaderProgram`:
+  * Nuevos atributos:
+    * `_subroutineState`: mapa para guardar que implementación está activa para cada uniform (`uLightType`,`uChosenMethod`)
+    * `_subroutineUniformLocations`: mapa para guardar la localización de cada uniform (`uLightType`,`uChosenMethod`)
+    * `_numActiveUniforms`: contador de uniforms
+  * Nuevos métodos:
+    * `queryStoreSubroutineInfo()`: se llama tras linkear los uniforms para guardar en el mapa las locations de los uniforms
+    * `applySubroutines()`: envía el array completo de índices con las locations de los uniforms para activar las implementaciones
+  * Modificaciones:
+    * `activateSubroutine()`: ahora no activa la subrutina como tal, sino que registra en el mapa recibiendo el nombre del uniform
+* `Model`:
+  * Struct `Vertex`: eliminación del atributo `Color`, ya que no nos interesa para renderizar (usaremos materiales)
+  * Modificaciones varias para adaptar los buffers y la gestión del modelo a la eliminación del color en el vértice
+* `Renderer`:
+  * Inicialización (`initialize()`): se llama a `initializeApplicators()` para crear la instancias de aplicadores por tipo de luz en el vector estático (`Light`). También se habilitan `GL_BLEND` y `glDepthFunc(GL_LEQUAL)`
+  * Gestión de recursos: nuevo vector `_lights` con las instancias de luces en la aplicación
+  * Método `wakeUp()`: gestión completa de la ventana GUI dirigida a gestión de luces (`LightManager`)
+  * Método `refresh`:
+    * Multipasada: bucle para recorrer las luces y bucle interno para renderizar modelos
+    * Blending: configuración del `glBlendFunc` para primera luz y las demás.
+    * Aplicación de estado:
+      * `light->applyLight()`: configura subrutina de luz
+      * `shader->applySubroutines()`: envía las implementaciones de cada subrutina para que el shader las use correctamente
+* `LightManagerWindow`:
+  * Nueva clase que muestra ventana para la gestión de luces
+
+Finalmente, aquí tendríamos el UML resultante tras realizar la práctica
+![UML Práctica 8](/resources/images/uml/uml_prac8.png)
+
+### MANUAL DE USUARIO
+La aplicación se compone de diferentes ventanas con las que podemos interactuar (nombre de las ventanas en la aplicación):
+* **Camera control**: con este control GUI podemos seleccionar el tipo de movimiento que la camara realizará:
+  * Orbit: podremos orbitar la camara en altitud y latitud alrededor del objeto
+  * Pan: moveremos el punto al que mira la camara de forma horizontal
+  * Tilt: moveremos el punto al que mira la camara de forma vertical
+  * Dolly: moveremos la propia camara, tanto de forma horizontal como en profundidad
+  * Para cualquier de estos movimiento debemos de pulsar el botón izquierdo del ratón y moverlo. Para hacer zoom, debemos usar la rueda del ratón, haciendo scroll
+* **Shader loader window**: esta ventana sirve para cargar un shader para cargarlo en la aplicación. Simplemente deberemos escribir el nombre del shader en el campo y darle al botón.
+* **Model loader window**: esta ventana permite una selección de modelos mediante explorador de archivos en el que se debe seleccionar un modelo compatible en cuanto a formato (.obj) y confirmar dicha selección.
+* **Render mode window**: esta ventana básica nos sirve para seleccionar el modo de renderizado que queremos aplicar en la escena (sólido o alambre)
+* **Logger**: esta ventana muestra mensajes de información relevante para el usuario (info, warnings, errores)
+* **Background color**: esta ventana permite selecionar el color de fondo de la escena de diferentes formas (selección mediante panel, valor hexadecimal, etc.)
+* **Material editor**: esta ventana da la posibilidad de crear o editar materiales y sus propiedades.
+* **Model manager**: en esta ventana podremos editar un modelo de diferentes formas. Podremos aplicar transformaciones sobre él, resetearlo, borrarlo y asignar un material a este.
+* **Light manager**: en esta ventana podremos manejar las distintas luces creadas en el sistema. Se podrán crear y editar luces y dependiendo del tipo de luz, aparecerán unos atributos u otros.
+
+Aquí estaría un ejemplo de uso de la aplicación con el orden "correcto" de los pasos a seguir (algunos pueden intercambiarse de orden):
+
+**1. Cargar shader program**
+
+![Manual paso 1](/resources/images/manual/Manual_paso1.png)
+
+**2. Cargar modelo**
+
+![Manual paso 2](/resources/images/manual/Manual_paso2.png)
+
+**3. Aplicar una luz (por defecto no hay ninguna, así que el modelo no se mostrará hasta que se cree una)**
+
+![Manual paso 3](resources/images/manual/Manual_paso3.png)
+
+Ahora el modelo aparecerá iluminado con las luces que haya en la escena
+
+![Manual modelo luces](resources/images/manual/Manual_modelo_luces.png)
+
+A partir de aquí podremos utilizar los demás controles, además de los ya descritos, para interactuar con la escena:
+
+**Control de cámara**
+
+![Control camara](resources/images/manual/Manual_control_camara.png)
+
+**Color de fondo**
+
+![Color fondo](resources/images/manual/Manual_color_fondo.png)
+
+**Transformaciones al modelo (rotación de 90º en X)**
+
+![Transformaciones modelo](resources/images/manual/Manual_transformaciones_modelo.png)
+
+**Creación de material**
+
+![Creación de material](resources/images/manual/Manual_creacion_material.png)
+
+**Asignación de material al modelo**
+
+![Asignación material](resources/images/manual/Manual_asignación_material.png)
+
+**Creación de más luces (blending de luces)**
+
+![Creación de más luces 1](resources/images/manual/Manual_creacion_mas_luces1.png)
+
+![Creación de más luces 2](resources/images/manual/Manual_creacion_mas_luces2.png)
+
+**Visualización en wireframe (alambre)**
+
+![Visualización en wireframe 1](resources/images/manual/Manual_visualizacion_wireframe1.png)
+
+![Visualización en wireframe 2](resources/images/manual/Manual_visualizacion_wireframe2.png)
+
+**Logger**
+
+![Logger](resources/images/manual/Manual_logger.png)

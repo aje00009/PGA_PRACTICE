@@ -99,12 +99,10 @@ void PAG::Renderer::wakeUp(WindowType t, ...) {
                ++it;
             }
             try {
+                Logger::getInstance()->addMessage("Loading shader program...");
                 if (it != _shaderPrograms.end()) {
-                    Logger::getInstance()->addMessage("Shader program found, loading...");
                     _activeShaderProgram = it->second.get();
                 }else {
-                    Logger::getInstance()->addMessage("Shader program not found, creating and loading...");
-
                     std::string path = "resources/shaders/";
                     path.append(_nameShader);
 

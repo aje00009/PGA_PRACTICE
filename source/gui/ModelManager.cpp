@@ -42,7 +42,7 @@ PAG::ModelManager* PAG::ModelManager::getInstance()
  */
 void PAG::ModelManager::render()
 {
-    ImGui::Begin("Model transformation");
+    ImGui::Begin("Model manager");
 
     //Get model names currently in the app
     auto modelNames = Renderer::getInstance()->getModelNames();
