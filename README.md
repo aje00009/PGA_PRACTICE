@@ -191,3 +191,25 @@ al modelo (aunque tiene uno por defecto). Finalmente, podemos elegir ver nuestro
 El UML resultante tras esta práctica es el siguiente:
 
 ![Imagen UML Práctica 7](resources/images/uml_prac7.png)
+
+### PRÁCTICA 8
+Para esta nueva práctica, se han añadido diferentes funcionalides para el control de luces en la escena. Esto incluye la creación y eliminación de las mismas, así como su renderizado en la escena.
+Para lograrlo, se han añadido las siguiente cosas:
+* Nuevas EEDD y tipos (`Types.h`):
+  * `LightType`: enum para diferenciar el tipo de luz (`AMBIENT_LIGHT`,`DIRECTIONAL_LIGHT`,`SPOT_LIGHT`,`POINT_LIGHT`).
+  * `WindowType::LightManager`: nuevo tipo de ventana añadido, el cual hace referencia a la ventana para gestionar las luces.
+  * `LightPackage`: estructura de datos para transferir datos de creación de luces desde la GUI al Renderer.
+  * `NUM_LIGHTS`: constante representativa del número de luces existentes (4);
+* Sistema de iluminación (Aplicando Patrón Estrategia):
+  * `Light`: clase "principal" que encapsula la información y comportamiento de una luz en la escena. Tiene varios componentes:
+    * `LightProperties`: propiedades asociada a la luz (difusa, ambiente, posicion, dirección, etc.), en concreto a cualquier tipo de luz.
+    * `LightApplicator [NUM_LIGHTS]`: vector asociado a una luz (estático para todas las instancias de luces) con el cual se aplica el Patrón Estrategia. De esta forma, cada posición en el vector es un aplicador de luz diferente, asociado al enum `LightType`. Cada uno enviará al shader program unos uniforms u otros dependiendo del tipo de luz:
+      * `AmbientLightApplicator`
+      * `PointLightApplicator`
+      * `DirectionalLightApplicator`
+      * `SpotLightApplicator`
+      * En el vector se crean instancias que son implementaciones de la clase abstracta (`LightApplicator`) y hacen override del método `applyLight()`, donde cada tipo de luz lo hará de diferente forma.
+* Shaders:
+  * 
+
+### MANUAL DE USUARIO
