@@ -32,5 +32,12 @@ void PAG::RenderModeWindow::render() {
         warnListeners();
     }
 
+    ImGui::SameLine();
+
+    if (ImGui::Button("TEXTURE",ImVec2(100,30))) {
+        _renderMode = RenderMode::TEXTURE;
+        warnListeners();
+    }
+
     ImGui::End();
 }

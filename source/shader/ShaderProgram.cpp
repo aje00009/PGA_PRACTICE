@@ -105,6 +105,13 @@ void PAG::ShaderProgram::setUniformFloat(const std::string &uniformName, float v
         glUniform1f(position, value);
 }
 
+void PAG::ShaderProgram::setUniformInt(const std::string& uniformName, int value) const
+{
+    GLint position = glGetUniformLocation(_programId, uniformName.c_str());
+    if (position != -1)
+        glUniform1i(position, value);
+}
+
 /**
  * @brief Getter that returns the id of the shader program
  * @return The id of the shader program
@@ -119,23 +126,37 @@ GLuint PAG::ShaderProgram::getId() const {
 void PAG::ShaderProgram::queryStoreSubroutineInfo() {
     _subroutineUniformLocations.clear();
     _subroutineState.clear();
+    _subroutineIndices.clear(); // Limpiamos el nuevo mapa
 
+    // Obtain name of uniforms
     glGetProgramStageiv(_programId, GL_FRAGMENT_SHADER, GL_ACTIVE_SUBROUTINE_UNIFORMS, &_numActiveSubroutineUniforms);
 
-    if (_numActiveSubroutineUniforms == 0) return;
+    if (_numActiveSubroutineUniforms > 0) {
+        GLchar name[256];
+        GLsizei length;
+        for (int i = 0; i < _numActiveSubroutineUniforms; ++i) {
+            glGetActiveSubroutineUniformName(_programId, GL_FRAGMENT_SHADER, i, 256, &length, name);
+            std::string uniformName(name);
+            GLint location = glGetSubroutineUniformLocation(_programId, GL_FRAGMENT_SHADER, name);
 
-    GLchar name[256];
-    GLsizei length;
+            _subroutineUniformLocations[uniformName] = location;
+            _subroutineState[location] = 0;
+        }
+    }
 
-    for (int i = 0; i< _numActiveSubroutineUniforms; ++i) {
-        glGetActiveSubroutineUniformName(_programId,GL_FRAGMENT_SHADER,i,256,&length, name);
-        std::string uniformName(name);
+    // Obtain implementations of subroutines
+    GLint numActiveSubroutines = 0;
+    glGetProgramStageiv(_programId, GL_FRAGMENT_SHADER, GL_ACTIVE_SUBROUTINES, &numActiveSubroutines);
 
-        GLint location = glGetSubroutineUniformLocation(_programId,GL_FRAGMENT_SHADER,name);
+    if (numActiveSubroutines > 0) {
+        GLchar subName[256];
+        for (int i = 0; i < numActiveSubroutines; i++) {
+            // Obtain name of the subroutine
+            glGetActiveSubroutineName(_programId, GL_FRAGMENT_SHADER, i, 256, nullptr, subName);
 
-        _subroutineUniformLocations[uniformName] = location;
-
-        _subroutineState[location] = 0;
+            // Save the pair nameImplementation-Index
+            _subroutineIndices[std::string(subName)] = i;
+        }
     }
 }
 
@@ -153,16 +174,26 @@ GLuint PAG::ShaderProgram::getSubroutineIndex(const std::string &name) const {
 }
 
 /**
- * @brief Method that activates an implementation of a subroutine
- * @param subroutineIndex Index of an implementation of the subroutine
- * @param uniformName Name of the subroutine uniform
+ * @brief Method that saves the state of a subroutine given its name and the name of the implementation we want to activate
+ * @param implementationName Name of the implementation of the subroutine
+ * @param uniformName Name of the uniform of the subroutine in the shader
  */
-void PAG::ShaderProgram::activateSubroutine(GLuint subroutineIndex, const std::string& uniformName) {
-    auto it = _subroutineUniformLocations.find(uniformName);
+void PAG::ShaderProgram::activateSubroutine(const std::string& implementationName, const std::string& uniformName)
+{
+    // Search for index of implementation
+    auto itImpl = _subroutineIndices.find(implementationName);
+    if (itImpl == _subroutineIndices.end()) {
+        return;
+    }
+    GLuint implementationIndex = itImpl->second;
 
-    if (it != _subroutineUniformLocations.end()) {
-        GLint location = it->second;
-        _subroutineState[location] = subroutineIndex;
+    // Search location of uniform (subroutine uniform)
+    auto itLoc = _subroutineUniformLocations.find(uniformName);
+    if (itLoc != _subroutineUniformLocations.end()) {
+        GLint location = itLoc->second;
+
+        // Assign implementation
+        _subroutineState[location] = implementationIndex;
     }
 }
 

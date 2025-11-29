@@ -1,6 +1,8 @@
 #include "imgui.h"
 
 #include "ModelManager.h"
+
+#include "imfilebrowser.h"
 #include "../rendering/Renderer.h"
 
 //Definition of the instance
@@ -176,6 +178,31 @@ void PAG::ModelManager::render()
         _package.type = ModelEditType::MATERIAL_ASSIGN;
         _package.modelId = _selectedModel;
         _package.materialId = _selectedMaterial - 1;
+
+        warnListeners();
+    }
+
+    // Texture loading
+    ImGui::Separator();
+    ImGui::Text("Textura del Modelo");
+
+    static ImGui::FileBrowser fileDialog;
+    fileDialog.SetTitle("Seleccionar Textura");
+    fileDialog.SetTypeFilters({".png"});
+
+    if (ImGui::Button("Cargar Textura...")) {
+        fileDialog.Open();
+    }
+
+    fileDialog.Display();
+
+    if (fileDialog.HasSelected()) {
+        std::string path = fileDialog.GetSelected().string();
+        fileDialog.ClearSelected();
+
+        _package.modelId = _selectedModel;
+        _package.type = ModelEditType::TEXTURE_ASSIGN;
+        _package.texturePath = path;
 
         warnListeners();
     }

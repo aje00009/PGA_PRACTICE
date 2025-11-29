@@ -293,6 +293,21 @@ void PAG::Renderer::wakeUp(WindowType t, ...) {
                         }
                         break;
                     }
+                case ModelEditType::TEXTURE_ASSIGN:
+                    {
+                        if (!package->texturePath.empty())
+                        {
+                            //Get texture o create it
+                            Texture* tex = getTexture(package->texturePath);
+
+                            if (tex)
+                            {
+                                model->setTexture(tex);
+                                Logger::getInstance()->addMessage("Texture assigned to " + model->getModelName());
+                            }
+                        }
+                        break;
+                    }
                 }
 
             break;
@@ -424,13 +439,14 @@ void PAG::Renderer::cursor_pos_callback(CameraMovement movement, double deltaX, 
  * @brief Method that refreshes the visualization window
  */
 void PAG::Renderer::refresh() const {
+    // 1. Clean buffers
     glClearColor(_bgColor[0], _bgColor[1], _bgColor[2], _bgColor[3]);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    //Activate render mode
+    // 2. Configuration of render mode
     if (_renderMode == RenderMode::WIREFRAME) {
         glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-    }else {
+    } else {
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
     }
 
@@ -439,16 +455,19 @@ void PAG::Renderer::refresh() const {
 
     bool firstLight = true;
 
+    // Light loops
     for (const auto& light: _lights) {
         if (!light->isEnabled()) continue;
 
+        // Blending configuration
         if (firstLight) {
             glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
             firstLight = false;
-        }else {
+        } else {
             glBlendFunc(GL_SRC_ALPHA, GL_ONE);
         }
 
+        // Model loop
         for (const auto& model : _models) {
             if (!model) continue;
 
@@ -457,27 +476,21 @@ void PAG::Renderer::refresh() const {
 
             shaderProgram->use();
 
+            // A. Apply light
             light->applyLight(shaderProgram);
 
-            //Activate correct subroutine
-            if (_renderMode == RenderMode::WIREFRAME) {
-                shaderProgram->activateSubroutine(_subroutineWireframe,"uChosenMethod");
-            }else {
-                shaderProgram->activateSubroutine(_subroutineSolid,"uChosenMethod");
-            }
 
-            shaderProgram->applySubroutines();
-
+            // B. Uniforms matrices
             const auto modelMatrix = model->getModelMatrix();
 
-            //Uniform matrices
             glm::mat4 modelView = glm::transpose(glm::inverse(view * modelMatrix));
             glm::mat4 MVP = projection * view * modelMatrix;
-            shaderProgram->setUniformMat4("MVP",MVP);
-            shaderProgram->setUniformMat4("modelView",modelView);
+
+            shaderProgram->setUniformMat4("MVP", MVP);
+            shaderProgram->setUniformMat4("modelView", modelView);
 
 
-            //Material properties
+            // C. Materials
             Material* mat = model->getMaterial();
             if (mat) {
                 shaderProgram->setUniformVec3("material.diffuse", mat->getDiffuseColor());
@@ -486,7 +499,30 @@ void PAG::Renderer::refresh() const {
                 shaderProgram->setUniformFloat("material.shininess", mat->getShininess());
             }
 
-            //Draw models
+            // D. Subroutines depending on render mode
+            if (_renderMode == RenderMode::WIREFRAME) {
+                shaderProgram->activateSubroutine("wireframeColor", "uChosenMethod");
+            } else {
+                shaderProgram->activateSubroutine("solidColor", "uChosenMethod");
+            }
+
+            if (_renderMode == RenderMode::TEXTURE && model->hasTexture()) {
+                // Texture color
+                model->getTexture()->bind();
+                shaderProgram->setUniformInt("texSampler", 0);
+                shaderProgram->activateSubroutine("colorFromTexture", "uDiffuseSource");
+            } else {
+                // Material color
+                glActiveTexture(GL_TEXTURE0);
+                glBindTexture(GL_TEXTURE_2D, 0);
+                shaderProgram->activateSubroutine("colorFromMaterial", "uDiffuseSource");
+            }
+
+
+            // E. Send indices to shader
+            shaderProgram->applySubroutines();
+
+            // F. Draw model
             model->draw();
         }
     }
@@ -576,4 +612,20 @@ std::vector<std::string> PAG::Renderer::getLightNames() const {
  */
 PAG::Light * PAG::Renderer::getLight(int index) const {
     return _lights[index].get();
+}
+
+PAG::Texture* PAG::Renderer::getTexture(const std::string& path) const
+{
+    for (const auto& text: _textures)
+    {
+        if (text->getPath() == path) return text.get();
+    }
+
+    Logger::getInstance()->addMessage("Loading new texture from disc: " + path);
+
+    auto newTex = std::make_unique<Texture>(path);
+
+    instance->_textures.push_back(std::move(newTex));
+
+    return instance->_textures.back().get();
 }

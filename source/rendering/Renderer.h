@@ -69,6 +69,7 @@ namespace PAG {
             [[nodiscard]] Material* getMaterial(int index) const;
             [[nodiscard]] std::vector<std::string> getLightNames() const;
             [[nodiscard]] Light* getLight(int index) const;
+            [[nodiscard]] Texture* getTexture(const std::string& path) const;
     };
 }
 
