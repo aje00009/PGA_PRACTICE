@@ -5,6 +5,7 @@
 #include <assimp/scene.h>
 
 #include "Material.h"
+#include "Texture.h"
 #include "../shader/ShaderProgram.h"
 
 namespace PAG {
@@ -18,14 +19,6 @@ namespace PAG {
     };
 
     /**
-     * @struct Texture Encapsulates texture data
-     */
-    struct Texture {
-        unsigned int id;
-        std::string type;
-    };
-
-    /**
      * @class Model Encapsulates model information and behaviour (vertices, indicies, name, model matrix, transformations...)
      */
     class Model {
@@ -35,7 +28,6 @@ namespace PAG {
         GLuint _idIBO = 0; ///< ID of IBO from this model
 
         std::vector<Vertex> _vertices; ///< Vertices representing the mesh of this model
-        std::vector<Texture> _textures; ///< Textures associated to the mesh of this model
         std::vector<GLuint> _indices; ///< Topology associated to the mesh of this model
 
         std::string modelName; ///< Name of the model (filename)
@@ -45,6 +37,8 @@ namespace PAG {
         ShaderProgram* _shaderProgram = nullptr; ///< Shader program assigned to Model
 
         Material* _material = nullptr; ///< Material assigned to Model
+
+        Texture* _texture = nullptr; ///< Texture assigned to Model
 
         void processNode(aiNode* node, const aiScene* scene);
 
@@ -64,6 +58,9 @@ namespace PAG {
         ShaderProgram* getShaderProgram() const;
         Material* getMaterial() const;
         void setMaterial(Material* mat);
+        Texture* getTexture() const;
+        void setTexture(Texture* texture);
+        bool hasTexture() const;
         const std::string& getModelName() const;
 
         //Transformations for models

@@ -64,6 +64,7 @@ namespace PAG
         SCALE,
 
         MATERIAL_ASSIGN,
+        TEXTURE_ASSIGN,
 
         DELETE,
         RESET
@@ -74,7 +75,8 @@ namespace PAG
      */
     enum class RenderMode {
         SOLID,
-        WIREFRAME
+        WIREFRAME,
+        TEXTURE
     };
 
     /**
@@ -100,6 +102,7 @@ namespace PAG
         glm::vec3 transf;
         float angleDegrees;
         int materialId;
+        std::string texturePath;
     };
 
     /**

@@ -161,6 +161,21 @@ void PAG::Model::setMaterial(Material *mat) {
     _material = mat;
 }
 
+PAG::Texture* PAG::Model::getTexture() const
+{
+    return _texture;
+}
+
+void PAG::Model::setTexture(Texture* texture)
+{
+    _texture = texture;
+}
+
+bool PAG::Model::hasTexture() const
+{
+    return _texture != nullptr;
+}
+
 /**
  * @return The name of the model
  */

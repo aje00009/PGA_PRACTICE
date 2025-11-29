@@ -247,27 +247,27 @@ void PAG::Renderer::wakeUp(WindowType t, ...) {
     case WindowType::ModelEditor: {
                 std::va_list args;
                 va_start(args, t);
-                // Extraemos el "paquete" de datos completo
-                ModelEditPackage package = va_arg(args, ModelEditPackage);
+
+                ModelEditPackage* package = va_arg(args, ModelEditPackage*);
                 va_end(args);
 
-                auto& model = _models[package.modelId];
+                auto& model = _models[package->modelId];
 
-                switch (package.type)
+                switch (package->type)
                 {
                 case ModelEditType::TRANSLATE:
                     {
-                        model->translate(package.transf);
+                        model->translate(package->transf);
                         break;
                     }
                 case ModelEditType::ROTATE:
                     {
-                        model->rotate(package.transf,glm::radians(package.angleDegrees));
+                        model->rotate(package->transf,glm::radians(package->angleDegrees));
                         break;
                     }
                 case ModelEditType::SCALE:
                     {
-                        model->scale(package.transf);
+                        model->scale(package->transf);
                         break;
                     }
                 case ModelEditType::RESET:
@@ -277,19 +277,19 @@ void PAG::Renderer::wakeUp(WindowType t, ...) {
                     }
                 case ModelEditType::DELETE:
                     {
-                        Logger::getInstance()->addMessage("Deleting model '" + _models[package.modelId]->getModelName() + "'");
-                        _models.erase(_models.begin() + package.modelId);
+                        Logger::getInstance()->addMessage("Deleting model '" + _models[package->modelId]->getModelName() + "'");
+                        _models.erase(_models.begin() + package->modelId);
 
                         break;
                     }
                 case ModelEditType::MATERIAL_ASSIGN:
                     {
-                        if (package.modelId < _models.size()) {
+                        if (package->modelId < _models.size()) {
                             Material* mat = nullptr;
-                            if (package.materialId >= 0 && package.materialId < _materials.size()) {
-                                mat = _materials[package.materialId].get();
+                            if (package->materialId >= 0 && package->materialId < _materials.size()) {
+                                mat = _materials[package->materialId].get();
                             }
-                            _models[package.modelId]->setMaterial(mat);
+                            _models[package->modelId]->setMaterial(mat);
                         }
                         break;
                     }

@@ -12,7 +12,7 @@ PAG::ModelManager* PAG::ModelManager::instance = nullptr;
 void PAG::ModelManager::warnListeners() const
 {
     for (auto listener: _listeners) {
-        listener->wakeUp(WindowType::ModelEditor, _package);
+        listener->wakeUp(WindowType::ModelEditor, &_package);
     }
 }
 
