@@ -246,7 +246,68 @@ Para lograrlo, se han añadido las siguiente cosas:
 Finalmente, aquí tendríamos el UML resultante tras realizar la práctica
 ![UML Práctica 8](/resources/images/uml/uml_prac8.png)
 
-### MANUAL DE USUARIO
+### PRÁCTICA 9
+En esta práctica se ha implementado el soporte para **Texturas 2D**, permitiendo cargar imágenes PNG y aplicarlas sobre los modelos. Además, se ha realizado una refactorización importante en la arquitectura del motor para desacoplar la gestión de subrutinas de OpenGL.
+
+Para lograrlo, se han realizado las siguientes modificaciones e implementaciones:
+
+* **Librerías Externas:**
+  * Integración de **LodePNG** (`lodepng.h` y `lodepng.cpp`) para la decodificación de archivos de imagen.
+
+* **Nuevas EEDD y tipos (`Types.h`):**
+  * `RenderMode`: añadido el modo `TEXTURE`. Ahora el renderizado soporta tres modos: `WIREFRAME`, `SOLID` y `TEXTURE`.
+  * `ModelEditType`: añadido el tipo `TEXTURE_ASSIGN` para gestionar la asignación de texturas desde la GUI.
+  * `ModelEditPackage`: actualizado para incluir `texturePath`, permitiendo enviar rutas de archivos entre la interfaz y el motor.
+
+* **Clase `Texture` (Nueva):**
+  * Clase que encapsula la gestión de una textura OpenGL.
+  * Funcionalidades:
+    * Carga y decodificación de PNGs desde disco.
+    * Inversión automática del eje Y (Flip-Y) para ajustar las coordenadas de la imagen a OpenGL.
+    * Configuración de parámetros de texturizado: `GL_REPEAT` para wrapping y `GL_LINEAR_MIPMAP_LINEAR` para filtrado.
+    * Generación automática de **Mipmaps**.
+
+* **`ShaderProgram` (Refactorización completa):**
+  * Se ha modificado la clase para gestionar las subrutinas mediante **cadenas de texto (strings)**, eliminando la dependencia de índices numéricos en el Renderer.
+  * Nuevos atributos:
+    * `_subroutineIndices`: mapa que relaciona el nombre de la implementación en el shader (ej. "pointLight") con su índice numérico.
+  * Nuevos métodos:
+    * `setUniformInt()`: necesario para configurar el `sampler2D` de la textura.
+    * `queryStoreSubroutineInfo()`: actualizado para escanear automáticamente tanto los uniforms como las funciones (implementaciones) activas en el shader.
+  * Modificaciones:
+    * `activateSubroutine()`: ahora recibe dos strings (`nombreImplementacion`, `nombreUniform`) y resuelve los índices internamente.
+
+* **Shaders:**
+  * **Fragment Shader**:
+    * Añadido uniform `sampler2D texSampler`.
+    * Nueva subrutina `uDiffuseSource`: permite alternar dinámicamente el origen del color base.
+      * `colorFromMaterial`: devuelve el color difuso del material.
+      * `colorFromTexture`: devuelve el color obtenido de las coordenadas UV (`texture()`).
+
+* **`Model`:**
+  * Gestión de punteros a `Texture` facilitados por el Renderer.
+
+* **`Renderer`:**
+  * **Gestión de Recursos:**
+    * Nuevo vector `_loadedTextures` que almacena las texturas cargadas en memoria.
+    * Método `getTextureByPath()`: comprueba si una textura ya existe para reutilizarla; si no, la carga y la almacena.
+  * **Método `wakeUp`**:
+    * Gestión del evento `TEXTURE_ASSIGN`: solicita la textura al gestor de recursos y la asigna al modelo.
+  * **Método `refresh` (Render Loop)**:
+    * Lógica de visualización actualizada para soportar `RenderMode::TEXTURE`.
+    * Configuración automática de subrutinas basada en el estado del modelo: si tiene textura y estamos en modo textura, se activa `colorFromTexture`; en caso contrario, se usa `colorFromMaterial` como fallback.
+    * Envío unificado de subrutinas (`applySubroutines`) al final de la configuración del modelo.
+
+* **GUI (`ModelManagerWindow`):**
+  * Integración de `ImGui::FileBrowser` para la selección de archivos PNG.
+  * Visualización en tiempo real del nombre de la textura asignada al modelo seleccionado.
+  * Envío de paquetes de edición por referencia (punteros) para optimizar y permitir el paso de objetos complejos (`std::string`).
+
+Finalmente, el UML se ha actualizado para reflejar la relación de composición entre `Renderer` y `Texture`, y la asociación entre `Model` y `Texture`:
+
+![UML Práctica 9](/resources/images/uml/uml_prac9.png)
+
+# MANUAL DE USUARIO
 La aplicación se compone de diferentes ventanas con las que podemos interactuar (nombre de las ventanas en la aplicación):
 * **Camera control**: con este control GUI podemos seleccionar el tipo de movimiento que la camara realizará:
   * Orbit: podremos orbitar la camara en altitud y latitud alrededor del objeto
@@ -256,65 +317,109 @@ La aplicación se compone de diferentes ventanas con las que podemos interactuar
   * Para cualquier de estos movimiento debemos de pulsar el botón izquierdo del ratón y moverlo. Para hacer zoom, debemos usar la rueda del ratón, haciendo scroll
 * **Shader loader window**: esta ventana sirve para cargar un shader para cargarlo en la aplicación. Simplemente deberemos escribir el nombre del shader en el campo y darle al botón.
 * **Model loader window**: esta ventana permite una selección de modelos mediante explorador de archivos en el que se debe seleccionar un modelo compatible en cuanto a formato (.obj) y confirmar dicha selección.
-* **Render mode window**: esta ventana básica nos sirve para seleccionar el modo de renderizado que queremos aplicar en la escena (sólido o alambre)
+* **Render mode window**: esta ventana básica nos sirve para seleccionar el modo de renderizado que queremos aplicar en la escena (sólido, alambre o textura)
 * **Logger**: esta ventana muestra mensajes de información relevante para el usuario (info, warnings, errores)
 * **Background color**: esta ventana permite selecionar el color de fondo de la escena de diferentes formas (selección mediante panel, valor hexadecimal, etc.)
 * **Material editor**: esta ventana da la posibilidad de crear o editar materiales y sus propiedades.
-* **Model manager**: en esta ventana podremos editar un modelo de diferentes formas. Podremos aplicar transformaciones sobre él, resetearlo, borrarlo y asignar un material a este.
+* **Model manager**: en esta ventana podremos editar un modelo de diferentes formas. Podremos aplicar transformaciones sobre él, resetearlo, borrarlo y asignar materiales y texturas.
 * **Light manager**: en esta ventana podremos manejar las distintas luces creadas en el sistema. Se podrán crear y editar luces y dependiendo del tipo de luz, aparecerán unos atributos u otros.
 
 Aquí estaría un ejemplo de uso de la aplicación con el orden "correcto" de los pasos a seguir (algunos pueden intercambiarse de orden):
 
+## Pasos principales
+
 **1. Cargar shader program**
 
-![Manual paso 1](/resources/images/manual/Manual_paso1.png)
+![Manual paso 1](/resources/images/manual/pasos/Manual_paso1.png)
 
 **2. Cargar modelo**
 
-![Manual paso 2](/resources/images/manual/Manual_paso2.png)
+![Manual paso 2](/resources/images/manual/pasos/Manual_paso2.png)
 
 **3. Aplicar una luz (por defecto no hay ninguna, así que el modelo no se mostrará hasta que se cree una)**
 
-![Manual paso 3](resources/images/manual/Manual_paso3.png)
+![Manual paso 3](resources/images/manual/pasos/Manual_paso3.png)
 
 Ahora el modelo aparecerá iluminado con las luces que haya en la escena
 
-![Manual modelo luces](resources/images/manual/Manual_modelo_luces.png)
+![Manual modelo luces](resources/images/manual/pasos/Manual_modelo_luces.png)
 
 A partir de aquí podremos utilizar los demás controles, además de los ya descritos, para interactuar con la escena:
 
-**Control de cámara**
+## Camara
 
-![Control camara](resources/images/manual/Manual_control_camara.png)
+**Controles camara**
 
-**Color de fondo**
+![Controles camara](resources/images/manual/camara/Manual_controles_camara.png)
 
-![Color fondo](resources/images/manual/Manual_color_fondo.png)
+**Orbitar respecto al modelo**
 
-**Transformaciones al modelo (rotación de 90º en X)**
+![Orbitar modelo](resources/images/manual/camara/Manual_orbitar_modelo.png)
 
-![Transformaciones modelo](resources/images/manual/Manual_transformaciones_modelo.png)
+## **Manejo del modelo**
 
-**Creación de material**
+**Controles modelo**
 
-![Creación de material](resources/images/manual/Manual_creacion_material.png)
+![Controles modelo](resources/images/manual/modelo/Manual_controles_modelo.png)
+
+**Transformación al modelo (ej: rotacion 90º en X)**
+
+![Transformaciones modelo](resources/images/manual/modelo/Manual_transformaciones_modelo.png)
 
 **Asignación de material al modelo**
 
-![Asignación material](resources/images/manual/Manual_asignación_material.png)
+![Asignacion material modelo](resources/images/manual/modelo/Manual_asignacion_material.png)
+
+**Cargar textura GUI**
+
+![Cargar textura 1](resources/images/manual/modelo/Manual_cargar_textura_boton.png)
+
+**Explorador de archivos texturas**
+
+![Explorador archivos textura](resources/images/manual/modelo/Manual_explorador_archivos_textura.png)
+
+## Material
+
+**Creación de material**
+
+![Creación de material](resources/images/manual/material/Manual_creacion_material.png)
+
+## Luces
 
 **Creación de más luces (blending de luces)**
 
-![Creación de más luces 1](resources/images/manual/Manual_creacion_mas_luces1.png)
+![Creación de más luces 1](resources/images/manual/luces/Manual_creacion_mas_luces.png)
 
-![Creación de más luces 2](resources/images/manual/Manual_creacion_mas_luces2.png)
+![Creación de más luces 2](resources/images/manual/luces/Manual_blending_luces.png)
 
-**Visualización en wireframe (alambre)**
+## Visualización
 
-![Visualización en wireframe 1](resources/images/manual/Manual_visualizacion_wireframe1.png)
+**Modos visualización**
 
-![Visualización en wireframe 2](resources/images/manual/Manual_visualizacion_wireframe2.png)
+![img.png](resources/images/manual/visualizacion/Manual_modos_visualizacion.png)
+
+**Visualización modo wireframe (alambre)**
+
+![Visualización en wireframe](resources/images/manual/visualizacion/Manual_visualizacion_wireframe.png)
+
+**Visualización modo solido (material)**
+
+![Visualización modo solido](resources/images/manual/visualizacion/Manual_visualizacion_solido.png)
+
+**Visualización modo textura (png)**
+
+![Visualizacion textura escena](resources/images/manual/visualizacion/Manual_visualizacion_textura_escena.png)
+
+## Extras
 
 **Logger**
 
-![Logger](resources/images/manual/Manual_logger.png)
+![Logger](resources/images/manual/extra/Manual_logger.png)
+
+**Control de color de fondo**
+
+![Control color fondo](resources/images/manual/extra/Manual_control_color_fondo.png)
+
+**Cambio de color de fondo**
+
+![Color fondo](resources/images/manual/extra/Manual_cambio_color_fondo.png)
