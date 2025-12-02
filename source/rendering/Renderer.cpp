@@ -629,3 +629,12 @@ PAG::Texture* PAG::Renderer::getTexture(const std::string& path) const
 
     return instance->_textures.back().get();
 }
+
+std::string PAG::Renderer::getTextureModel(int modelId) const {
+    Model* model = _models[modelId].get();
+    if (model->hasTexture()) {
+        return model->getTexture()->getPath();
+    }
+
+    return "";
+}

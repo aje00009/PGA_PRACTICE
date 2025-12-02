@@ -174,7 +174,7 @@ void PAG::ModelManager::render()
     //Assign material button
     ImGui::Combo("Material", &_selectedMaterial, cMatNames.data(), cMatNames.size());
     ImGui::SameLine();
-    if (ImGui::Button("Asignar")) {
+    if (ImGui::Button("Assign")) {
         _package.type = ModelEditType::MATERIAL_ASSIGN;
         _package.modelId = _selectedModel;
         _package.materialId = _selectedMaterial - 1;
@@ -184,13 +184,25 @@ void PAG::ModelManager::render()
 
     // Texture loading
     ImGui::Separator();
-    ImGui::Text("Textura del Modelo");
+    ImGui::Text("Texture");
+
+    std::string currentTexturePath = Renderer::getInstance()->getTextureModel(_selectedModel);
+
+    if (currentTexturePath.empty())
+        ImGui::Text("Current Texture: [None]");
+    else {
+        std::filesystem::path p (currentTexturePath);
+        ImGui::Text("Current texture: %s", p.filename().string().c_str());
+
+        if (ImGui::IsItemHovered())
+            ImGui::SetTooltip("%s", currentTexturePath.c_str());
+    }
 
     static ImGui::FileBrowser fileDialog;
-    fileDialog.SetTitle("Seleccionar Textura");
+    fileDialog.SetTitle("Select a texture");
     fileDialog.SetTypeFilters({".png"});
 
-    if (ImGui::Button("Cargar Textura...")) {
+    if (ImGui::Button("Load texture...")) {
         fileDialog.Open();
     }
 
