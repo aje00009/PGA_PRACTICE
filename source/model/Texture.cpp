@@ -8,6 +8,11 @@
 #include <stdexcept>
 #include <iostream>
 
+/**
+ * @brief Parameterized constructor of class Texture
+ * @param path Path of the texture (.png)
+ * @post This constructor will load a texture given by its path (fliping it before), configure and bind it in OpenGL
+ */
 PAG::Texture::Texture(const std::string& path) : _path(path) {
     std::vector<unsigned char> image;
     unsigned width, height;
@@ -51,12 +56,10 @@ PAG::Texture::~Texture() {
     if (_id != 0) glDeleteTextures(1, &_id);
 }
 
+/**
+ * @brief Method that binds a texture given by its id to the current texture managed by OpenGL
+ */
 void PAG::Texture::bind() const {
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, _id);
-}
-
-void PAG::Texture::unbind() const {
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, 0);
 }

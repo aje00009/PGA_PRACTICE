@@ -70,7 +70,7 @@ void PAG::ShaderProgram::use() const {
 }
 
 /**
- * @Method to send a uniform of type mat4 to the shader
+ * @brief Method to send a uniform of type mat4 to the shader
  * @param uniformName Name of the uniform to link it to shader
  * @param matrix Matrix of type mat4 to be passed as uniform
  */
@@ -82,7 +82,7 @@ void PAG::ShaderProgram::setUniformMat4(const std::string &uniformName, const gl
 }
 
 /**
- * @Method to send a uniform of type vec3 to the shader
+ * @brief Method to send a uniform of type vec3 to the shader
  * @param uniformName Name of the uniform to link it to shader
  * @param vector Vector of type vec3 to be passed as uniform
  */
@@ -94,7 +94,7 @@ void PAG::ShaderProgram::setUniformVec3(const std::string &uniformName, const gl
 }
 
 /**
- * @Method to send a uniform of type float to the shader
+ * @brief Method to send a uniform of type float to the shader
  * @param uniformName Name of the uniform to link it to shader
  * @param value Float to be passed as uniform
  */
@@ -105,6 +105,11 @@ void PAG::ShaderProgram::setUniformFloat(const std::string &uniformName, float v
         glUniform1f(position, value);
 }
 
+/**
+ * @brief Method that sends a uniform of type "int" to the shader
+ * @param uniformName Name of the uniform in the shader
+ * @param value Value of the uniform
+ */
 void PAG::ShaderProgram::setUniformInt(const std::string& uniformName, int value) const
 {
     GLint position = glGetUniformLocation(_programId, uniformName.c_str());

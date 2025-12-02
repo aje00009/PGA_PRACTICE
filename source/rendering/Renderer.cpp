@@ -614,6 +614,11 @@ PAG::Light * PAG::Renderer::getLight(int index) const {
     return _lights[index].get();
 }
 
+/**
+ * @brief Method that creates (first time texture is loaded) and returns a pointer to a texture given its path
+ * @param path Path of the texture
+ * @return A pointer to the texture in the array
+ */
 PAG::Texture* PAG::Renderer::getTexture(const std::string& path) const
 {
     for (const auto& text: _textures)
@@ -630,6 +635,11 @@ PAG::Texture* PAG::Renderer::getTexture(const std::string& path) const
     return instance->_textures.back().get();
 }
 
+/**
+ * @brief Method that returns the texture path associated to a specific model
+ * @param modelId Id of the model
+ * @return The texture associated to the model specified by modelId (or "" if it doesn't have a texture)
+ */
 std::string PAG::Renderer::getTextureModel(int modelId) const {
     Model* model = _models[modelId].get();
     if (model->hasTexture()) {

@@ -19,7 +19,6 @@ namespace PAG
         ~Texture();
 
         void bind() const;
-        void unbind() const;
         std::string getPath() const { return _path; }
     };
 }
