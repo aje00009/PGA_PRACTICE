@@ -121,9 +121,6 @@ void PAG::Renderer::wakeUp(WindowType t, ...) {
 
                 _activeShaderProgram->queryStoreSubroutineInfo();
 
-                _subroutineSolid = _activeShaderProgram->getSubroutineIndex("solidColor");
-                _subroutineWireframe = _activeShaderProgram->getSubroutineIndex("wireframeColor");
-
             }catch (const std::runtime_error& e) {
                 Logger::getInstance()->addMessage(e.what());
                 _activeShaderProgram = nullptr;
@@ -641,9 +638,12 @@ PAG::Texture* PAG::Renderer::getTexture(const std::string& path) const
  * @return The texture associated to the model specified by modelId (or "" if it doesn't have a texture)
  */
 std::string PAG::Renderer::getTextureModel(int modelId) const {
-    Model* model = _models[modelId].get();
-    if (model->hasTexture()) {
-        return model->getTexture()->getPath();
+    if (!_models.empty() && modelId >= 0 && modelId < _models.size() - 1)
+    {
+        Model* model = _models[modelId].get();
+        if (model->hasTexture()) {
+            return model->getTexture()->getPath();
+        }
     }
 
     return "";

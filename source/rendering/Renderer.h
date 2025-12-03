@@ -19,15 +19,6 @@ namespace PAG {
             float *_bgColor; ///< Background color of the window
             RenderMode _renderMode = RenderMode::WIREFRAME; ///< Renderer mode of the models
 
-            //Subroutines
-            GLuint _subroutineSolid = GL_INVALID_INDEX; ///< Subroutine index to draw models in solid mode
-            GLuint _subroutineWireframe = GL_INVALID_INDEX; ///< Subroutine index to draw models in wireframe mode
-
-            GLuint _subroutineAmbientLight = GL_INVALID_INDEX; ///< Subroutine index to use ambient light calculation
-            GLuint _subroutinePointLight = GL_INVALID_INDEX; ///< Subroutine index to use pointlight calculation
-            GLuint _subroutineDirectionalLight = GL_INVALID_INDEX; ///< Subroutine index to use directional light calculation
-            GLuint _subroutineSpotLight = GL_INVALID_INDEX; ///< Subroutine index to use spotlight calculation
-
             //Shader programs
             std::vector<std::pair<std::string, std::unique_ptr<ShaderProgram>>> _shaderPrograms; ///< Set of shader programs loaded in the application
             ShaderProgram* _activeShaderProgram = nullptr; ///< Current shader program being executed
