@@ -454,73 +454,77 @@ void PAG::Renderer::refresh() const {
 
     // Light loops
     for (const auto& light: _lights) {
-        if (!light->isEnabled()) continue;
-
-        // Blending configuration
-        if (firstLight) {
-            glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-            firstLight = false;
-        } else {
-            glBlendFunc(GL_SRC_ALPHA, GL_ONE);
-        }
-
-        // Model loop
-        for (const auto& model : _models) {
-            if (!model) continue;
-
-            ShaderProgram* shaderProgram = model->getShaderProgram();
-            if (!shaderProgram) continue;
-
-            shaderProgram->use();
-
-            // A. Apply light
-            light->applyLight(shaderProgram);
-
-
-            // B. Uniforms matrices
-            const auto modelMatrix = model->getModelMatrix();
-
-            glm::mat4 modelView = glm::transpose(glm::inverse(view * modelMatrix));
-            glm::mat4 MVP = projection * view * modelMatrix;
-
-            shaderProgram->setUniformMat4("MVP", MVP);
-            shaderProgram->setUniformMat4("modelView", modelView);
-
-
-            // C. Materials
-            Material* mat = model->getMaterial();
-            if (mat) {
-                shaderProgram->setUniformVec3("material.diffuse", mat->getDiffuseColor());
-                shaderProgram->setUniformVec3("material.ambient", mat->getAmbientColor());
-                shaderProgram->setUniformVec3("material.specular", mat->getSpecularColor());
-                shaderProgram->setUniformFloat("material.shininess", mat->getShininess());
-            }
-
-            // D. Subroutines depending on render mode
-            if (_renderMode == RenderMode::WIREFRAME) {
-                shaderProgram->activateSubroutine("wireframeColor", "uChosenMethod");
+        if (light->isEnabled())
+        {
+            // Blending configuration
+            if (firstLight) {
+                glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+                firstLight = false;
             } else {
-                shaderProgram->activateSubroutine("solidColor", "uChosenMethod");
+                glBlendFunc(GL_SRC_ALPHA, GL_ONE);
             }
 
-            if (_renderMode == RenderMode::TEXTURE && model->hasTexture()) {
-                // Texture color
-                model->getTexture()->bind();
-                shaderProgram->setUniformInt("texSampler", 0);
-                shaderProgram->activateSubroutine("colorFromTexture", "uDiffuseSource");
-            } else {
-                // Material color
-                glActiveTexture(GL_TEXTURE0);
-                glBindTexture(GL_TEXTURE_2D, 0);
-                shaderProgram->activateSubroutine("colorFromMaterial", "uDiffuseSource");
+            // Model loop
+            for (const auto& model : _models)
+            {
+                if (model) {
+
+                    ShaderProgram* shaderProgram = model->getShaderProgram();
+                    if (shaderProgram)
+                    {
+                        shaderProgram->use();
+
+                        // A. Apply light
+                        light->applyLight(shaderProgram);
+
+
+                        // B. Uniforms matrices
+                        const auto modelMatrix = model->getModelMatrix();
+
+                        glm::mat4 modelView = glm::transpose(glm::inverse(view * modelMatrix));
+                        glm::mat4 MVP = projection * view * modelMatrix;
+
+                        shaderProgram->setUniformMat4("MVP", MVP);
+                        shaderProgram->setUniformMat4("modelView", modelView);
+
+
+                        // C. Materials
+                        Material* mat = model->getMaterial();
+                        if (mat) {
+                            shaderProgram->setUniformVec3("material.diffuse", mat->getDiffuseColor());
+                            shaderProgram->setUniformVec3("material.ambient", mat->getAmbientColor());
+                            shaderProgram->setUniformVec3("material.specular", mat->getSpecularColor());
+                            shaderProgram->setUniformFloat("material.shininess", mat->getShininess());
+                        }
+
+                        // D. Subroutines depending on render mode
+                        if (_renderMode == RenderMode::WIREFRAME) {
+                            shaderProgram->activateSubroutine("wireframeColor", "uChosenMethod");
+                        } else {
+                            shaderProgram->activateSubroutine("solidColor", "uChosenMethod");
+                        }
+
+                        if (_renderMode == RenderMode::TEXTURE && model->hasTexture()) {
+                            // Texture color
+                            model->getTexture()->bind();
+                            shaderProgram->setUniformInt("texSampler", 0);
+                            shaderProgram->activateSubroutine("colorFromTexture", "uDiffuseSource");
+                        } else {
+                            // Material color
+                            glActiveTexture(GL_TEXTURE0);
+                            glBindTexture(GL_TEXTURE_2D, 0);
+                            shaderProgram->activateSubroutine("colorFromMaterial", "uDiffuseSource");
+                        }
+
+
+                        // E. Send indices to shader
+                        shaderProgram->applySubroutines();
+
+                        // F. Draw model
+                        model->draw();
+                    }
+                }
             }
-
-
-            // E. Send indices to shader
-            shaderProgram->applySubroutines();
-
-            // F. Draw model
-            model->draw();
         }
     }
 }
