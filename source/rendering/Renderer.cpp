@@ -526,7 +526,7 @@ void PAG::Renderer::refresh() const {
 
                             //Normal mapping
                             glActiveTexture(GL_TEXTURE1);
-                            if (model->hasNormalMap()) {
+                            if (model->hasNormalMap() && _normalMapping) {
                                 model->getNormalMap()->bind();
                                 shaderProgram->setUniformInt("normalMapSampler", 1);
                                 shaderProgram->activateSubroutine("normalFromMap", "uNormalSource");
@@ -674,4 +674,12 @@ std::string PAG::Renderer::getTextureModel(int modelId) const {
     }
 
     return "";
+}
+
+void PAG::Renderer::setNormalMapping(bool normalMapping) {
+    _normalMapping = normalMapping;
+}
+
+bool PAG::Renderer::getNormalMapping() const {
+    return _normalMapping;
 }

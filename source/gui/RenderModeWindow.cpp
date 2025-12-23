@@ -1,6 +1,7 @@
 #include "RenderModeWindow.h"
 
 #include "imgui.h"
+#include "../rendering/Renderer.h"
 
 //Definition of the instance
 PAG::RenderModeWindow* PAG::RenderModeWindow::instance = nullptr;
@@ -47,6 +48,13 @@ void PAG::RenderModeWindow::render() {
     if (ImGui::Button("TEXTURE",ImVec2(100,30))) {
         _renderMode = RenderMode::TEXTURE;
         warnListeners();
+    }
+
+    if (_renderMode == RenderMode::TEXTURE) {
+        bool normalMapping = Renderer::getInstance()->getNormalMapping();
+        if (ImGui::Checkbox("Enable normal mapping", &normalMapping)) {
+            Renderer::getInstance()->setNormalMapping(normalMapping);
+        }
     }
 
     ImGui::End();

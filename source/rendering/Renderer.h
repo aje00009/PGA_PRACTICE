@@ -18,6 +18,7 @@ namespace PAG {
             static Renderer* instance; ///< Instance of Renderer
             float *_bgColor; ///< Background color of the window
             RenderMode _renderMode = RenderMode::WIREFRAME; ///< Renderer mode of the models
+            bool _normalMapping = true; ///< Selectable normal mapping
 
             //Shader programs
             std::vector<std::pair<std::string, std::unique_ptr<ShaderProgram>>> _shaderPrograms; ///< Set of shader programs loaded in the application
@@ -56,12 +57,17 @@ namespace PAG {
             void initializeOpenGL() const;
 
             [[nodiscard]] std::vector<std::string> getModelNames() const;
+
             [[nodiscard]] std::vector<std::string> getMaterialNames() const;
             [[nodiscard]] Material* getMaterial(int index) const;
             [[nodiscard]] std::vector<std::string> getLightNames() const;
             [[nodiscard]] Light* getLight(int index) const;
+
             [[nodiscard]] Texture* getTexture(const std::string& path) const;
             [[nodiscard]] std::string getTextureModel(int modelId) const;
+
+            void setNormalMapping(bool normalMapping);
+            [[nodiscard]] bool getNormalMapping() const;
     };
 }
 
