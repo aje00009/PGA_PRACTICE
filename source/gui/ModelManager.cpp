@@ -198,22 +198,43 @@ void PAG::ModelManager::render()
             ImGui::SetTooltip("%s", currentTexturePath.c_str());
     }
 
-    static ImGui::FileBrowser fileDialog;
-    fileDialog.SetTitle("Select a texture");
-    fileDialog.SetTypeFilters({".png"});
+    static ImGui::FileBrowser fileDialogTexture;
+    fileDialogTexture.SetTitle("Select a texture");
+    fileDialogTexture.SetTypeFilters({".png"});
 
     if (ImGui::Button("Load texture...")) {
-        fileDialog.Open();
+        fileDialogTexture.Open();
     }
 
-    fileDialog.Display();
+    fileDialogTexture.Display();
 
-    if (fileDialog.HasSelected()) {
-        std::string path = fileDialog.GetSelected().string();
-        fileDialog.ClearSelected();
+    if (fileDialogTexture.HasSelected()) {
+        std::string path = fileDialogTexture.GetSelected().string();
+        fileDialogTexture.ClearSelected();
 
         _package.modelId = _selectedModel;
         _package.type = ModelEditType::TEXTURE_ASSIGN;
+        _package.texturePath = path;
+
+        warnListeners();
+    }
+
+    static ImGui::FileBrowser fileDialogNormalMap;
+    fileDialogNormalMap.SetTitle("Select a normal map");
+    fileDialogNormalMap.SetTypeFilters({".png"});
+
+    if (ImGui::Button("Load normal map...")) {
+        fileDialogNormalMap.Open();
+    }
+
+    fileDialogNormalMap.Display();
+
+    if (fileDialogNormalMap.HasSelected()) {
+        std::string path = fileDialogNormalMap.GetSelected().string();
+        fileDialogNormalMap.ClearSelected();
+
+        _package.modelId = _selectedModel;
+        _package.type = ModelEditType::NORMAL_MAP_ASSIGN;
         _package.texturePath = path;
 
         warnListeners();

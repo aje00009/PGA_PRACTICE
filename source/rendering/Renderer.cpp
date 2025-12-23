@@ -305,6 +305,18 @@ void PAG::Renderer::wakeUp(WindowType t, ...) {
                         }
                         break;
                     }
+                case ModelEditType::NORMAL_MAP_ASSIGN:
+                    {
+                        if (!package->texturePath.empty()) {
+                            Texture* tex = getTexture(package->texturePath);
+
+                            if (tex) {
+                                model->setNormalMap(tex);
+                                Logger::getInstance()->addMessage("Normal map assigned to " + model->getModelName());
+                            }
+                        }
+                        break;
+                    }
                 }
 
             break;
@@ -481,11 +493,13 @@ void PAG::Renderer::refresh() const {
                         // B. Uniforms matrices
                         const auto modelMatrix = model->getModelMatrix();
 
-                        glm::mat4 modelView = glm::transpose(glm::inverse(view * modelMatrix));
-                        glm::mat4 MVP = projection * view * modelMatrix;
+                        glm::mat4 modelView = view * modelMatrix;
+                        glm::mat3 normalMatrix = glm::transpose(glm::inverse(modelView));
+                        glm::mat4 MVP = projection * modelView;
 
                         shaderProgram->setUniformMat4("MVP", MVP);
                         shaderProgram->setUniformMat4("modelView", modelView);
+                        shaderProgram->setUniformMat3("normalMatrix",normalMatrix);
 
 
                         // C. Materials
@@ -509,13 +523,22 @@ void PAG::Renderer::refresh() const {
                             model->getTexture()->bind();
                             shaderProgram->setUniformInt("texSampler", 0);
                             shaderProgram->activateSubroutine("colorFromTexture", "uDiffuseSource");
+
+                            //Normal mapping
+                            glActiveTexture(GL_TEXTURE1);
+                            if (model->hasNormalMap()) {
+                                model->getNormalMap()->bind();
+                                shaderProgram->setUniformInt("normalMapSampler", 1);
+                                shaderProgram->activateSubroutine("normalFromMap", "uNormalSource");
+                            } else {
+                                shaderProgram->activateSubroutine("normalFromVertex","uNormalSource");
+                            }
+
                         } else {
                             // Material color
-                            glActiveTexture(GL_TEXTURE0);
-                            glBindTexture(GL_TEXTURE_2D, 0);
                             shaderProgram->activateSubroutine("colorFromMaterial", "uDiffuseSource");
+                            shaderProgram->activateSubroutine("normalFromVertex","uNormalSource");
                         }
-
 
                         // E. Send indices to shader
                         shaderProgram->applySubroutines();

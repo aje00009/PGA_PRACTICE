@@ -93,6 +93,13 @@ void PAG::ShaderProgram::setUniformVec3(const std::string &uniformName, const gl
         glUniform3fv(position, 1, glm::value_ptr(vector));
 }
 
+void PAG::ShaderProgram::setUniformMat3(const std::string &uniformName, const glm::mat3 &matrix) const {
+    GLuint position = glGetUniformLocation(_programId, uniformName.c_str());
+
+    if ( position != -1 )
+        glUniformMatrix3fv(position, 1, GL_FALSE, glm::value_ptr(matrix));
+}
+
 /**
  * @brief Method to send a uniform of type float to the shader
  * @param uniformName Name of the uniform to link it to shader

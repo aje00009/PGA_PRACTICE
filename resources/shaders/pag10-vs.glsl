@@ -18,17 +18,17 @@ uniform mat4 MVP;
 
 void main()
 {
-    gl_Position = MVP * vec4(vPosition, 1.0);
+    gl_Position = MVP * vec4(aPos, 1.0);
 
     //Position of vertex in view space
-    vs_out.FragPos = vec3(modelView * vec4(vPosition, 1.0));
+    vs_out.FragPos = vec3(modelView * vec4(aPos, 1.0));
 
-    vs_out.TexCoords = vTexCoord;
+    vs_out.TexCoords = aTexCoords;
 
     // TBN Calculation
-    vec3 T = normalize(normalMatrix * vTangent);
-    vec3 B = normalize(normalMatrix * vNormal);
-    vec3 N = normalize(cross(N, T));
+    vec3 T = normalize(normalMatrix * aTangent);
+    vec3 N = normalize(normalMatrix * aNormal);
+    vec3 B = normalize(cross(N, T));
 
     vs_out.TBN = transpose(mat3(T,B,N));
 }

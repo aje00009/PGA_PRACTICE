@@ -60,6 +60,5 @@ PAG::Texture::~Texture() {
  * @brief Method that binds a texture given by its id to the current texture managed by OpenGL
  */
 void PAG::Texture::bind() const {
-    glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, _id);
 }

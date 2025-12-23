@@ -28,6 +28,7 @@ namespace PAG {
         void use() const;
         void setUniformMat4(const std::string& uniformName, const glm::mat4& matrix) const;
         void setUniformVec3(const std::string& uniformName, const glm::vec3& vector) const;
+        void setUniformMat3(const std::string& uniformName, const glm::mat3& matrix) const;
         void setUniformFloat(const std::string& uniformName, float value) const;
         void setUniformInt(const std::string& uniformName, int value) const;
 
