@@ -65,6 +65,7 @@ namespace PAG
 
         MATERIAL_ASSIGN,
         TEXTURE_ASSIGN,
+        NORMAL_MAP_ASSIGN,
 
         DELETE,
         RESET

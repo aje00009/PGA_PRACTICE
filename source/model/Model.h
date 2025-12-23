@@ -16,6 +16,7 @@ namespace PAG {
         glm::vec3 Position;
         glm::vec3 Normal;
         glm::vec2 TextCoord;
+        glm::vec3 Tangent;
     };
 
     /**
@@ -40,6 +41,8 @@ namespace PAG {
 
         Texture* _texture = nullptr; ///< Texture assigned to Model
 
+        Texture* _normalMap = nullptr; ///< Normal map associated to Model
+
         void processNode(aiNode* node, const aiScene* scene);
 
         void processMesh(aiMesh* mesh, const aiScene* scene);
@@ -55,12 +58,20 @@ namespace PAG {
 
         void setModelMatrix(const glm::mat4& modelMatrix);
         glm::mat4 getModelMatrix() const;
+
         ShaderProgram* getShaderProgram() const;
+
         Material* getMaterial() const;
         void setMaterial(Material* mat);
+
         Texture* getTexture() const;
         void setTexture(Texture* texture);
         bool hasTexture() const;
+
+        Texture* getNormalMap() const;
+        void setNormalMap(Texture* normalMap);
+        bool hasNormalMap() const;
+
         const std::string& getModelName() const;
 
         //Transformations for models

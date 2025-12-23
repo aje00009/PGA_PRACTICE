@@ -15,7 +15,7 @@
 PAG::Model::Model(ShaderProgram *shaderProgram, const std::string &modelPath): _shaderProgram(shaderProgram), _modelMatrix(glm::mat4(1.0f)) {
     Assimp::Importer importer;
 
-    const aiScene* scene = importer.ReadFile(modelPath, aiProcess_Triangulate | aiProcess_JoinIdenticalVertices);
+    const aiScene* scene = importer.ReadFile(modelPath, aiProcess_Triangulate | aiProcess_JoinIdenticalVertices | aiProcess_CalcTangentSpace | aiProcess_GenSmoothNormals);
 
     if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode) {
         throw std::runtime_error("Assimp error while loading model: " + std::string(importer.GetErrorString()));
@@ -72,6 +72,13 @@ void PAG::Model::processMesh(aiMesh *mesh, const aiScene *scene) {
             vertex.TextCoord = { 0.0f, 0.0f };
         }
 
+        //Tangents
+        if (mesh->mTangents) {
+            vertex.Tangent = { mesh->mTangents[i].x, mesh->mTangents[i].y, mesh->mTangents[i].z };
+        }else {
+            vertex.Tangent = { 0.0f, 0.0f, 0.0f };
+        }
+
         _vertices.push_back(vertex);
     }
 
@@ -113,6 +120,10 @@ void PAG::Model::setupBuffers() {
     // Texture coordinates
     glEnableVertexAttribArray(2);
     glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, TextCoord));
+
+    //Tangents
+    glEnableVertexAttribArray(3);
+    glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, Tangent));
 
     glBindVertexArray(0);
 }
@@ -174,6 +185,18 @@ void PAG::Model::setTexture(Texture* texture)
 bool PAG::Model::hasTexture() const
 {
     return _texture != nullptr;
+}
+
+PAG::Texture * PAG::Model::getNormalMap() const {
+    return _normalMap;
+}
+
+void PAG::Model::setNormalMap(Texture *normalMap) {
+    _normalMap = normalMap;
+}
+
+bool PAG::Model::hasNormalMap() const {
+    return _normalMap != nullptr;
 }
 
 /**
