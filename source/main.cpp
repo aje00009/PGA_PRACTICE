@@ -142,7 +142,7 @@ int main() {
     float height = 576;
 
     //Initialize instance
-    PAG::Renderer::initialize(width/height);
+    PAG::Renderer::initialize(width, height);
 
     //Initialize GUI
     initializeGUI();

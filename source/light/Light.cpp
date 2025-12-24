@@ -16,7 +16,7 @@ PAG::Light::Light(const LightPackage &payloadLight) {
     _type = payloadLight.type;
 
     _properties = std::make_unique<LightProperties>(payloadLight.name, payloadLight.ambient,payloadLight.diffuse,payloadLight.specular,
-        payloadLight.position,payloadLight.direction,payloadLight.angle,payloadLight.exp);
+        payloadLight.position,payloadLight.direction,payloadLight.angle,payloadLight.exp, payloadLight.castShadows);
 }
 
 PAG::Light::~Light() {
@@ -67,8 +67,6 @@ PAG::LightType PAG::Light::getType() const {
 }
 
 void PAG::Light::createShadowMap(int width, int height) {
-    if (_type == LightType::AMBIENT_LIGHT) return;
-
     unsigned int depthMapFBO;
     glGenFramebuffers(1, &depthMapFBO);
 

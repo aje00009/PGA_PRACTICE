@@ -36,6 +36,9 @@ namespace PAG {
 
         void setAspectRatio(float aspectRatio);
         void reset();
+
+        float getZnear() const;
+        float getZFar() const;
     };
 }
 

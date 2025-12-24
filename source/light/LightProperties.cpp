@@ -12,7 +12,7 @@
  * @param s Exponent for soft borders
  */
 PAG::LightProperties::LightProperties(std::string name, glm::vec3 Ia, glm::vec3 Id, glm::vec3 Is, glm::vec3 pos,
-                                      glm::vec3 direction, float angle, float s): _lightSpaceMatrix(1.0f)
+                                      glm::vec3 direction, float angle, float s, bool castShadows): _lightSpaceMatrix(1.0f)
 {
     _name = name;
     _Ia = Ia;
@@ -23,7 +23,7 @@ PAG::LightProperties::LightProperties(std::string name, glm::vec3 Ia, glm::vec3 
     _angle = angle;
     _s = s;
 
-    _castShadows = false;
+    _castShadows = castShadows;
     _shadowUpdate = true;
     _shadowMapFBO = 0;
     _shadowMapTex = 0;

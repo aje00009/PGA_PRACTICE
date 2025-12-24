@@ -159,3 +159,11 @@ void PAG::Camera::reset() {
     _lookAt = {0,0,0};
     _up = {0,1,0};
 }
+
+float PAG::Camera::getZnear() const {
+    return _zNear;
+}
+
+float PAG::Camera::getZFar() const {
+    return _zFar;
+}

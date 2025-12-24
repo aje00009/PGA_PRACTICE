@@ -25,6 +25,7 @@ void PAG::LightManager::warnListeners() {
 PAG::LightManager::LightManager() {
     _payload.lightId = -1;
     _payload.type = LightType::POINT_LIGHT;
+    _payload.castShadows = false;
 }
 
 /**
@@ -78,6 +79,7 @@ void PAG::LightManager::render() {
             _payload = LightPackage(); // Reset default values
             _payload.lightId = -1;
             strcpy(_nameBuffer, "New light");
+            _payload.castShadows = false;
         } else {
             // Edit light mode
             int realIndex = _selectedLight - 1;
@@ -96,6 +98,7 @@ void PAG::LightManager::render() {
             _payload.direction = props->getDirection();
             _payload.angle = props->getAngle();
             _payload.exp = props->getExponent();
+            _payload.castShadows = props->castShadows();
             strcpy(_nameBuffer, props->getName().c_str());
         }
         _lastSelected = _selectedLight;
@@ -108,6 +111,13 @@ void PAG::LightManager::render() {
 
     ImGui::InputText("Name", _nameBuffer, 128);
     changed |= ImGui::Checkbox("On", &_payload.isEnabled);
+
+    if (_payload.type != LightType::AMBIENT_LIGHT) {
+        ImGui::SameLine();
+        if (ImGui::Checkbox("Cast Shadows", &_payload.castShadows)) {
+            changed = true;
+        }
+    }
 
     const char* lightTypes[] = { "Ambient", "Point", "Directional", "Spot" };
     int typeIndex = static_cast<int>(_payload.type);

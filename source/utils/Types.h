@@ -136,9 +136,11 @@ namespace PAG
         float angle = 12.5;
         float exp = 1.0;
 
-        float c0;
-        float c1;
-        float c2;
+        float c0 = 1.0;
+        float c1 = 0.0;
+        float c2 = 0.0;
+
+        bool castShadows = false;
     };
 
     //CONSTANTS

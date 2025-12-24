@@ -3,6 +3,7 @@
 
 #include "Renderer.h"
 
+#include <glm/ext/matrix_clip_space.hpp>
 #include <glm/ext/matrix_transform.hpp>
 
 #include "../utils/Logger.h"
@@ -21,6 +22,68 @@ const glm::mat4 biasMatrix(
  * @brief Default constructor
  */
 PAG::Renderer::Renderer() = default;
+
+void PAG::Renderer::renderShadowMap(Light *light) const {
+    if (_shadowMapShader) {
+        LightProperties* props = light->getLightProperties();
+
+        //Bind texture and FBO
+        glBindFramebuffer(GL_FRAMEBUFFER, props->getShadowMapFBO());
+        glActiveTexture(GL_TEXTURE0);
+        glBindTexture(GL_TEXTURE_2D, props->getShadowMapTex());
+
+        //Clear depth buffer
+        glClear(GL_DEPTH_BUFFER_BIT);
+
+        //Change viewport to shadow map dimension
+        glViewport(0, 0, SHADOWMAP_WIDTH, SHADOWMAP_HEIGHT);
+
+
+        //Adjusting parameters
+        glEnable(GL_DEPTH_TEST);
+        glDepthFunc(GL_LESS);
+
+        //Shadow acne
+        glEnable(GL_CULL_FACE);
+        glCullFace(GL_FRONT);
+
+        //Use depth shader
+        _shadowMapShader->use();
+
+        //Calculation of light matrices
+        glm::mat4 lightProjection;
+
+        float zNear = 1.0f;
+        float zFar = 50.0f;
+
+        if (light->getType() == LightType::DIRECTIONAL_LIGHT) {
+            lightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, zNear, zFar);
+        }
+
+        if (light->getType() == LightType::SPOT_LIGHT) {
+            lightProjection = glm::perspective(glm::radians(90.0f), (float)SHADOWMAP_WIDTH/(float)SHADOWMAP_HEIGHT, zNear, zFar);
+        }
+
+        glm::mat4 lightViewMatrix = glm::lookAt(props->getPos(), props->getPos() + props->getDirection(), glm::vec3(0.0,1.0,0.0));
+
+        glm::mat4 lightSpaceMatrix = lightProjection * lightViewMatrix;
+        props->setLightSpaceMatrix(lightSpaceMatrix);
+
+        for (const auto& model: _models) {
+            glm::mat4 MVP = lightSpaceMatrix * model->getModelMatrix();
+
+            _shadowMapShader->setUniformMat4("MVP", MVP);
+            model->draw();
+        }
+    }
+}
+
+void PAG::Renderer::updateLightsShadowMap() {
+    for (auto& light: _lights) {
+        if (light->getLightProperties()->castShadows())
+            light->getLightProperties()->setShadowUpdate(true);
+    }
+}
 
 /**
  * @brief Method that deletes all info about buffers of the model
@@ -50,9 +113,11 @@ PAG::Renderer *PAG::Renderer::getInstance() {
 
 /**
  * @brief Method to initialize the instance of Renderer
+ * @param width Width of the viewport
+ * @param height Height of the viewport
  * @param aspectRatio Aspect ratio of window
  */
-void PAG::Renderer::initialize(float aspectRatio) {
+void PAG::Renderer::initialize(int width, int height) {
     //Initializing back ground color
     if (!instance) {
         instance = new Renderer();
@@ -62,11 +127,20 @@ void PAG::Renderer::initialize(float aspectRatio) {
         instance->_bgColor[2] = 0.6;
         instance->_bgColor[3] = 1.0;
 
+        instance->_width = width;
+        instance->_height = height;
+
         //Initializing main camera
-        instance->_activeCamera = new Camera(aspectRatio);
+        instance->_activeCamera = new Camera((float)width/ (float) (height));
 
         //Initialize default material
         instance->_materials.push_back(std::make_unique<Material>("Default material"));
+
+        //Load shadow mapping shader
+        instance->_shaderPrograms.emplace_back("resources/shaders/shadow", std::make_unique<ShaderProgram>("resources/shaders/shadow-vs.glsl",
+                                                                        "resources/shaders/shadow-fs.glsl"));
+
+        instance->_shadowMapShader = instance->_shaderPrograms.back().second.get();
 
         //Initialize light applicators using Strategy design pattern
         Light::initializeApplicators();
@@ -241,6 +315,9 @@ void PAG::Renderer::wakeUp(WindowType t, ...) {
 
                     Logger::getInstance()->addMessage("Model '" + modelName + "' loaded successfully");
                 }
+
+                updateLightsShadowMap();
+
             }catch (const std::runtime_error& e) {
                 throw;
             }
@@ -256,33 +333,39 @@ void PAG::Renderer::wakeUp(WindowType t, ...) {
                 va_end(args);
 
                 auto& model = _models[package->modelId];
+                bool geometryChanged = false;
 
                 switch (package->type)
                 {
                 case ModelEditType::TRANSLATE:
                     {
                         model->translate(package->transf);
+                        geometryChanged = true;
                         break;
                     }
                 case ModelEditType::ROTATE:
                     {
                         model->rotate(package->transf,glm::radians(package->angleDegrees));
+                        geometryChanged = true;
                         break;
                     }
                 case ModelEditType::SCALE:
                     {
                         model->scale(package->transf);
+                        geometryChanged = true;
                         break;
                     }
                 case ModelEditType::RESET:
                     {
                         model->resetModelMatrix();
+                        geometryChanged = true;
                         break;
                     }
                 case ModelEditType::DELETE:
                     {
                         Logger::getInstance()->addMessage("Deleting model '" + _models[package->modelId]->getModelName() + "'");
                         _models.erase(_models.begin() + package->modelId);
+                        geometryChanged = true;
 
                         break;
                     }
@@ -325,6 +408,9 @@ void PAG::Renderer::wakeUp(WindowType t, ...) {
                         break;
                     }
                 }
+
+                if (geometryChanged)
+                    updateLightsShadowMap();
 
             break;
         }
@@ -377,12 +463,16 @@ void PAG::Renderer::wakeUp(WindowType t, ...) {
                     Logger::getInstance()->addMessage("Creating new light: " + payload->name);
 
                     _lights.push_back(std::make_unique<Light>(*payload));
+                    _lights.back()->createShadowMap(SHADOWMAP_WIDTH, SHADOWMAP_HEIGHT);
                 }
             }
             else {
                 // Obtenemos las propiedades de la luz existente
                 Light* l = _lights[payload->lightId].get();
                 LightProperties* props = l->getLightProperties();
+
+                bool wasCasting = props->castShadows();
+                bool nowCasting = payload->castShadows;
 
                 props->setName(payload->name);
                 props->setEnable(payload->isEnabled);
@@ -394,7 +484,14 @@ void PAG::Renderer::wakeUp(WindowType t, ...) {
                 props->setAngle(payload->angle);
                 props->setExponent(payload->exp);
                 props->setAttenuation(payload->c0, payload->c1, payload->c2);
+                props->setCastShadows(payload->castShadows);
+
+                if (!wasCasting && nowCasting) {
+                    props->setShadowUpdate(true);
+                }
             }
+
+            break;
         }
     }
 }
@@ -455,9 +552,24 @@ void PAG::Renderer::cursor_pos_callback(CameraMovement movement, double deltaX, 
  * @brief Method that refreshes the visualization window
  */
 void PAG::Renderer::refresh() const {
-    // 1. Clean buffers
+    // SHADOW MAPPING
+    for (const auto& light: _lights) {
+        if ( light->isEnabled() && light->getLightProperties()->castShadows() &&
+            light->getLightProperties()->hasUpdate()) {
+            renderShadowMap(light.get());
+            light->getLightProperties()->setShadowUpdate(false);
+        }
+    }
+
     glClearColor(_bgColor[0], _bgColor[1], _bgColor[2], _bgColor[3]);
+    glEnable(GL_MULTISAMPLE);
+    glEnable(GL_DEPTH_TEST);
+    glEnable(GL_BLEND);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glEnable(GL_CULL_FACE);
+    glCullFace(GL_BACK);
+    glViewport(0,0,_width,_height);
+    glDepthFunc(GL_LEQUAL);
 
     // 2. Configuration of render mode
     if (_renderMode == RenderMode::WIREFRAME) {
@@ -508,8 +620,27 @@ void PAG::Renderer::refresh() const {
                         shaderProgram->setUniformMat4("modelView", modelView);
                         shaderProgram->setUniformMat3("normalMatrix",normalMatrix);
 
+                        // C. Shadow mapping
 
-                        // C. Materials
+                        // No shadow (default)
+                        glm::mat4 shadowMatrix = glm::mat4(1.0f);
+                        float shadowMin = 1.0f;
+
+                        if (light->getLightProperties()->castShadows()) {
+                            //Calculate shadowMatrix
+                            shadowMin = 0.1f;
+                            glm::mat4 shadowMatrix = biasMatrix * light->getLightProperties()->getLightSpaceMatrix() * modelMatrix;
+
+                            glActiveTexture(GL_TEXTURE2);
+                            glBindTexture(GL_TEXTURE_2D, light->getLightProperties()->getShadowMapTex());
+
+                            shaderProgram->setUniformInt("shadowMap", 2);
+                        }
+
+                        shaderProgram->setUniformFloat("shadowMin", shadowMin);
+                        shaderProgram->setUniformMat4("shadowMatrix", shadowMatrix);
+
+                        // D. Materials
                         Material* mat = model->getMaterial();
                         if (mat) {
                             shaderProgram->setUniformVec3("material.diffuse", mat->getDiffuseColor());
@@ -518,7 +649,7 @@ void PAG::Renderer::refresh() const {
                             shaderProgram->setUniformFloat("material.shininess", mat->getShininess());
                         }
 
-                        // D. Subroutines depending on render mode
+                        // E. Subroutines depending on render mode
                         if (_renderMode == RenderMode::WIREFRAME) {
                             shaderProgram->activateSubroutine("wireframeColor", "uChosenMethod");
                         } else {
@@ -581,35 +712,6 @@ void PAG::Renderer::initializeOpenGL() const {
     glEnable( GL_BLEND );
     glEnable ( GL_DEPTH_TEST );
     glDepthFunc ( GL_LEQUAL );
-}
-
-void PAG::Renderer::createShadowMap() {
-    //Create FBO and texture
-    glGenFramebuffers(1, &_depthMapFBO);
-    glGenTextures(1, &_depthMapTex);
-
-    glBindTexture(GL_TEXTURE_2D, _depthMapTex);
-    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, SHADOWMAP_WIDTH, SHADOWMAP_HEIGHT, 0, GL_DEPTH_COMPONENT, GL_FLOAT, nullptr);
-
-    //Configuration of shadow map texture
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
-
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_REF_TO_TEXTURE);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL);
-
-    //Border for texture limit
-    float borderColor[] = { 1.0f, 1.0f, 1.0f, 1.0f};
-    glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
-
-    //Sync texture to FBO
-    glBindFramebuffer(GL_FRAMEBUFFER, _depthMapFBO);
-    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, _depthMapTex, 0);
-    glDrawBuffer(GL_NONE);
-    glReadBuffer(GL_NONE);
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 /**

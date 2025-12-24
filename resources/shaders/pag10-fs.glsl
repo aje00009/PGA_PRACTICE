@@ -112,7 +112,7 @@ vec3 calculateDiffSpec (vec3 L){
     vec3 color = uDiffuseSource();
     vec3 diffuse = uLight.diffuse * color * max(dot(N, L), 0.0);
 
-    float shadowFact = calculateShadowFactor();
+    float shadowFact = shadowFactor();
 
     float shadowMul4Specular;
     if (shadowFact < (1.0 - 0.00001)) {
