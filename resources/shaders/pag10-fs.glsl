@@ -4,6 +4,7 @@ in VS_OUT {
     vec3 FragPos;
     vec2 TexCoords;
     mat3 TBN;
+    vec4 ShadowCoord;
 } fs_in;
 
 out vec4 FragColor;
@@ -33,6 +34,22 @@ uniform Light uLight;
 //Samplers
 uniform sampler2D texSampler;
 uniform sampler2D normalMap;
+uniform sampler2DShadow shadowMap;
+uniform float shadowMin;
+
+float shadowFactor() {
+    float sum = 0;
+
+    sum += textureProjOffset(shadowMap, fs_in.ShadowCoord, ivec2(-1,-1));
+    sum += textureProjOffset(shadowMap, fs_in.ShadowCoord, ivec2(-1,1));
+    sum += textureProjOffset(shadowMap, fs_in.ShadowCoord, ivec2(1,1));
+    sum += textureProjOffset(shadowMap, fs_in.ShadowCoord, ivec2(1,-1));
+    sum += textureProjOffset(shadowMap, fs_in.ShadowCoord, ivec2(0,0));
+
+    float shadowFactor = sum * (1.0/5.0);
+
+    return clamp(shadowFactor, shadowMin, 1.0);
+}
 
 //************ Definition of subroutine for diffuse source (TEXTURE/MATERIAL) *****************//
 
@@ -95,11 +112,20 @@ vec3 calculateDiffSpec (vec3 L){
     vec3 color = uDiffuseSource();
     vec3 diffuse = uLight.diffuse * color * max(dot(N, L), 0.0);
 
+    float shadowFact = calculateShadowFactor();
+
+    float shadowMul4Specular;
+    if (shadowFact < (1.0 - 0.00001)) {
+        shadowMul4Specular = 0.0;
+    } else {
+        shadowMul4Specular = 1.0;
+    }
+
     vec3 R = reflect(-L, N);
     float spec = pow(max(dot(V, R), 0.0), material.shininess);
     vec3 specular = uLight.specular * material.specular * spec;
 
-    return (diffuse + specular);
+    return ((shadowFact * diffuse) + (shadowMul4Specular * specular));
 }
 
 //Implementations

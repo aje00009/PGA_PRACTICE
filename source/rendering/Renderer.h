@@ -20,6 +20,13 @@ namespace PAG {
             RenderMode _renderMode = RenderMode::WIREFRAME; ///< Renderer mode of the models
             bool _normalMapping = true; ///< Selectable normal mapping
 
+            //Shadow map
+            const unsigned int SHADOWMAP_WIDTH = 1024; ///< Width of the shadow map
+            const unsigned int SHADOWMAP_HEIGHT = 1024; ///< Height of the shadow map
+
+            GLuint _depthMapFBO = 0; ///< FBO for shadows
+            GLuint _depthMapTex = 0; ///< Texture to include depth
+
             //Shader programs
             std::vector<std::pair<std::string, std::unique_ptr<ShaderProgram>>> _shaderPrograms; ///< Set of shader programs loaded in the application
             ShaderProgram* _activeShaderProgram = nullptr; ///< Current shader program being executed
@@ -53,8 +60,11 @@ namespace PAG {
             static void cursor_pos_callback(CameraMovement movement, double deltaX, double deltaY);
 
             void refresh() const;
+
             static void getInfoGL();
             void initializeOpenGL() const;
+
+            void createShadowMap();
 
             [[nodiscard]] std::vector<std::string> getModelNames() const;
 
@@ -68,6 +78,7 @@ namespace PAG {
 
             void setNormalMapping(bool normalMapping);
             [[nodiscard]] bool getNormalMapping() const;
+
     };
 }
 

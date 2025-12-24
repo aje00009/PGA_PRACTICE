@@ -10,11 +10,13 @@ out VS_OUT {
     vec3 FragPos;
     vec2 TexCoords;
     mat3 TBN;
+    vec4 ShadowCoord;
 } vs_out;
 
 uniform mat3 normalMatrix;
 uniform mat4 modelView;
 uniform mat4 MVP;
+uniform mat4 shadowMatrix; // Bias * ProjLight * ViewLight * modelMatrix
 
 void main()
 {
@@ -31,6 +33,8 @@ void main()
     vec3 B = normalize(cross(N, T));
 
     vs_out.TBN = transpose(mat3(T,B,N));
+
+    vs_out.ShadowCoord = shadowMatrix * vec4(aPos, 1.0);
 }
 
 

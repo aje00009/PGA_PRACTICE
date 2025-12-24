@@ -10,6 +10,13 @@
 //Definition of the only instance of the class
 PAG::Renderer* PAG::Renderer::instance = nullptr;
 
+const glm::mat4 biasMatrix(
+    0.5, 0.0, 0.0, 0.0,
+    0.0, 0.5, 0.0, 0.0,
+    0.0, 0.0, 0.5, 0.0,
+    0.5, 0.5, 0.5, 1.0
+);
+
 /**
  * @brief Default constructor
  */
@@ -574,6 +581,35 @@ void PAG::Renderer::initializeOpenGL() const {
     glEnable( GL_BLEND );
     glEnable ( GL_DEPTH_TEST );
     glDepthFunc ( GL_LEQUAL );
+}
+
+void PAG::Renderer::createShadowMap() {
+    //Create FBO and texture
+    glGenFramebuffers(1, &_depthMapFBO);
+    glGenTextures(1, &_depthMapTex);
+
+    glBindTexture(GL_TEXTURE_2D, _depthMapTex);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, SHADOWMAP_WIDTH, SHADOWMAP_HEIGHT, 0, GL_DEPTH_COMPONENT, GL_FLOAT, nullptr);
+
+    //Configuration of shadow map texture
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_MODE, GL_COMPARE_REF_TO_TEXTURE);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_COMPARE_FUNC, GL_LEQUAL);
+
+    //Border for texture limit
+    float borderColor[] = { 1.0f, 1.0f, 1.0f, 1.0f};
+    glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
+
+    //Sync texture to FBO
+    glBindFramebuffer(GL_FRAMEBUFFER, _depthMapFBO);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, _depthMapTex, 0);
+    glDrawBuffer(GL_NONE);
+    glReadBuffer(GL_NONE);
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 /**
