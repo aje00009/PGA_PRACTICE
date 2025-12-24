@@ -141,12 +141,6 @@ int main() {
     float width = 1280;
     float height = 576;
 
-    //Initialize instance
-    PAG::Renderer::initialize(width, height);
-
-    //Initialize GUI
-    initializeGUI();
-
     // - Tamaño, título de la ventana, en ventana y no en pantalla completa,
     // sin compartir recursos con otras ventanas.
 
@@ -174,6 +168,12 @@ int main() {
     }
 
     PAG::Renderer::getInfoGL();
+
+    //Initialize instance
+    PAG::Renderer::initialize(width, height);
+
+    //Initialize GUI
+    initializeGUI();
 
     //Registering all callbacks to respond main events
     glfwSetWindowRefreshCallback(window, window_refresh_callback);

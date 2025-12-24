@@ -140,6 +140,8 @@ void PAG::Renderer::initialize(int width, int height) {
         instance->_shaderPrograms.emplace_back("resources/shaders/shadow", std::make_unique<ShaderProgram>("resources/shaders/shadow-vs.glsl",
                                                                         "resources/shaders/shadow-fs.glsl"));
 
+        Logger::getInstance()->addMessage("Shadow shaders loaded...");
+
         instance->_shadowMapShader = instance->_shaderPrograms.back().second.get();
 
         //Initialize light applicators using Strategy design pattern
@@ -512,6 +514,11 @@ void PAG::Renderer::error_callback(int error, const char* description) {
  */
 void PAG::Renderer::framebuffer_size_callback(int width, int height) {
     glViewport(0, 0, width, height);
+
+    if (instance) {
+        instance->_width = width;
+        instance->_height = height;
+    }
 }
 
 /**
@@ -560,6 +567,8 @@ void PAG::Renderer::refresh() const {
             light->getLightProperties()->setShadowUpdate(false);
         }
     }
+
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
     glClearColor(_bgColor[0], _bgColor[1], _bgColor[2], _bgColor[3]);
     glEnable(GL_MULTISAMPLE);
@@ -629,7 +638,7 @@ void PAG::Renderer::refresh() const {
                         if (light->getLightProperties()->castShadows()) {
                             //Calculate shadowMatrix
                             shadowMin = 0.1f;
-                            glm::mat4 shadowMatrix = biasMatrix * light->getLightProperties()->getLightSpaceMatrix() * modelMatrix;
+                            shadowMatrix = biasMatrix * light->getLightProperties()->getLightSpaceMatrix() * modelMatrix;
 
                             glActiveTexture(GL_TEXTURE2);
                             glBindTexture(GL_TEXTURE_2D, light->getLightProperties()->getShadowMapTex());
@@ -694,8 +703,6 @@ void PAG::Renderer::refresh() const {
  * @brief Method that adds a message to the log indicating info about OpenGL
  */
 void PAG::Renderer::getInfoGL() {
-    // - Interrogamos a OpenGL para que nos informe de las propiedades del contexto
-    // 3D construido.
     std::stringstream ss;
     ss << glGetString ( GL_RENDERER ) << "\n" << glGetString ( GL_VENDOR ) << "\n" << glGetString ( GL_VERSION )
     << "\n" << glGetString ( GL_SHADING_LANGUAGE_VERSION ) << "\n";
