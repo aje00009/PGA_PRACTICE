@@ -12,7 +12,7 @@
  * @param s Exponent for soft borders
  */
 PAG::LightProperties::LightProperties(std::string name, glm::vec3 Ia, glm::vec3 Id, glm::vec3 Is, glm::vec3 pos,
-                                      glm::vec3 direction, float angle, float s)
+                                      glm::vec3 direction, float angle, float s): _lightSpaceMatrix(1.0f)
 {
     _name = name;
     _Ia = Ia;
@@ -22,6 +22,12 @@ PAG::LightProperties::LightProperties(std::string name, glm::vec3 Ia, glm::vec3 
     _direction = direction;
     _angle = angle;
     _s = s;
+
+    _castShadows = false;
+    _shadowUpdate = true;
+    _shadowMapFBO = 0;
+    _shadowMapTex = 0;
+    _c0 = 1.0f; _c1 = 0.0; _c2 = 0.0;
 }
 
 [[nodiscard]] glm::vec3 PAG::LightProperties::getIa() const
@@ -62,6 +68,7 @@ void PAG::LightProperties::setIs(const glm::vec3& is)
 void PAG::LightProperties::setPos(const glm::vec3& pos)
 {
     _pos = pos;
+    _shadowUpdate = true;
 }
 
 [[nodiscard]] glm::vec3 PAG::LightProperties::getDirection() const
@@ -72,6 +79,7 @@ void PAG::LightProperties::setPos(const glm::vec3& pos)
 void PAG::LightProperties::setDirection(const glm::vec3& direction)
 {
     _direction = direction;
+    _shadowUpdate = true;
 }
 
 [[nodiscard]] float PAG::LightProperties::getAngle() const
@@ -82,6 +90,7 @@ void PAG::LightProperties::setDirection(const glm::vec3& direction)
 void PAG::LightProperties::setAngle(float angle)
 {
     _angle = angle;
+    _shadowUpdate = true;
 }
 
 [[nodiscard]] float PAG::LightProperties::getExponent() const
@@ -130,4 +139,45 @@ float PAG::LightProperties::getC1() const
 float PAG::LightProperties::getC2() const
 {
     return _c2;
+}
+
+bool PAG::LightProperties::castShadows() const {
+    return _castShadows;
+}
+
+void PAG::LightProperties::setCastShadows(bool cast_shadows) {
+    _castShadows = cast_shadows;
+    _shadowUpdate = true;
+}
+
+bool PAG::LightProperties::hasUpdate() const {
+    return _shadowUpdate;
+}
+
+void PAG::LightProperties::setShadowUpdate(bool shadow_update) {
+    _shadowUpdate = shadow_update;
+}
+
+glm::mat4 PAG::LightProperties::getLightSpaceMatrix() const {
+    return _lightSpaceMatrix;
+}
+
+void PAG::LightProperties::setLightSpaceMatrix(const glm::mat4 &light_space_matrix) {
+    _lightSpaceMatrix = light_space_matrix;
+}
+
+unsigned int PAG::LightProperties::getShadowMapFBO() const {
+    return _shadowMapFBO;
+}
+
+void PAG::LightProperties::setShadowMapFBO(unsigned int shadow_map_fbo) {
+    _shadowMapFBO = shadow_map_fbo;
+}
+
+unsigned int PAG::LightProperties::getShadowMapTex() const {
+    return _shadowMapTex;
+}
+
+void PAG::LightProperties::setShadowMapTex(unsigned int shadow_map_tex) {
+    _shadowMapTex = shadow_map_tex;
 }

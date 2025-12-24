@@ -2,6 +2,7 @@
 #define PGA_PRACTICA_LIGHTPROPERTIES_H
 
 #include <string>
+#include <glm/mat4x4.hpp>
 #include <glm/vec3.hpp>
 
 /**
@@ -14,6 +15,13 @@ namespace PAG
     private:
         std::string _name; ///< Name of the light
         bool _on = true; ///< Light on/off
+        bool _castShadows = false; ///< Cast shadow flag
+        bool _shadowUpdate = true; ///< Flag to update shadow map
+
+        unsigned int _shadowMapFBO = 0; ///< ID of FBO for depth
+        unsigned int _shadowMapTex = 0; ///< ID of depth texture
+
+        glm::mat4 _lightSpaceMatrix; ///< View * projection matrix for this light
 
         glm::vec3 _Ia; ///< Ambient intensity
         glm::vec3 _Id; ///< Diffuse intensity
@@ -73,6 +81,26 @@ namespace PAG
         float getC1() const;
 
         float getC2() const;
+
+        [[nodiscard]] bool castShadows() const;
+
+        void setCastShadows(bool cast_shadows);
+
+        [[nodiscard]] bool hasUpdate() const;
+
+        void setShadowUpdate(bool shadow_update);
+
+        [[nodiscard]] glm::mat4 getLightSpaceMatrix() const;
+
+        void setLightSpaceMatrix(const glm::mat4 &light_space_matrix);
+
+        [[nodiscard]] unsigned int getShadowMapFBO() const;
+
+        void setShadowMapFBO(unsigned int shadow_map_fbo);
+
+        [[nodiscard]] unsigned int getShadowMapTex() const;
+
+        void setShadowMapTex(unsigned int shadow_map_tex);
     };
 }
 

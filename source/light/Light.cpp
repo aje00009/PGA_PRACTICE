@@ -19,6 +19,19 @@ PAG::Light::Light(const LightPackage &payloadLight) {
         payloadLight.position,payloadLight.direction,payloadLight.angle,payloadLight.exp);
 }
 
+PAG::Light::~Light() {
+    if (_properties) {
+        unsigned int fbo = _properties->getShadowMapFBO();
+        unsigned int tex = _properties->getShadowMapTex();
+
+        if (fbo != 0) glDeleteFramebuffers(1, &fbo);
+        if (tex != 0) glDeleteTextures(1, &tex);
+
+        _properties->setShadowMapFBO(0);
+        _properties->setShadowMapTex(0);
+    }
+}
+
 /**
  * @brief Method that applies (assigns uniforms and more info) a light into a shader program
  * @param sp Shader program which we want to send the uniforms to
@@ -51,6 +64,42 @@ bool PAG::Light::isEnabled() const {
  */
 PAG::LightType PAG::Light::getType() const {
     return _type;
+}
+
+void PAG::Light::createShadowMap(int width, int height) {
+    if (_type == LightType::AMBIENT_LIGHT) return;
+
+    unsigned int depthMapFBO;
+    glGenFramebuffers(1, &depthMapFBO);
+
+    unsigned int depthMap;
+    glGenTextures(1, &depthMap);
+    glBindTexture(GL_TEXTURE_2D, depthMap);
+
+    // Configuration of texture
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_DEPTH_COMPONENT, width, height, 0, GL_DEPTH_COMPONENT, GL_FLOAT, NULL);
+
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+
+    // Border color for texture limit
+    float borderColor[] = { 1.0f, 1.0f, 1.0f, 1.0f };
+    glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
+
+    // Sync to FBO
+    glBindFramebuffer(GL_FRAMEBUFFER, depthMapFBO);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_TEXTURE_2D, depthMap, 0);
+
+    // Only depth
+    glDrawBuffer(GL_NONE);
+    glReadBuffer(GL_NONE);
+
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+    _properties->setShadowMapFBO(depthMapFBO);
+    _properties->setShadowMapTex(depthMap);
 }
 
 /**

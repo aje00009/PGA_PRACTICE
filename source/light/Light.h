@@ -20,13 +20,15 @@ namespace PAG
             static std::vector<std::unique_ptr<LightApplicator>> _lightApplicators; ///< Shared vector of 4 implementations of LightApplicator
         public:
             Light(const LightPackage& payloadLight);
-            virtual ~Light() = default;
+            virtual ~Light();
 
             void applyLight(ShaderProgram *sp);
 
             LightProperties* getLightProperties() const;
             bool isEnabled() const;
             LightType getType() const;
+
+            void createShadowMap(int width, int height);
 
 
             static void initializeApplicators();
