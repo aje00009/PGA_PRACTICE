@@ -23,8 +23,8 @@ namespace PAG {
             bool _normalMapping = true; ///< Selectable normal mapping
 
             //Shadow map dimension
-            const unsigned int SHADOWMAP_WIDTH = 1024; ///< Width of the shadow map
-            const unsigned int SHADOWMAP_HEIGHT = 1024; ///< Height of the shadow map
+            const unsigned int SHADOWMAP_WIDTH = 2048; ///< Width of the shadow map
+            const unsigned int SHADOWMAP_HEIGHT = 2048; ///< Height of the shadow map
 
             //Shader programs
             std::vector<std::pair<std::string, std::unique_ptr<ShaderProgram>>> _shaderPrograms; ///< Set of shader programs loaded in the application

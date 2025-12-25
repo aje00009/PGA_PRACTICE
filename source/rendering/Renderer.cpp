@@ -57,10 +57,11 @@ void PAG::Renderer::renderShadowMap(Light *light) const {
         float zFar = 50.0f;
 
         if (light->getType() == LightType::DIRECTIONAL_LIGHT) {
-            lightProjection = glm::ortho(-10.0f, 10.0f, -10.0f, 10.0f, zNear, zFar);
+            lightProjection = glm::ortho(-10.f, 10.f, -10.f, 10.f, zNear, zFar);
         }
 
         if (light->getType() == LightType::SPOT_LIGHT) {
+            zNear = 0.1f;
             lightProjection = glm::perspective(glm::radians(90.0f), (float)SHADOWMAP_WIDTH/(float)SHADOWMAP_HEIGHT, zNear, zFar);
         }
 
@@ -75,6 +76,16 @@ void PAG::Renderer::renderShadowMap(Light *light) const {
             _shadowMapShader->setUniformMat4("MVP", MVP);
             model->draw();
         }
+
+        glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+        glEnable(GL_MULTISAMPLE);
+        glEnable(GL_DEPTH_TEST);
+        glEnable(GL_BLEND);
+        glEnable(GL_CULL_FACE);
+        glCullFace(GL_BACK);
+        glViewport(0,0,_width,_height);
+        glDepthFunc(GL_LEQUAL);
     }
 }
 
@@ -568,17 +579,8 @@ void PAG::Renderer::refresh() const {
         }
     }
 
-    glBindFramebuffer(GL_FRAMEBUFFER, 0);
-
     glClearColor(_bgColor[0], _bgColor[1], _bgColor[2], _bgColor[3]);
-    glEnable(GL_MULTISAMPLE);
-    glEnable(GL_DEPTH_TEST);
-    glEnable(GL_BLEND);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    glEnable(GL_CULL_FACE);
-    glCullFace(GL_BACK);
-    glViewport(0,0,_width,_height);
-    glDepthFunc(GL_LEQUAL);
 
     // 2. Configuration of render mode
     if (_renderMode == RenderMode::WIREFRAME) {
