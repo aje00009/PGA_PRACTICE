@@ -37,14 +37,20 @@ uniform sampler2D normalMap;
 uniform sampler2DShadow shadowMap;
 uniform float shadowMin;
 
-float shadowFactor() {
+float shadowFactor(vec3 N, vec3 L) {
     float sum = 0;
 
-    sum += textureProjOffset(shadowMap, fs_in.ShadowCoord, ivec2(-1,-1));
-    sum += textureProjOffset(shadowMap, fs_in.ShadowCoord, ivec2(-1,1));
-    sum += textureProjOffset(shadowMap, fs_in.ShadowCoord, ivec2(1,1));
-    sum += textureProjOffset(shadowMap, fs_in.ShadowCoord, ivec2(1,-1));
-    sum += textureProjOffset(shadowMap, fs_in.ShadowCoord, ivec2(0,0));
+    float cosTheta = clamp(dot(N, L), 0.0, 1.0);
+    float bias = max(0.05 * (1.0 - cosTheta), 0.005);
+
+    vec4 shadowCoords = fs_in.ShadowCoord;
+    shadowCoords.z -= bias;
+
+    sum += textureProjOffset(shadowMap, shadowCoords, ivec2(-1,-1));
+    sum += textureProjOffset(shadowMap, shadowCoords, ivec2(-1,1));
+    sum += textureProjOffset(shadowMap, shadowCoords, ivec2(1,1));
+    sum += textureProjOffset(shadowMap, shadowCoords, ivec2(1,-1));
+    sum += textureProjOffset(shadowMap, shadowCoords, ivec2(0,0));
 
     float shadowFactor = sum * (1.0/5.0);
 
@@ -112,7 +118,7 @@ vec3 calculateDiffSpec (vec3 L){
     vec3 color = uDiffuseSource();
     vec3 diffuse = uLight.diffuse * color * max(dot(N, L), 0.0);
 
-    float shadowFact = shadowFactor();
+    float shadowFact = shadowFactor(N,L);
 
     float shadowMul4Specular;
     if (shadowFact < (1.0 - 0.00001)) {

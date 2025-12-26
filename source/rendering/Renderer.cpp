@@ -62,7 +62,7 @@ void PAG::Renderer::renderShadowMap(Light *light) const {
 
         if (light->getType() == LightType::SPOT_LIGHT) {
             zNear = 0.1f;
-            lightProjection = glm::perspective(glm::radians(90.0f), (float)SHADOWMAP_WIDTH/(float)SHADOWMAP_HEIGHT, zNear, zFar);
+            lightProjection = glm::perspective(glm::radians(light->getLightProperties()->getAngle() * 2), (float)SHADOWMAP_WIDTH/(float)SHADOWMAP_HEIGHT, zNear, zFar);
         }
 
         glm::mat4 lightViewMatrix = glm::lookAt(props->getPos(), props->getPos() + props->getDirection(), glm::vec3(0.0,1.0,0.0));
@@ -669,6 +669,7 @@ void PAG::Renderer::refresh() const {
 
                         if (_renderMode == RenderMode::TEXTURE && model->hasTexture()) {
                             // Texture color
+                            glActiveTexture(GL_TEXTURE0);
                             model->getTexture()->bind();
                             shaderProgram->setUniformInt("texSampler", 0);
                             shaderProgram->activateSubroutine("colorFromTexture", "uDiffuseSource");
