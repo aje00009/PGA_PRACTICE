@@ -17,6 +17,8 @@ namespace PAG {
 
         ManagerGUI();
 
+        void drawMenuItem (const std::string& label, const std::string& windowTitle) const;
+
     public:
         ~ManagerGUI();
         static ManagerGUI* getInstance();

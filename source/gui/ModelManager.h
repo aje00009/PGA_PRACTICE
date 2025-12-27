@@ -25,7 +25,7 @@ namespace PAG
 
         ModelEditPackage _package{}; ///< Payload to be sent to Renderer
 
-        ModelManager() = default;
+        ModelManager();
         void warnListeners() const;
 
     public:

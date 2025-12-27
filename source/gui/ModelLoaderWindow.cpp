@@ -4,6 +4,9 @@
 //Definition of the instance
 PAG::ModelLoaderWindow* PAG::ModelLoaderWindow::instance = nullptr;
 
+PAG::ModelLoaderWindow::ModelLoaderWindow(): GUIElement("Model loader") {
+}
+
 /**
  * @brief Method that wakes up all listener subscribed to this window events
  */
@@ -35,27 +38,28 @@ PAG::ModelLoaderWindow * PAG::ModelLoaderWindow::getInstance() {
  * @brief Method that draws the GUI window for the user in order to be able to select and load a model
  */
 void PAG::ModelLoaderWindow::render() {
-    static ImGui::FileBrowser fileDialog;
+    if (visible) {
+        static ImGui::FileBrowser fileDialog;
 
-    fileDialog.SetTitle("Select a model");
-    fileDialog.SetTypeFilters({".obj"}); ///< Only allow .obj models
+        fileDialog.SetTitle("Select a model");
+        fileDialog.SetTypeFilters({".obj"}); ///< Only allow .obj models
 
-    if(ImGui::Begin("Model loader window"))
-    {
-        if(ImGui::Button("Open file dialog"))
-            fileDialog.Open();
-    }
-    ImGui::End();
+        if(ImGui::Begin(title.c_str(), &visible)) {
+            if(ImGui::Button("Open file dialog"))
+                fileDialog.Open();
+        }
+        ImGui::End();
 
-    fileDialog.Display();
+        fileDialog.Display();
 
-    if (fileDialog.HasSelected()) {
-        model = fileDialog.GetSelected().string();
+        if (fileDialog.HasSelected()) {
+            model = fileDialog.GetSelected().string();
 
-        const std::filesystem::path path(model);
+            const std::filesystem::path path(model);
 
-        Logger::getInstance()->addMessage("Model selected: " + path.filename().string());
-        warnListeners();
-        fileDialog.ClearSelected();
+            Logger::getInstance()->addMessage("Model selected: " + path.filename().string());
+            warnListeners();
+            fileDialog.ClearSelected();
+        }
     }
 }

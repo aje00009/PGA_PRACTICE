@@ -6,6 +6,9 @@
 //Definition of the instance
 PAG::RenderModeWindow* PAG::RenderModeWindow::instance = nullptr;
 
+PAG::RenderModeWindow::RenderModeWindow(): GUIElement("Render mode") {
+}
+
 /**
  * @brief Method that wakes up all listeners waiting for an event of this GUI window
  */
@@ -29,33 +32,35 @@ PAG::RenderModeWindow * PAG::RenderModeWindow::getInstance() {
  * @brief Method that draws the GUI window related to the possible render mode in the application
  */
 void PAG::RenderModeWindow::render() {
-    ImGui::Begin("Render mode window");
+    if (visible) {
+        if (ImGui::Begin(title.c_str(), &visible)) {
+            if (ImGui::Button("SOLID",ImVec2(100,30))) {
+                _renderMode = RenderMode::SOLID;
+                warnListeners();
+            }
 
-    if (ImGui::Button("SOLID",ImVec2(100,30))) {
-        _renderMode = RenderMode::SOLID;
-        warnListeners();
-    }
+            ImGui::SameLine();
 
-    ImGui::SameLine();
+            if (ImGui::Button("WIREFRAME",ImVec2(100,30))) {
+                _renderMode = RenderMode::WIREFRAME;
+                warnListeners();
+            }
 
-    if (ImGui::Button("WIREFRAME",ImVec2(100,30))) {
-        _renderMode = RenderMode::WIREFRAME;
-        warnListeners();
-    }
+            ImGui::SameLine();
 
-    ImGui::SameLine();
+            if (ImGui::Button("TEXTURE",ImVec2(100,30))) {
+                _renderMode = RenderMode::TEXTURE;
+                warnListeners();
+            }
 
-    if (ImGui::Button("TEXTURE",ImVec2(100,30))) {
-        _renderMode = RenderMode::TEXTURE;
-        warnListeners();
-    }
-
-    if (_renderMode == RenderMode::TEXTURE) {
-        bool normalMapping = Renderer::getInstance()->getNormalMapping();
-        if (ImGui::Checkbox("Enable normal mapping", &normalMapping)) {
-            Renderer::getInstance()->setNormalMapping(normalMapping);
+            if (_renderMode == RenderMode::TEXTURE) {
+                bool normalMapping = Renderer::getInstance()->getNormalMapping();
+                if (ImGui::Checkbox("Enable normal mapping", &normalMapping)) {
+                    Renderer::getInstance()->setNormalMapping(normalMapping);
+                }
+            }
         }
-    }
 
-    ImGui::End();
+        ImGui::End();
+    }
 }

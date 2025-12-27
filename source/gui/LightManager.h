@@ -12,8 +12,8 @@ namespace PAG {
     private:
         static LightManager* instance; ///< Singleton instance
 
-        int _selectedLight; ///< Current selected light
-        int _lastSelected; ///< Last light selected
+        int _selectedLight{}; ///< Current selected light
+        int _lastSelected{}; ///< Last light selected
         bool _isDelete = false; ///< Delete flag (if the model will be deleted)
         char _nameBuffer[128] = "New light"; ///< Name of the light
 

@@ -5,6 +5,9 @@
 //Definition of the only instance of this class
 PAG::ShaderLoaderWindow* PAG::ShaderLoaderWindow::instance = nullptr;
 
+PAG::ShaderLoaderWindow::ShaderLoaderWindow(): GUIElement("Shader loader") {
+}
+
 PAG::ShaderLoaderWindow::~ShaderLoaderWindow() {
     if (instance) {
         delete instance;
@@ -35,14 +38,15 @@ void PAG::ShaderLoaderWindow::warnListeners() const {
  * @brief Method that renders the shader loader window
  */
 void PAG::ShaderLoaderWindow::render() {
-    ImGui::Begin("Shader Loader Window");
+    if (visible) {
+        if (ImGui::Begin(title.c_str(), &visible)) {
+            ImGui::InputText("##",nameShader,ImGuiInputTextFlags_AutoSelectAll);
 
-    ImGui::InputText("##",nameShader,ImGuiInputTextFlags_AutoSelectAll);
+            if (ImGui::Button("Load Shader")) {
+                warnListeners();
+            }
+        }
 
-    if (ImGui::Button("Load Shader")) {
-        warnListeners();
+        ImGui::End();
     }
-
-    // Finaliza la definición de la ventana.
-    ImGui::End();
 }

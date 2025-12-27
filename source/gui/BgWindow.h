@@ -15,7 +15,7 @@ namespace PAG {
 
         void warnListeners();
 
-        BgWindow() = default;
+        BgWindow();
         public:
         ~BgWindow();
         static BgWindow* getInstance();

@@ -11,7 +11,7 @@ namespace PAG {
     private:
         static LoggerWindow* instance;
 
-        LoggerWindow() = default;
+        LoggerWindow();
     public:
         ~LoggerWindow();
         static LoggerWindow* getInstance();

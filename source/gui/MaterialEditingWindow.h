@@ -14,7 +14,7 @@ namespace PAG {
 
         char _nameBuffer[128] = "New material"; ///< char array for ImGui
 
-        MaterialEditingWindow() = default;
+        MaterialEditingWindow();
         void warnListeners();
 
     public:

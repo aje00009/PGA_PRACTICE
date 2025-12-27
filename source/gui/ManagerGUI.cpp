@@ -11,6 +11,17 @@ PAG::ManagerGUI* PAG::ManagerGUI::instance = nullptr;
  */
 PAG::ManagerGUI::ManagerGUI() = default;
 
+void PAG::ManagerGUI::drawMenuItem(const std::string &label, const std::string &windowTitle) const {
+    for (auto* window : _windows) {
+        if (window->getTitle() == windowTitle) {
+            if (ImGui::MenuItem(label.c_str(), nullptr, &window->getVisible())) {
+
+            }
+            return;
+        }
+    }
+}
+
 PAG::ManagerGUI::~ManagerGUI() {
     if (instance) {
         delete instance;
@@ -99,8 +110,47 @@ void PAG::ManagerGUI::addWindow(GUIElement* window) {
  * @brief Method that renders all windows the manager is storing at the moment
  */
 void PAG::ManagerGUI::drawAllWindows() const {
-    //Draw all windows we have (background color, controls, logger, etc.)
+    // 1. Main menu
+    if (ImGui::BeginMainMenuBar()) {
+
+        // FILE MENU
+        if (ImGui::BeginMenu("File")) {
+            drawMenuItem("Import model", "Model loader");
+            drawMenuItem("Load shader", "Shader loader");
+            ImGui::Separator();
+
+            ImGui::EndMenu();
+        }
+
+        //  SCENE MENU
+        if (ImGui::BeginMenu("Scene")) {
+            drawMenuItem("Model manager", "Model manager");
+            drawMenuItem("Light manager", "Light manager");
+            drawMenuItem("Camera settings", "Camera management");
+            drawMenuItem("Background color", "Background color");
+            ImGui::EndMenu();
+        }
+
+        //  RENDER MENU
+        if (ImGui::BeginMenu("Render")) {
+            drawMenuItem("Render mode", "Render mode");
+            drawMenuItem("Material editor", "Material editor");
+            ImGui::EndMenu();
+        }
+
+        //  UTILITY MENU
+        if (ImGui::BeginMenu("Utility")) {
+            drawMenuItem("Logger", "Logger");
+            ImGui::EndMenu();
+        }
+
+        ImGui::EndMainMenuBar();
+    }
+
+    // 2. Render only visible windows
     for (auto* window : _windows) {
-        window->render();
+        if (window->getVisible()) {
+            window->render();
+        }
     }
 }

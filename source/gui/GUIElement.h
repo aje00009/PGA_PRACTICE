@@ -10,10 +10,13 @@
 namespace PAG {
     class GUIElement {
     protected:
+        std::string title; ///< Title of the GUI window
+        bool visible; ///< Visibility of window
+
         std::vector<Listener*> _listeners;
 
     public:
-        GUIElement() = default;
+        GUIElement(const std::string& t): title(t), visible(false) {};
         virtual ~GUIElement() = default;
 
         void addListener(Listener* listener) {
@@ -21,6 +24,18 @@ namespace PAG {
         }
 
         virtual void render() = 0;
+
+        [[nodiscard]] std::string getTitle() const {
+            return title;
+        }
+
+        [[nodiscard]] bool& getVisible() {
+            return visible;
+        }
+
+        void setVisible(const bool v) {
+            visible = v;
+        }
     };
 }
 

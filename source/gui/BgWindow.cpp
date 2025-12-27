@@ -4,6 +4,8 @@
 //Definition of the only instance of this class
 PAG::BgWindow* PAG::BgWindow::instance = nullptr;
 
+PAG::BgWindow::BgWindow(): GUIElement("Background color") { }
+
 PAG::BgWindow::~BgWindow() {
     if (instance) {
         delete instance;
@@ -17,7 +19,7 @@ PAG::BgWindow::~BgWindow() {
  */
 PAG::BgWindow * PAG::BgWindow::getInstance() {
     if (instance == nullptr) {
-        instance = new PAG::BgWindow();
+        instance = new BgWindow();
     }
     return instance;
 }
@@ -26,14 +28,15 @@ PAG::BgWindow * PAG::BgWindow::getInstance() {
  * @brief Overridden (GUIElement) method that renders the window in order to control background colorr
  */
 void PAG::BgWindow::render() {
-    ImGui::Begin("Background color");
+    if (visible) {
+        if (ImGui::Begin(title.c_str(), &visible)) {
+            if (ImGui::ColorPicker4("Background color", bgColor)) {
+                warnListeners();
+            }
+        }
 
-    if (ImGui::ColorPicker4("Background color", bgColor)) {
-        // Solo notificamos si el usuario ha interactuado con el control.
-        warnListeners();
+        ImGui::End();
     }
-
-    ImGui::End();
 }
 
 /**

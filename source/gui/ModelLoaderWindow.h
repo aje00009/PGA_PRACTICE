@@ -13,7 +13,7 @@ namespace PAG {
             static ModelLoaderWindow* instance;
             std::string model;
 
-            ModelLoaderWindow() = default;
+            ModelLoaderWindow();
 
             void warnListeners() const;
         public:

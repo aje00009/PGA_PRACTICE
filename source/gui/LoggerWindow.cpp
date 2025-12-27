@@ -6,6 +6,8 @@
 //Definition of the instance
 PAG::LoggerWindow* PAG::LoggerWindow::instance = nullptr;
 
+PAG::LoggerWindow::LoggerWindow(): GUIElement("Logger") { }
+
 PAG::LoggerWindow::~LoggerWindow() {
     if (instance) {
         delete instance;
@@ -27,19 +29,22 @@ PAG::LoggerWindow * PAG::LoggerWindow::getInstance() {
  * @brief Method that renders the logger window in the GUI
  */
 void PAG::LoggerWindow::render() {
-    if (ImGui::Begin("Logger")) {
-        if (ImGui::Button("Limpiar")) {
-            Logger::getInstance()->clear();
+    if (visible) {
+        if (ImGui::Begin(title.c_str(), &visible)) {
+            if (ImGui::Button("Limpiar")) {
+                Logger::getInstance()->clear();
+            }
+
+            ImGui::Separator();
+
+            ImGui::BeginChild("LogScrollRegion", ImVec2(0, 0), false, ImGuiWindowFlags_HorizontalScrollbar);
+
+            // Obtenemos los mensajes directamente del Logger.
+            ImGui::TextUnformatted(Logger::getInstance()->getMessages().c_str());
+
+            ImGui::EndChild();
         }
 
-        ImGui::Separator();
-
-        ImGui::BeginChild("LogScrollRegion", ImVec2(0, 0), false, ImGuiWindowFlags_HorizontalScrollbar);
-
-        // Obtenemos los mensajes directamente del Logger.
-        ImGui::TextUnformatted(Logger::getInstance()->getMessages().c_str());
-
-        ImGui::EndChild();
+        ImGui::End();
     }
-    ImGui::End();
 }

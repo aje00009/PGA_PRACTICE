@@ -11,10 +11,10 @@ namespace PAG {
     private:
         static CameraWindow* instance;
 
-        int move = 0;
-        CameraMovement _movement;
+        int move = 3;
+        CameraMovement _movement = CameraMovement::ORBIT;
 
-        CameraWindow() = default;
+        CameraWindow();
         void warnListeners() const;
 
     public:

@@ -9,7 +9,7 @@ namespace PAG {
 
         RenderMode _renderMode;
 
-        RenderModeWindow() = default;
+        RenderModeWindow();
         void warnListeners() const;
 
     public:
