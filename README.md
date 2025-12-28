@@ -307,6 +307,90 @@ Finalmente, el UML se ha actualizado para reflejar la relación de composición 
 
 ![UML Práctica 9](/resources/images/uml/uml_prac9.png)
 
+### PRÁCTICA 10
+
+Para esta última práctica, nuestra aplicación deberá de soportar el normal mapping, para jugar con texturas de forma que se el dote al modelo
+de más calidad sin que este tenga más triángulos, lo cual nos proporciona más realismo al mismo precio. Por otro lado, se deberán de proyectar sombras, utilizando 
+la técnica de shadow mapping. El resultado será que cada objeto proyectará sombras en la escena (sobre sí mismo, otros objetos...)
+
+Para llevar a cabo estos cambios se han realizado las siguientes modificaciones:
+
+* **Shaders**:
+  * Normal mapping:
+    * `Vertex shader`: en este shader debemos de incluir el cálculo de la matriz TBN para pasar a coordenadas de espacio de tangente, de forma que podamos realizar los cálculos de iluminación teniendo como referencia la posición de la luz, no la camara
+    * `Fragment shader`: en este shader lo que ha cambiado es que con la matriz TBN, debemos pasar las coordenadas de ciertos parámetros (posición luz, dirección, etc.) para trabajar en espacio de tangente. También se ha definido una subrutina (`fNormalSource`) para decidir si utilizar la normal del vértice (clásico) o el mapa de normales (textura), al igual que el sampler para normal mapping (`normalMap`)
+  * Shadow mapping: aquí hay bastantes cambios importantes a tener en cuenta:
+    * `Vertex shader`:
+      * Primera pasada -> Shader para calcular la profundidad (`shadow-vs.glsl`): es un shader básico el cual simplemente calcula la posición en el espacio de la luz (ProyecciónLuz * VistaLuz * Modelo)
+      * Segunda pasada:
+        * Se calculan las coordenadas de sombra según espacio de luz -> shadowMatrix = bias * MVP (Luz)
+        * Se pasan al fragment para que las utilice
+    * `Fragment shader`: 
+      * Primera pasada -> Shader vacío, ya que la profundidad se guarda automáticamente
+      * Segunda pasada:
+        * Coordenadas de sombra como entrada al FS
+        * Definición de uniforms para sombras: sampler de sombras `shadowMap` y float `shadowMin`
+        * Definición de función para calcular el factor de sombras para aplicar al color final (`shadowFactor()`)
+        * A la hora de calcular el color difuso y especular, usamos esta función y otras variables para el resultado final (sombra o no sombra)
+        
+* **Luces**:
+  * `LightProperties`: se han añadido los siguientes elementos:
+    * `_castShadows: bool`: atributo para saber si la luz proyecta sombras o no
+    * `_shadowUpdate: bool`: atributo para saber si la luz necesita actualizar su mapa de sombras
+    * `_lightSpaceMamtrix`: matriz VP en el espacio de luz (Visión * proyección)
+    * `_shadowMapFBO: uint`: entero para guardar el ID del framebuffer object para el mapa de sombras
+    * `_shadowMapTex: uint`: entero para guardar el ID del mapa de sombras (textura de profundidad)
+    * Se han añadido metodos get/set correspondiente, inicialización de nuevos atributos en constructor y activado de actualización del mapa de sombras cuando sea necesario (cambio de posición, dirección, ángulo, etc.)
+  * `Light`: 
+    * `~Light()`: ahora en el constructor se destruyen los FBO y la textura de profundidad asociada a la luz
+    * `createShadowMap()`: nuevo método que se encarga de crear y sincronizar los FBO y textura para guardar el mapa de sombras asociado a la luz.
+    
+* **`Model`**:
+  * `Vertex`: se ha añadido el atributo `Tangent` que utilizaremos para calcular la tangente del vértice para utilizar normal mapping (matriz TBN)
+  * `_normalMap: Texture`: nuevo atributo que guarda la textura referente al normal map del modelo (y métodos get/set/has)
+  * Cuando se lee el archivo `.obj`, se ha añadido un flag para calcular el espacio tangente directamente con `Assimp` (`aiProcess_CalcTangentSpace`)
+  * Al leer el archivo, se comprueba si hay tangentes y se guardan en ese caso.
+  * Se ha añadido al VBO entrelazado un nuevo valor (tangente) junto a la posición, normal y coordenadas de textura.
+  
+* **`Types.h`**:
+  * `ModelEditType: enum`: se ha añadido un nuevo tipo de modificación a los modelos (`NORMAL_MAP_ASSIGN`) para hacer referencia a la acción de cargar el mapa de normales para un modelo concreto.
+  * `LightPackage: struct`: se ha añadido un nuevo atributo para conocer si la luz emite sombras o no (`castShadows`).
+* **`Renderer`**:
+  * `Renderer.h`:
+    * `width: int`: ancho de la ventana de visualización (viewport)
+    * `height: int`: alto de la ventana de visualización (viewport)
+    * `_normalMapping: bool`: atributo booleano para activar/desactivar la visualización con normal mapping al aplicar texturas.
+    * `_shadowMapWidth: uint`: atributo para almacenar el ancho de las dimensiones del mapa de sombras.
+    * `_shadowMapHeight: uint`: atributo para almacenar el alto de las dimensiones del mapa de sombras.
+    * `_shadowMapShader: ShaderProgram`: shader program (vertex/fragment shader) que ejecuta el shadow mapping al iniciar la aplicación.
+  * `Renderer.cpp`:
+    * `biasMatrix: glm::mat4`: se ha definido la matriz bias para calcular a posteriori la matriz `shadowMatrix` para la técnica de shadow mapping.
+    * `renderShadowMap(light)`: método que calcula el mapa de sombras para una luz concreta.
+      * Se ajustan ciertos parámetros necesarios (tamaño del viewport, GL_FRONT, GL_LESS, etc.) antes de empezar
+      * Se recupera la matriz de espacio de luz (iluminación desde la luz) -> Proyección * view
+      * Se multiplica por la matriz de cada modelo (MVP) y dicha matriz se le pasa como uniform al shader de sombras para después guardar la profundidad
+      * Se restablecen los parámetros (cambio de tamaño de viewport, GL_BACK, GL_LEQUAL, etc.)
+    * `updateLightsShadowMap()`: función para activar la actualización del mapa de sombras de todas las luces (ej: se realiza una traslación sobre un modelo)
+    * `initialize()`: este método ha sido modificado para que se añada automáticamente al iniciar la aplicación el shader de sombras, preparado para ejecutarse cuando haya una luz con `castShadows` activado.
+    * `wakeUp`:
+      * `ModelLoader`: cuando se carga un nuevo modelo, se llama a `updateLightsShadowMap()` para actualizar todos los mapas de sombras de cada luz al haber un nuevo modelo en la escena.
+      * `ModelEditor`: cuando hay alguna acción que suponga movimiento o manipulación de la geometría de un modelo, se activa una variable local al método (`geometryChanged`) para actualizar en dicho caso los mapas de sombras.
+      * `ManagerLight`: cuando se crea una nueva luz, se llama también a `createShadowMap()` de dicha luz para configurar su mapa de sombras.
+    * `refresh()`: aqui es donde se incluye toda la lógica de renderizado, las dos pasadas (sombras y renderizado normal), etc.
+      * Se realiza la primera pasada, recorriendo todas las luces registradas en el sistema y ejecutando `renderShadowMap()` si es necesario (la luz debe estar encendida, tener activado el flag de sombras y necesitar de actualización -> al inicio todas necesitan actualización cuando se crean para que se ejecute la primera vez).
+      * Se realiza ahora la segunda pasada. Los cambios han sido los siguientes:
+        * Para el shadow mapping, se calcula la `shadowMatrix` para cada modelo (bias * VPLuz * matrizModelo), se activa la unidad de textura y la textura (ID) correspondiente y se pasan los uniforms.
+        * En cuanto al normal mapping, si un modelo tiene textura y estamos en modo de visualización de textura, entonces se comprueba si tiene mapa de normales, en cuyo caso se activa su unidad de textura, se enlaza la textura y se pasan los uniforms correspondientes.
+        * El resto del proceso sería exactamente igual.
+* **GUI**: en cuanto a la interfaz de usuario, ha cambiado drásticamente para intentar encapsular más las ventanas, de forma que se ha construido un menú en la parte superior izquierda de la ventana de ejecución. Todas las ventanas puede arrastrarse como siempre a lo largo de la pantalla y pueden cerrarse en cualquier momento. Los cambios en cuanto a las ventanas en sí son: 
+  * `LightManager`: Ahora existe un botón para activar/desactivar las sombras una luz concreta (solo luz foco o direccional).
+  * `RenderModeWindow`: Ahora existe un checkbox para activar/desactivar la visualización con normal mapping (solo en modo textura).
+  * Se han aplicado estilos personalizados a la interfaz de usuario mediante el método `setCustomStyle()`, en el cual se configuran múltiples opciones de personalización de `ImGui`.
+
+El UML resultante para esta práctica es el siguiente:
+
+![UML Práctica 10](/resources/images/uml/uml_prac10.png)
+
 # MANUAL DE USUARIO
 La aplicación se compone de diferentes ventanas con las que podemos interactuar (nombre de las ventanas en la aplicación):
 * **Camera control**: con este control GUI podemos seleccionar el tipo de movimiento que la camara realizará:
@@ -314,17 +398,25 @@ La aplicación se compone de diferentes ventanas con las que podemos interactuar
   * Pan: moveremos el punto al que mira la camara de forma horizontal
   * Tilt: moveremos el punto al que mira la camara de forma vertical
   * Dolly: moveremos la propia camara, tanto de forma horizontal como en profundidad
-  * Para cualquier de estos movimiento debemos de pulsar el botón izquierdo del ratón y moverlo. Para hacer zoom, debemos usar la rueda del ratón, haciendo scroll
+  * Para cualquier de estos movimientos debemos de pulsar el botón izquierdo del ratón y moverlo. Para hacer zoom, debemos usar la rueda del ratón, haciendo scroll
 * **Shader loader window**: esta ventana sirve para cargar un shader para cargarlo en la aplicación. Simplemente deberemos escribir el nombre del shader en el campo y darle al botón.
 * **Model loader window**: esta ventana permite una selección de modelos mediante explorador de archivos en el que se debe seleccionar un modelo compatible en cuanto a formato (.obj) y confirmar dicha selección.
 * **Render mode window**: esta ventana básica nos sirve para seleccionar el modo de renderizado que queremos aplicar en la escena (sólido, alambre o textura)
 * **Logger**: esta ventana muestra mensajes de información relevante para el usuario (info, warnings, errores)
-* **Background color**: esta ventana permite selecionar el color de fondo de la escena de diferentes formas (selección mediante panel, valor hexadecimal, etc.)
+* **Background color**: esta ventana permite seleccionar el color de fondo de la escena de diferentes formas (selección mediante panel, valor hexadecimal, etc.)
 * **Material editor**: esta ventana da la posibilidad de crear o editar materiales y sus propiedades.
 * **Model manager**: en esta ventana podremos editar un modelo de diferentes formas. Podremos aplicar transformaciones sobre él, resetearlo, borrarlo y asignar materiales y texturas.
 * **Light manager**: en esta ventana podremos manejar las distintas luces creadas en el sistema. Se podrán crear y editar luces y dependiendo del tipo de luz, aparecerán unos atributos u otros.
 
-Aquí estaría un ejemplo de uso de la aplicación con el orden "correcto" de los pasos a seguir (algunos pueden intercambiarse de orden):
+La interfaz está dividida en un menú con cuatro opciones principales:
+* `File`: importar modelos y cargar shaders.
+* `Scene`: manejar modelos, luces, camara y color de fondo.
+* `Render`: elegir modo de renderizado y editor de materiales.
+* `Utility`: consola log.
+
+![Menu GUI](resources/images/extra/Menu.png)
+
+Aquí se presenta un ejemplo de uso de la aplicación con el orden "correcto" de los pasos a seguir:
 
 ## Pasos principales
 
@@ -344,7 +436,12 @@ Ahora el modelo aparecerá iluminado con las luces que haya en la escena
 
 ![Manual modelo luces](resources/images/manual/pasos/Manual_modelo_luces.png)
 
-A partir de aquí podremos utilizar los demás controles, además de los ya descritos, para interactuar con la escena:
+A partir de aquí podremos utilizar los demás controles. Lo normal sería cargar una textura (y el mapa de normales si procede)
+y jugar con los controles que se describen a continuación para proyectar sombras sobre objetos sobre otros 
+(recomiendo crear un cubo, aplanarlo para hacer un suelo (escalado: 5,0.1,5), cargar otro modelo y ponerlo en el centro, subirlo un poco y activar sombras), 
+crear más luces, cargar modelos, materiales, etc.
+
+Los demás controles son los siguientes, ordenados por categorías:
 
 ## Camara
 
@@ -372,11 +469,15 @@ A partir de aquí podremos utilizar los demás controles, además de los ya desc
 
 **Cargar textura GUI**
 
-![Cargar textura 1](resources/images/manual/modelo/Manual_cargar_textura_boton.png)
+![Cargar textura](resources/images/manual/modelo/Manual_cargar_textura_boton.png)
 
 **Explorador de archivos texturas**
 
 ![Explorador archivos textura](resources/images/manual/modelo/Manual_explorador_archivos_textura.png)
+
+**Cargar mapa de normales GUI**
+
+![Cargar mapa normales](resources/images/manual/modelo/Manual_cargar_mapa_normales.png)
 
 ## Material
 
@@ -392,11 +493,15 @@ A partir de aquí podremos utilizar los demás controles, además de los ya desc
 
 ![Creación de más luces 2](resources/images/manual/luces/Manual_blending_luces.png)
 
+**Activación sombras proyectadas**
+
+![Activación sombras proyectadas](resources/images/manual/luces/Manual_activacion_sombras.png)
+
 ## Visualización
 
 **Modos visualización**
 
-![img.png](resources/images/manual/visualizacion/Manual_modos_visualizacion.png)
+![Modos visualización](resources/images/manual/visualizacion/Manual_modos_visualizacion.png)
 
 **Visualización modo wireframe (alambre)**
 
@@ -409,6 +514,22 @@ A partir de aquí podremos utilizar los demás controles, además de los ya desc
 **Visualización modo textura (png)**
 
 ![Visualizacion textura escena](resources/images/manual/visualizacion/Manual_visualizacion_textura_escena.png)
+
+**Visualización modo textura con normal mapping**
+
+![Visualización textura normal mapping](resources/images/manual/visualizacion/Manual_visualización_textura_normal_mapping.png)
+
+**Checkbox para activar/desactivar normal mapping**
+
+![Checkbox normal mapping](resources/images/manual/visualizacion/Manual_checkbox_normal_mapping.png)
+
+**Visualización sombras proyectadas**
+
+![Visualización sombras proyectadas](resources/images/manual/visualizacion/Manual_visualizacion_sombras_proyectadas.png)
+
+**Visualización de sombras proyectadas por objetos con más objetos**
+
+![Visualización multiples sombras](Visualizacion_multiples_sombras.png)
 
 ## Extras
 
