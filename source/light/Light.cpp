@@ -66,6 +66,11 @@ PAG::LightType PAG::Light::getType() const {
     return _type;
 }
 
+/**
+ * @brief Method that creates and configures different parameters to get the shadow map of a light
+ * @param width Width of the shadow map texture
+ * @param height Height of the shadow map texture
+ */
 void PAG::Light::createShadowMap(int width, int height) {
     unsigned int depthMapFBO;
     glGenFramebuffers(1, &depthMapFBO);

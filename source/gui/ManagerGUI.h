@@ -29,7 +29,7 @@ namespace PAG {
         static void renderNewFrame();
         static void destroyImGuiObjects();
 
-        //Manipulate windows
+        // Window management
         void addWindow(GUIElement* window);
         void drawAllWindows() const;
     };

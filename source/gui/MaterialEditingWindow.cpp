@@ -51,7 +51,7 @@ void PAG::MaterialEditingWindow::render() {
             cMatNames.push_back("[ Create new material ]");
             for (const auto& name : materialNames) cMatNames.push_back(name.c_str());
 
-            // Check if our selection index is out of bounds (safety check)
+            // Check if selection index is out of bounds (safety check)
             if (_selectedMaterial >= cMatNames.size()) {
                 _selectedMaterial = 0;
                 _lastSelected = -1;
@@ -101,11 +101,10 @@ void PAG::MaterialEditingWindow::render() {
 
             // Confirmation buttons
             if (_selectedMaterial == 0) {
-                // Mode: Create New
                 if (ImGui::Button("Create material")) {
                     warnListeners();
                     _selectedMaterial = cMatNames.size();
-                    _lastSelected = -1; // Force data reload on next frame
+                    _lastSelected = -1;
                 }
             } else {
                 if (changed) {

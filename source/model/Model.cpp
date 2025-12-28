@@ -21,7 +21,6 @@ PAG::Model::Model(ShaderProgram *shaderProgram, const std::string &modelPath): _
         throw std::runtime_error("Assimp error while loading model: " + std::string(importer.GetErrorString()));
     }
 
-
     modelName = std::filesystem::path(modelPath).filename().string();
 
     processNode(scene->mRootNode, scene);

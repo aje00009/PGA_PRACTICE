@@ -36,7 +36,7 @@ PAG::ShaderProgram::ShaderProgram(const std::string& vertexShaderPath, const std
         if (logLength > 0) {
             std::string infoLog(logLength, ' ');
             glGetProgramInfoLog(_programId, logLength, nullptr, &infoLog[0]);
-            glDeleteProgram(_programId); // Don't leak the program.
+            glDeleteProgram(_programId);
             _programId = 0;
             throw std::runtime_error("Shader program linking failed:\n" + infoLog);
         }
@@ -138,7 +138,7 @@ GLuint PAG::ShaderProgram::getId() const {
 void PAG::ShaderProgram::queryStoreSubroutineInfo() {
     _subroutineUniformLocations.clear();
     _subroutineState.clear();
-    _subroutineIndices.clear(); // Limpiamos el nuevo mapa
+    _subroutineIndices.clear();
 
     // Obtain name of uniforms
     glGetProgramStageiv(_programId, GL_FRAGMENT_SHADER, GL_ACTIVE_SUBROUTINE_UNIFORMS, &_numActiveSubroutineUniforms);

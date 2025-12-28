@@ -11,6 +11,7 @@
 //Definition of the only instance of the class
 PAG::Renderer* PAG::Renderer::instance = nullptr;
 
+//Bias matrix for shadow mapping
 const glm::mat4 biasMatrix(
     0.5, 0.0, 0.0, 0.0,
     0.0, 0.5, 0.0, 0.0,
@@ -584,7 +585,7 @@ void PAG::Renderer::cursor_pos_callback(CameraMovement movement, double deltaX, 
  * @brief Method that refreshes the visualization window
  */
 void PAG::Renderer::refresh() const {
-    // SHADOW MAPPING
+    // 1. Shadow mapping (first pass)
     for (const auto& light: _lights) {
         if ( light->isEnabled() && light->getLightProperties()->castShadows() &&
             light->getLightProperties()->hasUpdate()) {
@@ -608,7 +609,8 @@ void PAG::Renderer::refresh() const {
 
     bool firstLight = true;
 
-    // Light loops
+    // 3. Rendering (second pass)
+    // Lights loop
     for (const auto& light: _lights) {
         if (light->isEnabled())
         {
@@ -620,7 +622,7 @@ void PAG::Renderer::refresh() const {
                 glBlendFunc(GL_SRC_ALPHA, GL_ONE);
             }
 
-            // Model loop
+            // Models loop
             for (const auto& model : _models)
             {
                 if (model) {
@@ -724,7 +726,7 @@ void PAG::Renderer::getInfoGL() {
     ss << glGetString ( GL_RENDERER ) << "\n" << glGetString ( GL_VENDOR ) << "\n" << glGetString ( GL_VERSION )
     << "\n" << glGetString ( GL_SHADING_LANGUAGE_VERSION ) << "\n";
 
-    PAG::Logger::getInstance()->addMessage(ss.str());
+    Logger::getInstance()->addMessage(ss.str());
 }
 
 /**
