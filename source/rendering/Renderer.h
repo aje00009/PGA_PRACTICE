@@ -23,8 +23,8 @@ namespace PAG {
             bool _normalMapping = true; ///< Selectable normal mapping
 
             //Shadow map dimension
-            const unsigned int SHADOWMAP_WIDTH = 2048; ///< Width of the shadow map
-            const unsigned int SHADOWMAP_HEIGHT = 2048; ///< Height of the shadow map
+            const unsigned int _shadowMapWidth = 2048; ///< Width of the shadow map
+            const unsigned int _shadowMapHeight = 2048; ///< Height of the shadow map
 
             //Shader programs
             std::vector<std::pair<std::string, std::unique_ptr<ShaderProgram>>> _shaderPrograms; ///< Set of shader programs loaded in the application
@@ -49,8 +49,8 @@ namespace PAG {
 
             Renderer();
 
-            void renderShadowMap(Light* light) const;
-            void updateLightsShadowMap();
+            void renderShadowMap(const Light* light) const;
+            void updateLightsShadowMap() const;
         public:
             virtual ~Renderer();
             static Renderer* getInstance();
@@ -72,6 +72,7 @@ namespace PAG {
 
             [[nodiscard]] std::vector<std::string> getMaterialNames() const;
             [[nodiscard]] Material* getMaterial(int index) const;
+            [[nodiscard]] int getIdMaterialModel(int modelID) const;
             [[nodiscard]] std::vector<std::string> getLightNames() const;
             [[nodiscard]] Light* getLight(int index) const;
 

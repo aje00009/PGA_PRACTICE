@@ -31,16 +31,26 @@ PAG::LoggerWindow * PAG::LoggerWindow::getInstance() {
 void PAG::LoggerWindow::render() {
     if (visible) {
         if (ImGui::Begin(title.c_str(), &visible)) {
-            if (ImGui::Button("Limpiar")) {
+
+            // Clean log console button
+            if (ImGui::Button("Clean")) {
                 Logger::getInstance()->clear();
             }
+
+            // Checkbox on/off autoscroll
+            ImGui::SameLine();
+            static bool autoScroll = true;
+            ImGui::Checkbox("Auto-scroll", &autoScroll);
 
             ImGui::Separator();
 
             ImGui::BeginChild("LogScrollRegion", ImVec2(0, 0), false, ImGuiWindowFlags_HorizontalScrollbar);
 
-            // Obtenemos los mensajes directamente del Logger.
             ImGui::TextUnformatted(Logger::getInstance()->getMessages().c_str());
+
+            if (autoScroll) {
+                ImGui::SetScrollHereY(1.0f);
+            }
 
             ImGui::EndChild();
         }

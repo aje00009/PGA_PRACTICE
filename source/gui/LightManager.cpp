@@ -112,7 +112,7 @@ void PAG::LightManager::render() {
             ImGui::InputText("Name", _nameBuffer, 128);
             changed |= ImGui::Checkbox("On", &_payload.isEnabled);
 
-            if (_payload.type != LightType::AMBIENT_LIGHT) {
+            if (_payload.type != LightType::AMBIENT_LIGHT && _payload.type != LightType::POINT_LIGHT) {
                 ImGui::SameLine();
                 if (ImGui::Checkbox("Cast Shadows", &_payload.castShadows)) {
                     changed = true;
@@ -121,10 +121,15 @@ void PAG::LightManager::render() {
 
             const char* lightTypes[] = { "Ambient", "Point", "Directional", "Spot" };
             int typeIndex = static_cast<int>(_payload.type);
+
+            if (_selectedLight != 0) ImGui::BeginDisabled();
+
             if (ImGui::Combo("Type", &typeIndex, lightTypes, 4)) {
                 _payload.type = static_cast<LightType>(typeIndex);
                 changed = true;
             }
+
+            if (_selectedLight != 0) ImGui::EndDisabled();
 
             // Dynamic controls depending on light type
             if (ImGui::ColorEdit3("Ambient (Ia)", glm::value_ptr(_payload.ambient))) changed = true;

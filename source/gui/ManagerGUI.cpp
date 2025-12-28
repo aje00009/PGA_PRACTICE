@@ -11,17 +11,93 @@ PAG::ManagerGUI* PAG::ManagerGUI::instance = nullptr;
  */
 PAG::ManagerGUI::ManagerGUI() = default;
 
+/**
+ * @brief Method to set a custom style to ImGui controls
+ */
+void PAG::ManagerGUI::setCustomStyle() {
+    ImGuiStyle& style = ImGui::GetStyle();
+
+    // Geometry
+    style.WindowRounding    = 6.0f;
+    style.ChildRounding     = 6.0f;
+    style.FrameRounding     = 4.0f;
+    style.PopupRounding     = 4.0f;
+    style.GrabRounding      = 4.0f;
+    style.TabRounding       = 4.0f;
+    style.ScrollbarRounding = 8.0f;
+
+    style.FramePadding      = ImVec2(8, 4);
+    style.ItemSpacing       = ImVec2(8, 6);
+    style.GrabMinSize       = 12.0f;
+
+    // Color
+    ImVec4* colors = style.Colors;
+
+    // Background
+    colors[ImGuiCol_WindowBg]       = ImVec4(0.10f, 0.10f, 0.10f, 1.00f);
+    colors[ImGuiCol_PopupBg]        = ImVec4(0.10f, 0.10f, 0.10f, 0.98f);
+    colors[ImGuiCol_ChildBg]        = ImVec4(0.00f, 0.00f, 0.00f, 0.00f);
+
+    // Headers
+    colors[ImGuiCol_Header]         = ImVec4(0.20f, 0.20f, 0.20f, 1.00f);
+    colors[ImGuiCol_HeaderHovered]  = ImVec4(0.92f, 0.45f, 0.05f, 1.00f);
+    colors[ImGuiCol_HeaderActive]   = ImVec4(0.80f, 0.35f, 0.00f, 1.00f);
+
+    // Buttons (Orange by default)
+    colors[ImGuiCol_Button]         = ImVec4(0.92f, 0.45f, 0.05f, 1.00f);
+    colors[ImGuiCol_ButtonHovered]  = ImVec4(1.00f, 0.55f, 0.10f, 1.00f);
+    colors[ImGuiCol_ButtonActive]   = ImVec4(0.70f, 0.30f, 0.00f, 1.00f);
+
+    // Frames
+    colors[ImGuiCol_FrameBg]        = ImVec4(0.16f, 0.16f, 0.16f, 1.00f);
+    colors[ImGuiCol_FrameBgHovered] = ImVec4(0.24f, 0.24f, 0.24f, 1.00f);
+    colors[ImGuiCol_FrameBgActive]  = ImVec4(0.10f, 0.10f, 0.10f, 1.00f);
+
+    // Tabs
+    colors[ImGuiCol_Tab]            = ImVec4(0.12f, 0.12f, 0.12f, 1.00f);
+    colors[ImGuiCol_TabHovered]     = ImVec4(0.92f, 0.45f, 0.05f, 1.00f);
+    colors[ImGuiCol_TabActive]      = ImVec4(0.20f, 0.20f, 0.20f, 1.00f);
+    colors[ImGuiCol_TabUnfocused]   = ImVec4(0.12f, 0.12f, 0.12f, 1.00f);
+    colors[ImGuiCol_TabUnfocusedActive] = ImVec4(0.20f, 0.20f, 0.20f, 1.00f);
+
+    // Window title
+    colors[ImGuiCol_TitleBg]        = ImVec4(0.08f, 0.08f, 0.08f, 1.00f);
+    colors[ImGuiCol_TitleBgActive]  = ImVec4(0.08f, 0.08f, 0.08f, 1.00f);
+    colors[ImGuiCol_TitleBgCollapsed]= ImVec4(0.00f, 0.00f, 0.00f, 1.00f);
+
+    // Control elements
+    colors[ImGuiCol_CheckMark]      = ImVec4(0.92f, 0.45f, 0.05f, 1.00f);
+    colors[ImGuiCol_SliderGrab]     = ImVec4(0.92f, 0.45f, 0.05f, 1.00f);
+    colors[ImGuiCol_SliderGrabActive]= ImVec4(0.80f, 0.35f, 0.00f, 1.00f);
+    colors[ImGuiCol_ResizeGrip]     = ImVec4(0.20f, 0.20f, 0.20f, 1.00f);
+    colors[ImGuiCol_ResizeGripHovered] = ImVec4(0.92f, 0.45f, 0.05f, 1.00f);
+    colors[ImGuiCol_ResizeGripActive]  = ImVec4(0.80f, 0.35f, 0.00f, 1.00f);
+
+    // Extra
+    colors[ImGuiCol_Text]           = ImVec4(0.95f, 0.95f, 0.95f, 1.00f);
+    colors[ImGuiCol_Border]         = ImVec4(0.30f, 0.30f, 0.30f, 0.50f);
+    colors[ImGuiCol_Separator]      = ImVec4(0.30f, 0.30f, 0.30f, 0.50f);
+    colors[ImGuiCol_SeparatorHovered] = ImVec4(0.92f, 0.45f, 0.05f, 1.00f);
+    colors[ImGuiCol_SeparatorActive]  = ImVec4(0.80f, 0.35f, 0.00f, 1.00f);
+}
+
+/**
+ * @brief Method that draws a specific item on the menu of the GUI
+ * @param label Label of the menu item
+ * @param windowTitle Title of the GUI window
+ */
 void PAG::ManagerGUI::drawMenuItem(const std::string &label, const std::string &windowTitle) const {
     for (auto* window : _windows) {
         if (window->getTitle() == windowTitle) {
-            if (ImGui::MenuItem(label.c_str(), nullptr, &window->getVisible())) {
-
-            }
+            ImGui::MenuItem(label.c_str(), nullptr, &window->getVisible());
             return;
         }
     }
 }
 
+/**
+ * @brief Destructor of the class
+ */
 PAG::ManagerGUI::~ManagerGUI() {
     if (instance) {
         delete instance;
@@ -53,11 +129,12 @@ void PAG::ManagerGUI::initialize(GLFWwindow *window) {
 
     io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
 
-
-
     ImGui_ImplGlfw_InitForOpenGL(window, true);
 
     ImGui_ImplOpenGL3_Init();
+
+    //Set style to custom
+    setCustomStyle();
 
 }
 

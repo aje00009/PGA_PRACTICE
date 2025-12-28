@@ -51,6 +51,12 @@ void PAG::MaterialEditingWindow::render() {
             cMatNames.push_back("[ Create new material ]");
             for (const auto& name : materialNames) cMatNames.push_back(name.c_str());
 
+            // Check if our selection index is out of bounds (safety check)
+            if (_selectedMaterial >= cMatNames.size()) {
+                _selectedMaterial = 0;
+                _lastSelected = -1;
+            }
+
             ImGui::Combo("Material", &_selectedMaterial, cMatNames.data(), cMatNames.size());
 
             // Load input user data
@@ -79,24 +85,30 @@ void PAG::MaterialEditingWindow::render() {
                 _lastSelected = _selectedMaterial;
             }
 
+            ImGui::Separator();
+
             // Property editor for material
+            bool changed = false;
 
-            ImGui::InputText("Name", _nameBuffer, 128);
+            if (ImGui::InputText("Name", _nameBuffer, 128)) changed = true;
 
-            ImGui::ColorEdit3("Diffuse", &_package.diffuse.x);
-            ImGui::ColorEdit3("Ambient", &_package.ambient.x);
-            ImGui::ColorEdit3("Specular", &_package.specular.x);
-            ImGui::InputFloat("Shininess", &_package.shininess);
+            if (ImGui::ColorEdit3("Diffuse", &_package.diffuse.x)) changed = true;
+            if (ImGui::ColorEdit3("Ambient", &_package.ambient.x)) changed = true;
+            if (ImGui::ColorEdit3("Specular", &_package.specular.x)) changed = true;
+            if (ImGui::InputFloat("Shininess", &_package.shininess)) changed = true;
 
             ImGui::Separator();
 
             // Confirmation buttons
             if (_selectedMaterial == 0) {
+                // Mode: Create New
                 if (ImGui::Button("Create material")) {
                     warnListeners();
+                    _selectedMaterial = cMatNames.size();
+                    _lastSelected = -1; // Force data reload on next frame
                 }
             } else {
-                if (ImGui::Button("Save changes")) {
+                if (changed) {
                     warnListeners();
                 }
             }

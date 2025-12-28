@@ -4,11 +4,14 @@
 
 #include "imfilebrowser.h"
 #include "../rendering/Renderer.h"
+#include <filesystem>
 
 //Definition of the instance
 PAG::ModelManager* PAG::ModelManager::instance = nullptr;
 
 PAG::ModelManager::ModelManager(): GUIElement("Model manager") {
+    _selectedModel = 0;
+    _selectedMaterial = 0;
 }
 
 /**
@@ -62,12 +65,25 @@ void PAG::ModelManager::render()
             for (const auto& name : modelNames) {
                 cModelNames.push_back(name.c_str());
             }
+
+            // Safety check
             if (_selectedModel >= cModelNames.size()) {
                 _selectedModel = 0;
             }
 
-            //Show available models
+            static int _lastSelectedModel = -1;
+
             ImGui::Combo("Model", &_selectedModel, cModelNames.data(), cModelNames.size());
+
+            if (_selectedModel != _lastSelectedModel) {
+
+                int currentMatID = Renderer::getInstance()->getIdMaterialModel(_selectedModel);
+
+                _selectedMaterial = currentMatID;
+
+                _lastSelectedModel = _selectedModel;
+            }
+
             ImGui::Separator();
 
             //Transformations
@@ -150,6 +166,9 @@ void PAG::ModelManager::render()
                     _package.modelId = _selectedModel;
                     _package.type = ModelEditType::DELETE;
 
+                    _selectedModel = 0;
+                    _lastSelectedModel = -1;
+
                     warnListeners();
                     ImGui::CloseCurrentPopup();
                 }
@@ -163,29 +182,28 @@ void PAG::ModelManager::render()
 
             ImGui::Separator();
 
-            // Material assigment
             ImGui::Text("Material assigment");
 
             auto materialNames = Renderer::getInstance()->getMaterialNames();
             std::vector<const char*> cMatNames;
 
-            cMatNames.push_back("[ No material ]");
             for (const auto& name : materialNames) {
                 cMatNames.push_back(name.c_str());
             }
 
-            //Assign material button
+            // Assign material button
             ImGui::Combo("Material", &_selectedMaterial, cMatNames.data(), cMatNames.size());
+
             ImGui::SameLine();
             if (ImGui::Button("Assign")) {
                 _package.type = ModelEditType::MATERIAL_ASSIGN;
                 _package.modelId = _selectedModel;
-                _package.materialId = _selectedMaterial - 1;
+
+                _package.materialId = _selectedMaterial;
 
                 warnListeners();
             }
 
-            // Texture loading
             ImGui::Separator();
             ImGui::Text("Texture");
 
@@ -224,7 +242,7 @@ void PAG::ModelManager::render()
 
             static ImGui::FileBrowser fileDialogNormalMap;
             fileDialogNormalMap.SetTitle("Select a normal map");
-            fileDialogNormalMap.SetTypeFilters({".png"});
+            fileDialogNormalMap.SetTypeFilters({".png", ".jpg"});
 
             if (ImGui::Button("Load normal map...")) {
                 fileDialogNormalMap.Open();

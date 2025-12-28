@@ -23,7 +23,7 @@ const glm::mat4 biasMatrix(
  */
 PAG::Renderer::Renderer() = default;
 
-void PAG::Renderer::renderShadowMap(Light *light) const {
+void PAG::Renderer::renderShadowMap(const Light *light) const {
     if (_shadowMapShader) {
         LightProperties* props = light->getLightProperties();
 
@@ -36,7 +36,7 @@ void PAG::Renderer::renderShadowMap(Light *light) const {
         glClear(GL_DEPTH_BUFFER_BIT);
 
         //Change viewport to shadow map dimension
-        glViewport(0, 0, SHADOWMAP_WIDTH, SHADOWMAP_HEIGHT);
+        glViewport(0, 0, _shadowMapWidth, _shadowMapHeight);
 
 
         //Adjusting parameters
@@ -62,7 +62,7 @@ void PAG::Renderer::renderShadowMap(Light *light) const {
 
         if (light->getType() == LightType::SPOT_LIGHT) {
             zNear = 0.1f;
-            lightProjection = glm::perspective(glm::radians(light->getLightProperties()->getAngle() * 2), (float)SHADOWMAP_WIDTH/(float)SHADOWMAP_HEIGHT, zNear, zFar);
+            lightProjection = glm::perspective(glm::radians(light->getLightProperties()->getAngle() * 2), (float)_shadowMapWidth/(float)_shadowMapHeight, zNear, zFar);
         }
 
         glm::mat4 lightViewMatrix = glm::lookAt(props->getPos(), props->getPos() + props->getDirection(), glm::vec3(0.0,1.0,0.0));
@@ -89,7 +89,7 @@ void PAG::Renderer::renderShadowMap(Light *light) const {
     }
 }
 
-void PAG::Renderer::updateLightsShadowMap() {
+void PAG::Renderer::updateLightsShadowMap() const {
     for (auto& light: _lights) {
         if (light->getLightProperties()->castShadows())
             light->getLightProperties()->setShadowUpdate(true);
@@ -100,11 +100,25 @@ void PAG::Renderer::updateLightsShadowMap() {
  * @brief Method that deletes all info about buffers of the model
  */
 PAG::Renderer::~Renderer() {
-    delete _activeCamera;
-    _activeCamera = nullptr;
+    if (_activeCamera) {
+        delete _activeCamera;
+        _activeCamera = nullptr;
+    }
 
-    delete[] _bgColor;
-    _bgColor = nullptr;
+    if (_bgColor) {
+        delete[] _bgColor;
+        _bgColor = nullptr;
+    }
+
+    if (_shadowMapShader) {
+        delete _shadowMapShader;
+        _shadowMapShader = nullptr;
+    }
+
+    if (_activeShaderProgram) {
+        delete _activeShaderProgram;
+        _activeShaderProgram = nullptr;
+    }
 
     if (instance) {
         delete instance;
@@ -476,7 +490,7 @@ void PAG::Renderer::wakeUp(WindowType t, ...) {
                     Logger::getInstance()->addMessage("Creating new light: " + payload->name);
 
                     _lights.push_back(std::make_unique<Light>(*payload));
-                    _lights.back()->createShadowMap(SHADOWMAP_WIDTH, SHADOWMAP_HEIGHT);
+                    _lights.back()->createShadowMap(_shadowMapWidth, _shadowMapHeight);
                 }
             }
             else {
@@ -764,6 +778,17 @@ PAG::Material* PAG::Renderer::getMaterial(int index) const {
     return _materials[index].get();
 }
 
+int PAG::Renderer::getIdMaterialModel(int modelID) const {
+    Model* search = _models[modelID].get();
+
+    for (int i = 0 ; i < _materials.size(); i++) {
+        if (_materials[i]->getName() == search->getMaterial()->getName())
+            return i;
+    }
+
+    return -1;
+}
+
 /**
  * @brief Method that returns the name of all lights existing in the application
  * @return The names of all lights existing at the moment
@@ -813,7 +838,7 @@ PAG::Texture* PAG::Renderer::getTexture(const std::string& path) const
  * @return The texture associated to the model specified by modelId (or "" if it doesn't have a texture)
  */
 std::string PAG::Renderer::getTextureModel(int modelId) const {
-    if (!_models.empty() && modelId >= 0 && modelId < _models.size() - 1)
+    if (!_models.empty() && modelId >= 0 && modelId < _models.size())
     {
         Model* model = _models[modelId].get();
         if (model->hasTexture()) {

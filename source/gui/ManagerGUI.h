@@ -17,6 +17,7 @@ namespace PAG {
 
         ManagerGUI();
 
+        static void setCustomStyle();
         void drawMenuItem (const std::string& label, const std::string& windowTitle) const;
 
     public:
