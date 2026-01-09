@@ -414,6 +414,11 @@ La interfaz está dividida en un menú con cuatro opciones principales:
 * `Render`: elegir modo de renderizado y editor de materiales.
 * `Utility`: consola log.
 
+En la carpeta `resources` se encuentran distintos archivos de interés para el uso de la aplicación:
+* `modelos`: modelos en formato .obj para cargar en la aplicación
+* `shaders`: shaders disponibles (el último es `pag10` y solo hay que poner eso para que se carguen los shaders correspondientes)
+* `textures`: texturas disponibles (tanto texturas normales como un mapa de normal para el dado)
+
 ![Menu GUI](resources/images/extra/Menu.png)
 
 Aquí se presenta un ejemplo de uso de la aplicación con el orden "correcto" de los pasos a seguir:
