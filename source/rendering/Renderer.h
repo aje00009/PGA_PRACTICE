@@ -68,6 +68,8 @@ namespace PAG {
             static void getInfoGL();
             void initializeOpenGL() const;
 
+            static Camera* getCamera();
+
             [[nodiscard]] std::vector<std::string> getModelNames() const;
 
             [[nodiscard]] std::vector<std::string> getMaterialNames() const;

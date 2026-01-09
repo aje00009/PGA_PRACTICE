@@ -740,6 +740,10 @@ void PAG::Renderer::initializeOpenGL() const {
     glDepthFunc ( GL_LEQUAL );
 }
 
+PAG::Camera * PAG::Renderer::getCamera() {
+    return instance->_activeCamera;
+}
+
 /**
  * @brief Method that returns all model names (model.obj) loaded in the application at the moment
  * @return All model names (string) loaded at the moment in the application

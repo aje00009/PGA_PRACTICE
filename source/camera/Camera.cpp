@@ -167,3 +167,11 @@ float PAG::Camera::getZnear() const {
 float PAG::Camera::getZFar() const {
     return _zFar;
 }
+
+void PAG::Camera::setZNear(float zNear) {
+    this->_zNear = zNear;
+}
+
+void PAG::Camera::setZFar(float zFar) {
+    this->_zFar = zFar;
+}

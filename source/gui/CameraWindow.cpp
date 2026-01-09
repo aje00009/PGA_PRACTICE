@@ -2,6 +2,8 @@
 
 #include "CameraWindow.h"
 
+#include "../rendering/Renderer.h"
+
 //Definition of the instance for CameraWindow
 PAG::CameraWindow* PAG::CameraWindow::instance = nullptr;
 
@@ -139,6 +141,33 @@ void PAG::CameraWindow::render() {
                         warnListeners();
                     }
                     break;
+            }
+        }
+
+        //Clipping planes
+        ImGui::Separator();
+        ImGui::Text("Clipping planes");
+
+        Camera *camera = PAG::Renderer::getCamera();
+
+        if (camera) {
+            //Obtain current values
+            float zNear = camera->getZnear();
+            float zFar = camera->getZFar();
+            bool changed = false;
+
+            if (ImGui::DragFloat("Near plane", &zNear, 0.1f, 0.1f, zFar - 1.0f, "%.2f")) {
+                if (zNear < 0.1f) zNear = 0.1f;
+                changed = true;
+            }
+
+            if (ImGui::DragFloat("Far Plane", &zFar, 1.0f, zNear + 1.0f, 10000.0f, "%.1f")) {
+                changed = true;
+            }
+
+            if (changed) {
+                camera->setZNear(zNear);
+                camera->setZFar(zFar);
             }
         }
 

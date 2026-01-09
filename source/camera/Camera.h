@@ -39,6 +39,8 @@ namespace PAG {
 
         float getZnear() const;
         float getZFar() const;
+        void setZNear(float zNear);
+        void setZFar(float zFar);
     };
 }
 
