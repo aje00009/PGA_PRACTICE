@@ -132,7 +132,9 @@ void PAG::LightManager::render() {
             if (_selectedLight != 0) ImGui::EndDisabled();
 
             // Dynamic controls depending on light type
-            if (ImGui::ColorEdit3("Ambient (Ia)", glm::value_ptr(_payload.ambient))) changed = true;
+            if (_payload.type == LightType::AMBIENT_LIGHT) {
+                if (ImGui::ColorEdit3("Ambient (Ia)", glm::value_ptr(_payload.ambient))) changed = true;
+            }
 
             if (_payload.type != LightType::AMBIENT_LIGHT) {
                 if (ImGui::ColorEdit3("Diffuse (Id)", glm::value_ptr(_payload.diffuse))) changed = true;

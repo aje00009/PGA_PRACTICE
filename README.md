@@ -536,7 +536,7 @@ Los demás controles son los siguientes, ordenados por categorías:
 
 **Visualización de sombras proyectadas por objetos con más objetos**
 
-![Visualización multiples sombras](Visualizacion_multiples_sombras.png)
+![Visualización multiples sombras](resources/images/manual/visualizacion/Visualizacion_multiples_sombras.png)
 
 ## Extras
 
