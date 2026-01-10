@@ -431,6 +431,8 @@ Aquí se presenta un ejemplo de uso de la aplicación con el orden "correcto" de
 
 **2. Cargar modelo**
 
+!Atención¡ -> Hay modelos más grande que otros, se pueden escalar para hacerlos más pequeños o usar los controles de la camara para cambiar
+la posición de esta y el near/far plane.
 ![Manual paso 2](/resources/images/manual/pasos/Manual_paso2.png)
 
 **3. Aplicar una luz (por defecto no hay ninguna, así que el modelo no se mostrará hasta que se cree una)**
