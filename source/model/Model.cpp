@@ -145,6 +145,7 @@ PAG::Model::~Model() {
  */
 void PAG::Model::draw() const {
     glBindVertexArray(_idVAO);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _idIBO);
     glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(_indices.size()), GL_UNSIGNED_INT, nullptr);
     glBindVertexArray(0);
 }
