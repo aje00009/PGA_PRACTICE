@@ -156,6 +156,10 @@ PAG::ShaderProgram * PAG::Model::getShaderProgram() const {
     return this->_shaderProgram;
 }
 
+void PAG::Model::setName(const std::string &name) {
+    this->modelName = name;
+}
+
 /**
  * @return Method that return the material associated to the model
  */

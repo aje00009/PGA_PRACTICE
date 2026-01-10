@@ -320,29 +320,43 @@ void PAG::Renderer::wakeUp(WindowType t, ...) {
 
             try {
                 std::string pathStr(filePath);
-                std::string modelName = std::filesystem::path(pathStr).filename().string();
+                std::filesystem::path p(pathStr);
 
-                bool modelFound = false;
-                for (const auto& model: _models) {
-                    if (model->getModelName() == modelName) {
-                        modelFound = true;
-                        break;
+                std::string baseStem = p.stem().string();      // "name"
+                std::string extension = p.extension().string(); // ".obj"
+                std::string finalName = p.filename().string();  // "name.obj"
+
+                //Find existing instances of same model
+                int counter = 1;
+                bool nameExists = true;
+
+                while (nameExists) {
+                    nameExists = false;
+                    for (const auto& model : _models) {
+                        if (model->getModelName() == finalName) {
+                            nameExists = true;
+                            break;
+                        }
+                    }
+
+                    if (nameExists) {
+                        finalName = baseStem + "_" + std::to_string(counter) + extension;
+                        counter++;
                     }
                 }
 
-                if (modelFound) {
-                    Logger::getInstance()->addMessage("Model '" + modelName + "' already loaded");
-                }else {
-                    auto newModel = std::make_unique<Model>(_activeShaderProgram,pathStr);
 
-                    float xOffset = static_cast<float>(_models.size()) * 2.0f;
-                    newModel->translate(glm::vec3(xOffset, 0.0f, 0.0f));
-                    newModel->setMaterial(_materials.front().get());
+                auto newModel = std::make_unique<Model>(_activeShaderProgram,pathStr);
 
-                    _models.push_back(std::move(newModel));
+                newModel->setName(finalName);
 
-                    Logger::getInstance()->addMessage("Model '" + modelName + "' loaded successfully");
-                }
+                float xOffset = static_cast<float>(_models.size()) * 2.0f;
+                newModel->translate(glm::vec3(xOffset, 0.0f, 0.0f));
+                newModel->setMaterial(_materials.front().get());
+
+                _models.push_back(std::move(newModel));
+
+                Logger::getInstance()->addMessage("Model '" + finalName + "' loaded successfully");
 
                 updateLightsShadowMap();
 

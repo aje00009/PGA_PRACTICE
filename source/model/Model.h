@@ -61,6 +61,8 @@ namespace PAG {
 
         ShaderProgram* getShaderProgram() const;
 
+        void setName(const std::string& name);
+
         Material* getMaterial() const;
         void setMaterial(Material* mat);
 
